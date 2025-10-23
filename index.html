@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cupcakes on the Avenue</title>
+<style>
+/* Whole website custom background */
+body {
+    font-family: Arial, sans-serif;
+    color: black;
+    margin: 0;
+    padding: 0;
+    background-image: url("background.jpg") /* Replace with your local image filename */
+    background-size: cover;       /* fills the screen */
+    background-position: center;  /* centers the image */
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* fixed while scrolling */
+}
+
+/* Header */
+header {
+    background: rgba(252, 213, 206, 0.9); /* slightly transparent overlay */
+    padding: 20px;
+    text-align: center;
+}
+header h1 {margin:0;}
+nav a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 40px 20px;
+}
+.hero img {
+    max-width: 300px;
+    border-radius: 15px;
+}
+
+/* Sections */
+section {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(255, 240, 229, 0.85); /* slightly transparent to show background */
+    border-radius: 15px;
+    text-align: center;
+}
+
+/* Product Cards */
+.products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+.product {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    width: 200px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.product img {
+    width: 100%;
+    border-radius: 10px;
+}
+.product button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    border: none;
+    background: orange;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.product button:hover {
+    background: darkorange;
+}
+
+/* Cart */
+.cart {
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(255, 230, 225, 0.85);
+    border-radius: 10px;
+}
+
+/* Market Section with button */
+#market {
+    background: rgba(0,0,0,0.5); /* overlay on top of background */
+    padding: 80px 20px;
+    color: #fff;
+    min-height: 100vh;
+}
+.visit-btn {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: #ff6600;
+    color: black;
+    font-size: 1.4em;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    margin-top: 20px;
+}
+.visit-btn:hover {
+    background-color: #ff9933;
+    transform: scale(1.05);
+}
+
+/* Form */
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+button[type="submit"] {
+    background: #f78c6b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+button[type="submit"]:hover {
+    background: #e06550;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: rgba(252, 213, 206, 0.9);
+    margin-top: 40px;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Cupcakes on the Avenue</h1>
+<p>Home of the exclusive Shortbread Delight & cosy bakes!</p>
+<nav>
+<a href="#about">About</a>
+<a href="#Festive Bakery Shop">Festive Bakery Shop</a>
+<a href="#shop">Shop</a>
+<a href="#market">Market</a>
+<a href="#order">Order</a>
+</nav>
+</header>
+
+<div class="hero">
+  <img src="logo.png" alt="Pumpkin Spice Cupcake">
+  <h2>Where every bake feels like home</h2>
+  <p>Fresh cupcakes, biscuits, and celebration cakes baked with love and fun!</p>
+</div>
+
+<section id="about">
+  <h2>About Us</h2>
+  <p>At Cupcakes on the Avenue, every bake feels like home. From our exclusive Shortbread Delight to cupcakes, biscuits, and cakes made for celebrating, everything is baked with love and a sprinkle of fun. Find us at Highworth Market every Saturday or order online for custom treats  <!-- Social Links -->
+      </div>
+</section>
+ .</p>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Festive Bakery Shop</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: linear-gradient(#5f9ea0, #f9f5f0);
+  color: #000;
+  position: relative;
+  overflow-x: hidden;
+  min-height:100vh;
+}
+
+/* Headings */
+h1, h2 { color: #ff6600; text-align: center; margin-bottom: 15px; }
+h3 { margin: 10px 0 5px; }
+
+/* Sections */
+.section-title { text-align:center; margin-top:40px; color:#ff6600; font-size:24px; }
+.shop, .products { display: flex; flex-wrap: wrap; gap: 20px; justify-content:center; margin-bottom:40px; }
+
+/* Product Cards */
+.product {
+  background: #fff3e6;
+  padding: 15px;
+  border-radius: 12px;
+  width: 220px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: center;
+  position: relative;
+}
+.product img { border-radius: 8px; margin-bottom:10px; }
+.product p { color: #000; font-size:14px; margin:5px 0 10px; }
+
+/* Dropdowns and Buttons */
+.product select { width:90%; padding:8px; margin-bottom:10px; border-radius:8px; border:none; font-size:14px; }
+
+/* Buttons (Add to Cart, Send Order, Pay, Calendar arrows) */
+button, #calendarNav button, .cart-btn {
+  background: orange;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+button:hover, #calendarNav button:hover, .cart-btn:hover { background: darkorange; }
+
+/* Cart Section */
+#orderBox {
+  max-width: 600px;
+  margin: 0 auto 40px;
+  background: #fff3e6;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+#cartContents, #cartTotal { background:#fff7ef; color:#4a2b20; padding:10px; border-radius:8px; margin-bottom:10px; }
+#cartContents ul { list-style:none; padding-left:0; }
+#cartTotal { font-weight:bold; color:#b3541e; }
+
+/* Calendar */
+#calendar table { border-collapse: collapse; width: 100%; margin:10px 0; font-size:14px; }
+#calendar th, #calendar td { padding:5px; text-align:center; border:1px solid #ddd; width:14%; height:40px; cursor:pointer; }
+#calendar td.disabled { color:#ccc; cursor:not-allowed; background:#f9f9f9; }
+#calendar td.weekend { background:#f2f2f2; }
+#calendar td:hover:not(.disabled) { background:#ffe4b2; }
+
+/* Toast */
+#toast {
+  visibility:hidden; min-width:280px; margin-left:-140px;
+  background-color: rgba(255, 182, 193, 0.97);
+  color: #4a2b20; text-align:center; border-radius:12px;
+  padding:14px 18px; position:fixed; left:50%; bottom:-60px;
+  font-size:15px; font-weight:500; box-shadow:0 4px 10px rgba(0,0,0,0.2);
+  z-index:1000; border:2px solid #ff6600; opacity:0; transform:translateY(20px);
+  transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Snowflakes */
+.snowflake {
+  position:fixed; top:-50px; color:white; font-size:20px; z-index:0; user-select:none; pointer-events:none;
+  animation-name:fall; animation-timing-function: linear; animation-iteration-count: infinite;
+}
+@keyframes fall { 0% { transform: translateY(-50px); } 100% { transform: translateY(110vh); } }
+</style>
+</head>
+<body>
+
+<h1>🎄 Festive Bakery Shop 🎄</h1>
+
+<h2 class="section-title">Christmas Cakes</h2>
+<div class="shop">
+  <div class="product">
+    <img src="marzipan.jpg" alt="royal icing cake">
+    <h3>Christmas Cake ,with or without alcohol</h3>
+ <p>With a lush royal icing topping</p>
+    <select id="xmas1">
+      <option value="6|30">6"- £30</option>
+      <option value="8|40">8" - £40</option>
+    </select>
+    <button onclick="addToCart('royal icing cake','xmas1')">Add to Cart</button>
+</div>
+
+ <div class="product">
+    <img src="fondant.jpg" alt="marzipan and fondant cake">
+    <h3>Christmas Cake,with or without alcohol</h3> 
+<p>With a topping of marzipan and fondant</p>
+    <select id="xmas1">
+      <option value="6|30">6"- £30</option>
+      <option value="8|40">8" - £40</option>
+    </select>
+    <button onclick="addToCart('marzipan and fondant cake','xmas1')">Add to Cart</button>
+  </div>
+</div>
+
+
+
+<h2 class="section-title">Regular Bakery Shop</h2>
+<div class="products">
+  <div class="product">
+    <img src="shortbread.jpg" alt="Exclusive Shortbread Delight">
+    <h3>Exclusive Shortbread Delight</h3>
+    <p>Buttery, melt-in-your-mouth shortbread</p>
+    <select id="size1">
+      <option value="6|20">6" - £20</option>
+      <option value="8|25">8" - £25</option>
+      <option value="10|30">10" - £30</option>
+    </select>
+    <button onclick="addToCartWithSize('Exclusive Shortbread Delight','size1')">Add to Cart</button>
+  </div>
+  <div class="product">
+    <img src="sweet trimmings.jpg" alt="Sweet Trimming Pots">
+    <h3>Sweet Trimming Pots</h3>
+    <p>Loaded with cake and icing</p>
+    <select id="size2">
+      <option value="Pack of 6|15">Pack of 6 - £15</option>
+      <option value="Pack of 12|28">Pack of 12 - £28</option>
+    </select>
+    <button onclick="addToCartWithSize('Sweet Trimming Pots','size2')">Add to Cart</button>
+  </div>
+  <div class="product">
+    <img src="purplecake.jpg" alt="Celebration Cake">
+    <h3>Celebration Cake</h3>
+    <p>Perfect for any occasion</p>
+    <select id="size3">
+      <option value="6|30">6" - £30</option>
+      <option value="8|40">8" - £40</option>
+      <option value="10|50">10" - £50</option>
+    </select>
+    <button onclick="addToCartWithSize('Celebration Cake','size3')">Add to Cart</button>
+  </div>
+  <div class="product">
+    <img src="icedshortbread.jpg" alt="Iced Shortbread">
+    <h3>Iced Shortbread</h3>
+    <p>Choose the icing</p>
+    <select id="size4">
+      <option value="Pack of 10|10">Pack of 10 - £10</option>
+      <option value="Pack of 20|18">Pack of 20 - £18</option>
+    </select>
+    <button onclick="addToCartWithSize('Iced Shortbread','size4')">Add to Cart</button>
+  </div>
+  <div class="product">
+    <img src="cupcakes.jpg" alt="Cupcakes">
+    <h3>Cupcakes</h3>
+    <p>Choose the filling and toppings</p>
+    <select id="size5">
+      <option value="Pack of 6|15">Pack of 6 - £15</option>
+      <option value="Pack of 12|28">Pack of 12 - £28</option>
+      <option value="Pack of 24|50">Pack of 24 - £50</option>
+    </select>
+    <button onclick="addToCartWithSize('Cupcakes','size5')">Add to Cart</button>
+  </div>
+  <div class="product">
+    <img src="ricecrispy.jpg" alt="Rice Crispy Treats">
+    <h3>Rice Crispy Treats</h3>
+    <p>Mouth-watering marshmallow & chocolate treats</p>
+    <select id="size6">
+      <option value="Pack of 6|10">Pack of 6 - £10</option>
+      <option value="Pack of 12|20">Pack of 12 - £20</option>
+    </select>
+    <button onclick="addToCartWithSize('Rice Crispy Treats','size6')">Add to Cart</button>
+  </div>
+</div>
+
+<div id="orderBox">
+  <h2>Your Cart & Order</h2>
+  <div id="cartContents">Your cart is empty.</div>
+  <div id="cartTotal">Total: £0</div>
+
+  <h3>Your Details</h3>
+  <input type="text" id="customerName" placeholder="Name">
+  <input type="email" id="customerEmail" placeholder="Email">
+  <input type="text" id="customerAddress" placeholder="Address">
+  <input type="text" id="toppings/fillings/alcohol for christmas cake" placeholder="Toppings/fillings/alcohol for christmas cake">
+  <select id="deliveryMethod">
+    <option value="">Select delivery...</option>
+    <option value="Delivery">Delivery</option>
+    <option value="Collection">Collection</option>
+  </select>
+
+  <h3>Select Delivery Date</h3>
+  <input type="text" id="deliveryDate" placeholder="Select a date" readonly>
+  <div id="calendarNav" style="text-align:center;">
+    <button onclick="changeMonth(-1)">&#8592; Prev</button>
+    <span id="calendarMonthYear"></span>
+    <button onclick="changeMonth(1)">Next &#8594;</button>
+  </div>
+  <div id="calendar"></div>
+
+  <label><input type="checkbox" id="privacyCheck"> I agree to Privacy Policy *</label><br>
+  <label><input type="checkbox" id="termsCheck"> I agree to Terms & Conditions *</label><br><br>
+  <label><input type="checkbox" id="sendOrdercheck"> I agree to send order with the button bellow *</label><br><br>
+
+  <button onclick="sendOrder()">Send Order</button>
+  <button onclick="payOrder()" style="margin-top:5px;">Pay</button>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ---------- Cart ----------
+let cartItems=[];
+function addToCart(name, selectId){
+  const select=document.getElementById(selectId);
+  if(!select) return;
+  const [option, price]=select.value.split('|');
+  const itemName=`${name} (${option})`;
+  const priceFloat=parseFloat(price);
+  const existing=cartItems.find(i=>i.name===itemName);
+  if(existing) existing.quantity+=1;
+  else cartItems.push({name:itemName, price:priceFloat, quantity:1});
+  updateCart();
+}
+function addToCartWithSize(name, selectId){ addToCart(name, selectId); }
+function changeQuantity(index, delta){
+  cartItems[index].quantity+=delta;
+  if(cartItems[index].quantity<=0) cartItems.splice(index,1);
+  updateCart();
+}
+function updateCart(){
+  const cartDiv=document.getElementById('cartContents');
+  const totalDiv=document.getElementById('cartTotal');
+  if(cartItems.length===0){ cartDiv.innerHTML='Your cart is empty.'; totalDiv.innerHTML='Total: £0'; }
+  else{
+    let html='<ul>'; let total=0;
+    cartItems.forEach((item,idx)=>{
+      html+=`<li>${item.name} - £${item.price.toFixed(2)} x ${item.quantity} 
+             <span class="cart-btn" onclick="changeQuantity(${idx},1)">+</span> 
+             <span class="cart-btn" onclick="changeQuantity(${idx},-1)">-</span></li>`;
+      total+=item.price*item.quantity;
+    });
+    html+='</ul>';
+    cartDiv.innerHTML=html;
+    totalDiv.innerHTML=`Total: £${total.toFixed(2)}`;
+  }
+}
+
+// ---------- Calendar ----------
+let currentMonth=new Date().getMonth();
+let currentYear=new Date().getFullYear();
+let disabledDates=["2025-10-15","2025-10-20","2025-11-01"];
+function renderCalendar(month=currentMonth, year=currentYear){
+  const calendarDiv=document.getElementById('calendar'); calendarDiv.innerHTML='';
+  const firstDay=new Date(year, month, 1).getDay();
+  const daysInMonth=new Date(year, month+1,0).getDate();
+  document.getElementById('calendarMonthYear').textContent=`${new Date(year, month).toLocaleString('default',{month:'long'})} ${year}`;
+  const table=document.createElement('table');
+  const headerRow=document.createElement('tr'); ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(d=>{const th=document.createElement('th'); th.textContent=d; headerRow.appendChild(th);});
+  table.appendChild(headerRow);
+  let row=document.createElement('tr'); for(let i=0;i<firstDay;i++) row.appendChild(document.createElement('td'));
+  const today=new Date();
+  for(let day=1; day<=daysInMonth; day++){
+    const td=document.createElement('td'); td.textContent=day;
+    const dateStr=`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    if(disabledDates.includes(dateStr) || new Date(dateStr)<new Date(today.getFullYear(), today.getMonth(), today.getDate())) td.classList.add('disabled');
+    else{ td.addEventListener('click',()=>selectDate(dateStr)); if(new Date(dateStr).getDay()===0||new Date(dateStr).getDay()===6) td.classList.add('weekend'); }
+    row.appendChild(td); if((day+firstDay)%7===0){ table.appendChild(row); row=document.createElement('tr'); }
+  }
+  if(row.children.length>0) table.appendChild(row); calendarDiv.appendChild(table);
+}
+function selectDate(dateStr){ document.getElementById('deliveryDate').value=dateStr; }
+function changeMonth(delta){ currentMonth+=delta; if(currentMonth<0){ currentMonth=11; currentYear--;} else if(currentMonth>11){ currentMonth=0; currentYear++;} renderCalendar(currentMonth,currentYear);}
+renderCalendar();
+
+// ---------- Send Order ----------
+async function sendOrder(){
+  const name=document.getElementById('customerName').value.trim();
+  const email=document.getElementById('customerEmail').value.trim();
+  const address=document.getElementById('customerAddress').value.trim();
+  const toppings=document.getElementById('toppings').value.trim();
+  const delivery=document.getElementById('deliveryMethod').value;
+  const date=document.getElementById('deliveryDate').value;
+  if(!name || !email || !address || !delivery || !date){ showToast("⚠️ Fill all required fields!"); return; }
+  if(cartItems.length===0){ showToast("⚠️ Cart is empty!"); return; }
+  const total=cartItems.reduce((sum,i)=>sum+i.price*i.quantity,0);
+  const orderLines=cartItems.map((i,idx)=>`${idx+1}. ${i.name} x${i.quantity} — £${(i.price*i.quantity).toFixed(2)}`).join('\n');
+  const orderText=`🧁New Order!🧁
+Customer: ${name}
+Email: ${email}
+Address: ${address}
+Delivery: ${delivery}
+Date: ${date}
+Toppings: ${toppings||'None'}
+
+Order Summary:
+${orderLines}
+
+Total: £${total.toFixed(2)}`;
+  const webhookURL="https://discord.com/api/webhooks/1426192909044023297/Ilgqgr8p7buI95ai-zssfphPLzQlNBBZf6PY31BhVuptPd-ZyccSq5kAQJPoBkUt4PHK"; 
+  try{ await fetch(webhookURL,{method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({content:orderText})}); showToast("✅ Order sent!"); }catch{ showToast("⚠️ Failed to send order!"); }
+}
+
+// ---------- Payment ----------
+// ---------- Pay Order (SumUp + Netlify) ----------
+async function payOrder() {
+  if (cartItems.length === 0) {
+    showToast("⚠️ Cart is empty!");
+    return;
+  }
+
+  // Calculate cart total
+  const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0).toFixed(2);
+  const reference = "ORDER" + Date.now(); // unique reference for this order
+
+  try {
+    // Call Netlify function to create SumUp checkout link
+    const res = await fetch("/.netlify/functions/createCheckout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ total, reference }),
+    });
+
+    const data = await res.json();
+    if (data.checkout_url) {
+      // Open SumUp checkout page in a new tab
+      window.open(data.checkout_url, "_blank");
+      showToast(`Redirecting to payment for £${total}...`);
+    } else {
+      showToast("⚠️ Failed to get checkout link!");
+    }
+  } catch (err) {
+    console.error(err);
+    showToast("⚠️ Payment error!");
+  }
+}
+
+// ---------- Toast ----------
+function showToast(msg){
+  const toast=document.getElementById('toast'); toast.textContent=msg; toast.style.visibility="visible"; toast.style.opacity="1"; toast.style.transform="translateY(0)"; toast.style.bottom="40px";
+  setTimeout(()=>{ toast.style.opacity="0"; toast.style.transform="translateY(20px)"; toast.style.bottom="20px"; },5000);
+  setTimeout(()=>toast.style.visibility="hidden",5600);
+}
+
+// ---------- Snow Animation ----------
+const snowChars=['❄','❅','❆'];
+for(let i=0;i<50;i++){
+  const span=document.createElement('span');
+  span.className='snowflake';
+  span.style.left=Math.random()*100+'vw';
+  span.style.fontSize=(Math.random()*20+10)+'px';
+  span.style.animationDuration=(Math.random()*10+5)+'s';
+  span.style.animationDelay=Math.random()*10+'s';
+  span.textContent=snowChars[Math.floor(Math.random()*snowChars.length)];
+  document.body.appendChild(span);
+}
+</script>
+</body>
+</html>
+
+
+
+<!-- START: Highworth Market Promo Section -->
+<section class="market-promo">
+  <!-- Market Info -->
+  <div class="market-info">
+    <h2>🍪 Find Us at Highworth Market</h2>
+    <p><strong>Every Saturday • 8am–2pm</strong></p>
+    <p>Come by for our <strong>famous Shortbread Delight</strong>, fresh-baked goodies, cosy treats, and friendly chats!</p>
+  </div>
+
+  <!-- Weekly Bakes Toggle -->
+  <button class="bakes-toggle" id="bakesToggle">
+    See This Week’s Bakes
+  </button>
+
+  <!-- Hidden Bakes Grid -->
+  <div class="bakes-list" id="bakesList">
+    <article class="bake-item new-bake">
+      <div class="badge">Best seller</div>
+      <img src="shortbread.jpg"Shortbread Delight">
+      <div class="bake-info">
+        <h3>Famous Shortbread Delight</h3>
+        <p>Our signature buttery shortbread — golden, crumbly, melt-in-your-mouth perfection.</p>
+      </div>
+    </article>
+
+    <article class="bake-item">
+ <div class="badge">NEW</div>
+      <img src="https://images.unsplash.com/photo-1606312619349-28b3f8a4c8c1?auto=format&fit=crop&w=800&q=80" alt="Vanilla or Chocolate Cupcakes">
+      <div class="bake-info">
+        <h3>Vanilla or Chocolate Cupcakes</h3>
+        <p>Classic flavors, unforgettable taste—Vanilla & Chocolate cupcakes!.</p>
+      </div>
+    </article>
+
+    <article class="bake-item new-bake">
+      <div class="badge">NEW</div>
+      <img src="https://images.unsplash.com/photo-1605478374768-6d01f713d1e3?auto=format&fit=crop&w=800&q=80" alt="Vanilla Spider Cupcakes">
+      <div class="bake-info">
+        <h3>Vanilla Spider Cupcakes</h3>
+        <p>Spooktacular sweetness—Vanilla Spider Cupcakes creeping into your cravings!.</p>
+      </div>
+    </article>
+
+  <!-- Social Links -->
+  <div class="social-links">
+    <p>Follow us for cosy bakes & market updates 🍪</p>
+    <div class="social-icons">
+      <a href="https://instagram.com/cupcakesontheavenue" target="_blank" aria-label="Instagram">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="#E1306C">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+          <line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line>
+        </svg>
+      </a>
+      <a href="https://facebook.com/p/Cupcakes-on-the-Avenue-61578246007533" target="_blank" aria-label="Facebook">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="#1877F2">
+          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+        </svg>
+      </a>
+      <a href="https://tiktok.com/@Cupcakesontheaven" target="_blank" aria-label="TikTok">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="#000000">
+          <path d="M9 21c3 0 5-2 5-5v-5h3a4 4 0 1 0 0-8v3c-2 0-4 2-4 4h-4v11z"></path>
+        </svg>
+      </a>
+  </div>
+</section>
+
+<style>
+  .market-promo {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: #fff7f0;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .market-info h2 { color: #c75a1a; font-size: 1.75rem; text-align: center; margin-bottom: 0.5rem; }
+  .market-info p { text-align: center; margin: 0.3rem 0; color: #444; }
+  .bakes-toggle {
+    display: block;
+    margin: 1rem auto 1.5rem;
+    background: #c75a1a;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 0.8rem 1.6rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(199,90,26,0.25);
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+  .bakes-toggle:hover { background: #a64810; transform: translateY(-2px); }
+  .bakes-list {
+    display: grid;
+    gap: 1.2rem;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    animation: fadeIn 0.5s ease forwards;
+  }
+  .bakes-list:not(.show) { display: none; }
+  .bake-item {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .bake-item:hover { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+  .bake-item img { width: 100%; height: 180px; object-fit: cover; }
+  .bake-info { padding: 0.9rem 1rem 1.2rem; }
+  .bake-info h3 { margin: 0 0 0.3rem 0; color: #a64810; font-size: 1.1rem; }
+  .bake-info p { margin: 0; color: #444; font-size: 0.95rem; line-height: 1.45; }
+  .badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ff5c00;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    animation: pulse 1.8s infinite ease-in-out;
+  }
+  @keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,92,0,0.5); }
+    50% { transform: scale(1.05); box-shadow: 0 0 12px 4px rgba(255,92,0,0.25); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,92,0,0.5); }
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .social-links { text-align: center; margin-top: 2rem; }
+  .social-links p { margin-bottom: 0.5rem; font-weight: 500; color: #a64810; }
+  .social-icons { display: flex; justify-content: center; gap: 1rem; }
+  .social-icons a { transition: transform 0.2s ease; display: inline-block; }
+  .social-icons a:hover { transform: scale(1.2); }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.getElementById('bakesToggle');
+  const list = document.getElementById('bakesList');
+
+  toggle.addEventListener('click', () => {
+    list.classList.toggle('show');
+    toggle.textContent = list.classList.contains('show')
+      ? 'Hide This Week’s Bakes'
+      : 'See This Week’s Bakes';
+  });
+});
+</script>
+<!-- END: Highworth Market Promo Section -->
+
+
+
+<section id="special-request" style="max-width:600px; margin:50px auto; padding:20px; background:rgba(255,230,225,0.95); border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+  <h2 style="text-align:center; color:#ff6600;">Special Request</h2>
+  <p style="text-align:center; color:black;">Have a custom order or special instructions? Fill out the form below!</p>
+
+  <form id="specialRequestForm" onsubmit="submitSpecialRequest(event)">
+    <label for="srName" style="color:black;">Name <span style="color:#ff6600;">*</span></label>
+    <input type="text" id="srName" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
+
+    <label for="srEmail" style="color:black;">Email <span style="color:#ff6600;">*</span></label>
+    <input type="email" id="srEmail" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
+
+    <label for="srRequest" style="color:black;">Request <span style="color:#ff6600;">*</span></label>
+    <textarea id="srRequest" rows="4" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;"></textarea>
+
+    <button type="submit" style="background:#ff6600; color:black; padding:12px 20px; border:none; border-radius:10px; font-weight:bold; cursor:pointer; display:block; margin:0 auto;">Send Request</button>
+  </form>
+</section>
+
+<!-- Toast Notification -->
+<div id="toast" style="
+  visibility: hidden;
+  min-width: 280px;
+  margin-left: -140px;
+  background-color: rgba(255, 182, 193, 0.97); /* soft cupcake pink */
+  color: #4a2b20; /* warm brown text for readability */
+  text-align: center;
+  border-radius: 12px;
+  padding: 14px 18px;
+  position: fixed;
+  left: 50%;
+  bottom: -60px;
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  z-index: 1000;
+  border: 2px solid #ff6600; /* orange border accent */
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+"></div>
+
+<script>
+async function submitSpecialRequest(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('srName').value.trim();
+  const email = document.getElementById('srEmail').value.trim();
+  const request = document.getElementById('srRequest').value.trim();
+
+  if (!name || !email || !request) {
+    showToast("⚠️ Please fill out all fields!");
+    return;
+  }
+
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const subject = encodeURIComponent(`🧁 New Special Request from ${name} — Cupcakes on the Avenue`);
+  const bodyText = `Name: ${name}\nEmail: ${email}\n\nRequest:\n${request}`;
+  const body = encodeURIComponent(bodyText);
+  const mailtoLink = `mailto:CupcakesontheAvenue@gmail.com?cc=${encodeURIComponent(email)}&subject=${subject}&body=${body}`;
+
+  if (isMobile) {
+    // Mobile: open email app and show fallback message
+    setTimeout(() => {
+      window.location.href = mailtoLink;
+      showToast("📋 If your email app doesn’t open, your message has been copied. Please paste it into your email and send.");
+    }, 1500);
+
+    // Copy to clipboard as backup
+    try {
+      await navigator.clipboard.writeText(
+        `To: CupcakesontheAvenue@gmail.com\nSubject: 🧁 New Special Request from ${name}\n\n${bodyText}`
+      );
+    } catch (err) {
+      console.warn("Clipboard copy failed:", err);
+    }
+
+  } else {
+    // Desktop: copy to clipboard only
+    try {
+      await navigator.clipboard.writeText(
+        `To: CupcakesontheAvenue@gmail.com\nSubject: 🧁 New Special Request from ${name}\n\n${bodyText}`
+      );
+      showToast("📋 Message copied! Please paste it into your email and send to CupcakesontheAvenue@gmail.com");
+    } catch (err) {
+      showToast("⚠️ Couldn't copy automatically. Please email your request to CupcakesontheAvenue@gmail.com");
+    }
+  }
+
+  document.getElementById('specialRequestForm').reset();
+}
+
+// Toast function with slide + fade animation
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.style.visibility = "visible";
+  toast.style.opacity = "1";
+  toast.style.transform = "translateY(0)";
+  toast.style.bottom = "40px";
+
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(20px)";
+    toast.style.bottom = "20px";
+  }, 5000);
+
+  setTimeout(() => {
+    toast.style.visibility = "hidden";
+  }, 5600);
+}
+</script>
+
+
+
+<footer style="text-align:center; padding:20px; background:#fcd5ce; margin-top:40px; border-radius:10px; position:relative;">
+  <p>© 2025 Cupcakes on the Avenue • CupcakesontheAvenue@gmail.com</p>
+  
+  <!-- Footer Image -->
+  <img src="food hygiene.jpg" 
+       style="margin-top:15px; width:150px; height:auto; border-radius:10px;">
+</footer>
+
+
+
+</body>
+</html>
