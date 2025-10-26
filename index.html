@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cupcakes on the Avenue</title>
@@ -10,7 +11,7 @@ body {
     color: black;
     margin: 0;
     padding: 0;
-    background-image: url("background.jpg") /* Replace with your local image filename */
+    background-image: url("background.jpg"); /* Replace with your local image filename */
     background-size: cover;       /* fills the screen */
     background-position: center;  /* centers the image */
     background-repeat: no-repeat;
@@ -311,7 +312,7 @@ button:hover, #calendarNav button:hover, .cart-btn:hover { background: darkorang
     <button onclick="addToCartWithSize('Exclusive Shortbread Delight','size1')">Add to Cart</button>
   </div>
   <div class="product">
-    <img src="pictures\sweettrimmings.jpg" alt="Sweet Trimming Pots">
+    <img src="pictures\sweet trimmings.jpg" alt="Sweet Trimming Pots">
     <h3>Sweet Trimming Pots</h3>
     <p>Loaded with cake and icing</p>
     <select id="size2">
@@ -736,33 +737,18 @@ document.addEventListener('DOMContentLoaded', () => {
   <h2 style="text-align:center; color:#ff6600;">Special Request</h2>
   <p style="text-align:center; color:black;">Have a custom order or special instructions? Fill out the form below!</p>
 
-  <!-- FormSubmit will send the form contents to your email (first submit will ask you to confirm) -->
-  <form id="specialRequestForm"
-        action="https://formsubmit.co/CupcakesontheAvenue@gmail.com"
-        method="POST"
-        target="_blank"
-        onsubmit="showToast('📨 Sending request...')">
-
-    <!-- anti-spam honeypot (leave hidden) -->
-    <input type="text" name="_honey" style="display:none">
-
-    <!-- optional: disable FormSubmit captcha and set subject/redirect -->
-    <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="_subject" value="🧁 New Special Request — Cupcakes on the Avenue">
-    <input type="hidden" name="_next" value="index.html">
-
+  <form id="specialRequestForm" onsubmit="sendSpecialRequest(event)">
     <label for="srName" style="color:black;">Name <span style="color:#ff6600;">*</span></label>
-    <input type="text" id="srName" name="name" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
+    <input type="text" id="srName" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
 
     <label for="srEmail" style="color:black;">Email <span style="color:#ff6600;">*</span></label>
-    <input type="email" id="srEmail" name="email" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
+    <input type="email" id="srEmail" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
 
     <label for="srRequest" style="color:black;">Request <span style="color:#ff6600;">*</span></label>
-    <textarea id="srRequest" name="request" rows="4" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;"></textarea>
+    <textarea id="srRequest" rows="4" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;"></textarea>
 
     <button type="submit" style="background:#ff6600; color:black; padding:12px 20px; border:none; border-radius:10px; font-weight:bold; cursor:pointer; display:block; margin:0 auto;">Send Request</button>
   </form>
-</section>
 </section>
 
 <!-- Toast Notification -->
@@ -807,6 +793,22 @@ function showToast(message) {
   setTimeout(() => {
     toast.style.visibility = "hidden";
   }, 5600);
+}
+
+function sendSpecialRequest(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('srName').value;
+    const email = document.getElementById('srEmail').value;
+    const request = document.getElementById('srRequest').value;
+    
+    const subject = encodeURIComponent('Special Request from ' + name);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nRequest:\n${request}`);
+    
+    window.location.href = `mailto:CupcakesontheAvenue@gmail.com?subject=${subject}&body=${body}`;
+    
+    showToast('Opening email client...');
+    document.getElementById('specialRequestForm').reset();
 }
 </script>
 
