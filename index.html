@@ -160,7 +160,7 @@ footer {
 </header>
 
 <div class="hero">
-  <img src="logo.png" alt="Pumpkin Spice Cupcake">
+  <img src="pictures\logo.png" alt="logo">
   <h2>Where every bake feels like home</h2>
   <p>Fresh cupcakes, biscuits, and celebration cakes baked with love and fun!</p>
 </div>
@@ -273,7 +273,7 @@ button:hover, #calendarNav button:hover, .cart-btn:hover { background: darkorang
 <h2 class="section-title">Christmas Cakes</h2>
 <div class="shop">
   <div class="product">
-    <img src="marzipan.jpg" alt="royal icing cake">
+    <img src="pictures\marzipan.jpg" alt="royal icing cake">
     <h3>Christmas Cake ,with or without alcohol</h3>
  <p>With a lush royal icing topping</p>
     <select id="xmas1">
@@ -284,7 +284,7 @@ button:hover, #calendarNav button:hover, .cart-btn:hover { background: darkorang
 </div>
 
  <div class="product">
-    <img src="fondant.jpg" alt="marzipan and fondant cake">
+    <img src="pictures\fondant.jpg" alt="marzipan and fondant cake">
     <h3>Christmas Cake,with or without alcohol</h3> 
 <p>With a topping of marzipan and fondant</p>
     <select id="xmas1">
@@ -300,7 +300,7 @@ button:hover, #calendarNav button:hover, .cart-btn:hover { background: darkorang
 <h2 class="section-title">Regular Bakery Shop</h2>
 <div class="products">
   <div class="product">
-    <img src="shortbread.jpg" alt="Exclusive Shortbread Delight">
+    <img src="pictures\shortbread.jpg" alt="Exclusive Shortbread Delight">
     <h3>Exclusive Shortbread Delight</h3>
     <p>Buttery, melt-in-your-mouth shortbread</p>
     <select id="size1">
@@ -311,7 +311,7 @@ button:hover, #calendarNav button:hover, .cart-btn:hover { background: darkorang
     <button onclick="addToCartWithSize('Exclusive Shortbread Delight','size1')">Add to Cart</button>
   </div>
   <div class="product">
-    <img src="sweet trimmings.jpg" alt="Sweet Trimming Pots">
+    <img src="pictures\sweettrimmings.jpg" alt="Sweet Trimming Pots">
     <h3>Sweet Trimming Pots</h3>
     <p>Loaded with cake and icing</p>
     <select id="size2">
@@ -321,7 +321,7 @@ button:hover, #calendarNav button:hover, .cart-btn:hover { background: darkorang
     <button onclick="addToCartWithSize('Sweet Trimming Pots','size2')">Add to Cart</button>
   </div>
   <div class="product">
-    <img src="purplecake.jpg" alt="Celebration Cake">
+    <img src="pictures\purplecake.jpg" alt="Celebration Cake">
     <h3>Celebration Cake</h3>
     <p>Perfect for any occasion</p>
     <select id="size3">
@@ -332,7 +332,7 @@ button:hover, #calendarNav button:hover, .cart-btn:hover { background: darkorang
     <button onclick="addToCartWithSize('Celebration Cake','size3')">Add to Cart</button>
   </div>
   <div class="product">
-    <img src="icedshortbread.jpg" alt="Iced Shortbread">
+    <img src="pictures\icedshortbread.jpg" alt="Iced Shortbread">
     <h3>Iced Shortbread</h3>
     <p>Choose the icing</p>
     <select id="size4">
@@ -342,7 +342,7 @@ button:hover, #calendarNav button:hover, .cart-btn:hover { background: darkorang
     <button onclick="addToCartWithSize('Iced Shortbread','size4')">Add to Cart</button>
   </div>
   <div class="product">
-    <img src="cupcakes.jpg" alt="Cupcakes">
+    <img src="pictures\cupcakes.jpg" alt="Cupcakes">
     <h3>Cupcakes</h3>
     <p>Choose the filling and toppings</p>
     <select id="size5">
@@ -353,7 +353,7 @@ button:hover, #calendarNav button:hover, .cart-btn:hover { background: darkorang
     <button onclick="addToCartWithSize('Cupcakes','size5')">Add to Cart</button>
   </div>
   <div class="product">
-    <img src="ricecrispy.jpg" alt="Rice Crispy Treats">
+    <img src="pictures\ricecrispy.jpg" alt="Rice Crispy Treats">
     <h3>Rice Crispy Treats</h3>
     <p>Mouth-watering marshmallow & chocolate treats</p>
     <select id="size6">
@@ -737,18 +737,33 @@ document.addEventListener('DOMContentLoaded', () => {
   <h2 style="text-align:center; color:#ff6600;">Special Request</h2>
   <p style="text-align:center; color:black;">Have a custom order or special instructions? Fill out the form below!</p>
 
-  <form id="specialRequestForm" onsubmit="submitSpecialRequest(event)">
+  <!-- FormSubmit will send the form contents to your email (first submit will ask you to confirm) -->
+  <form id="specialRequestForm"
+        action="https://formsubmit.co/CupcakesontheAvenue@gmail.com"
+        method="POST"
+        target="_blank"
+        onsubmit="showToast('📨 Sending request...')">
+
+    <!-- anti-spam honeypot (leave hidden) -->
+    <input type="text" name="_honey" style="display:none">
+
+    <!-- optional: disable FormSubmit captcha and set subject/redirect -->
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_subject" value="🧁 New Special Request — Cupcakes on the Avenue">
+    <input type="hidden" name="_next" value="index.html">
+
     <label for="srName" style="color:black;">Name <span style="color:#ff6600;">*</span></label>
-    <input type="text" id="srName" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
+    <input type="text" id="srName" name="name" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
 
     <label for="srEmail" style="color:black;">Email <span style="color:#ff6600;">*</span></label>
-    <input type="email" id="srEmail" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
+    <input type="email" id="srEmail" name="email" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
 
     <label for="srRequest" style="color:black;">Request <span style="color:#ff6600;">*</span></label>
-    <textarea id="srRequest" rows="4" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;"></textarea>
+    <textarea id="srRequest" name="request" rows="4" required style="width:100%; padding:8px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;"></textarea>
 
     <button type="submit" style="background:#ff6600; color:black; padding:12px 20px; border:none; border-radius:10px; font-weight:bold; cursor:pointer; display:block; margin:0 auto;">Send Request</button>
   </form>
+</section>
 </section>
 
 <!-- Toast Notification -->
@@ -851,7 +866,7 @@ function showToast(message) {
   <p>© 2025 Cupcakes on the Avenue • CupcakesontheAvenue@gmail.com</p>
   
   <!-- Footer Image -->
-  <img src="food hygiene.jpg" 
+  <img src="pictures\food hygiene.jpg" 
        style="margin-top:15px; width:150px; height:auto; border-radius:10px;">
 </footer>
 
