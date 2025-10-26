@@ -731,8 +731,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <!-- END: Highworth Market Promo Section -->
 
-
-
+<!-- Special Request Section -->
 <section id="special-request" style="max-width:600px; margin:50px auto; padding:20px; background:rgba(255,230,225,0.95); border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
   <h2 style="text-align:center; color:#ff6600;">Special Request</h2>
   <p style="text-align:center; color:black;">Have a custom order or special instructions? Fill out the form below!</p>
@@ -790,55 +789,6 @@ document.addEventListener('DOMContentLoaded', () => {
 "></div>
 
 <script>
-async function submitSpecialRequest(e) {
-  e.preventDefault();
-
-  const name = document.getElementById('srName').value.trim();
-  const email = document.getElementById('srEmail').value.trim();
-  const request = document.getElementById('srRequest').value.trim();
-
-  if (!name || !email || !request) {
-    showToast("⚠️ Please fill out all fields!");
-    return;
-  }
-
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const subject = encodeURIComponent(`🧁 New Special Request from ${name} — Cupcakes on the Avenue`);
-  const bodyText = `Name: ${name}\nEmail: ${email}\n\nRequest:\n${request}`;
-  const body = encodeURIComponent(bodyText);
-  const mailtoLink = `mailto:CupcakesontheAvenue@gmail.com?cc=${encodeURIComponent(email)}&subject=${subject}&body=${body}`;
-
-  if (isMobile) {
-    // Mobile: open email app and show fallback message
-    setTimeout(() => {
-      window.location.href = mailtoLink;
-      showToast("📋 If your email app doesn’t open, your message has been copied. Please paste it into your email and send.");
-    }, 1500);
-
-    // Copy to clipboard as backup
-    try {
-      await navigator.clipboard.writeText(
-        `To: CupcakesontheAvenue@gmail.com\nSubject: 🧁 New Special Request from ${name}\n\n${bodyText}`
-      );
-    } catch (err) {
-      console.warn("Clipboard copy failed:", err);
-    }
-
-  } else {
-    // Desktop: copy to clipboard only
-    try {
-      await navigator.clipboard.writeText(
-        `To: CupcakesontheAvenue@gmail.com\nSubject: 🧁 New Special Request from ${name}\n\n${bodyText}`
-      );
-      showToast("📋 Message copied! Please paste it into your email and send to CupcakesontheAvenue@gmail.com");
-    } catch (err) {
-      showToast("⚠️ Couldn't copy automatically. Please email your request to CupcakesontheAvenue@gmail.com");
-    }
-  }
-
-  document.getElementById('specialRequestForm').reset();
-}
-
 // Toast function with slide + fade animation
 function showToast(message) {
   const toast = document.getElementById("toast");
@@ -859,7 +809,6 @@ function showToast(message) {
   }, 5600);
 }
 </script>
-
 
 
 <footer style="text-align:center; padding:20px; background:#fcd5ce; margin-top:40px; border-radius:10px; position:relative;">
