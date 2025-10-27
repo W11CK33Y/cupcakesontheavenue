@@ -28,8 +28,8 @@ exports.handler = async function (event) {
         amount,
         currency: "GBP",
         merchant_code: MERCHANT_CODE,
-        return_url: "https://your-site-name.netlify.app/success",
-        cancel_url: "https://your-site-name.netlify.app/cancel"
+        return_url: "https://www.cupcakesontheavenue.com/success",
+        cancel_url: "https://www.cupcakesontheavenue.com/cancel"
 
       },
       {
