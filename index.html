@@ -940,26 +940,29 @@ async function payOrder() {
   const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0).toFixed(2);
   const reference = "ORDER" + Date.now(); // unique reference for this order
 
-  try {
-   fetch("https://sumup-backend.vercel.app/api/create-checkout", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ total, reference }),
-})
+try {
+  const res = await fetch("https://sumup-backend.vercel.app/api/create-checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ total, reference }),
+  });
 
-    const data = await res.json();
-    if (data.checkout_url) {
-      // Open SumUp checkout page in a new tab
-      window.open(data.checkout_url, "_blank");
-      showToast(`Redirecting to payment for £${total}...`);
-    } else {
-      showToast("⚠️ Failed to get checkout link!");
-    }
-  } catch (err) {
-    console.error(err);
-    showToast("⚠️ Payment error!");
+  const data = await res.json();
+
+  if (data.checkout_url) {
+    window.open(data.checkout_url, "_blank");
+    showToast(`Redirecting to payment for £${total}...`);
+  } else {
+    console.error("No checkout URL received:", data);
+    showToast("⚠️ Failed to get checkout link!");
   }
+
+} catch (err) {
+  console.error("Payment request error:", err);
+  showToast("⚠️ Payment error!");
 }
+
+
 
 // ---------- Toast ----------
 function showToast(msg){
