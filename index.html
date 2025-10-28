@@ -766,21 +766,7 @@ button:hover, #calendarNav button:hover, .cart-btn:hover { background: darkorang
   <div id="calendar"></div>
 
   <!-- Blocked dates manager (saved in browser localStorage) -->
- <!-- Calendar popup / overlay -->
-<div class="calendar-overlay" id="calendarOverlay" onclick="hideCalendar()"></div>
-<div class="calendar-popup" id="calendarPopup" onclick="event.stopPropagation()">
-  <button class="close-calendar" onclick="hideCalendar()">×</button>
-
-  <div id="calendarNav" style="text-align:center; margin: 15px 0;">
-    <button class="calendar-btn" onclick="changeMonth(-1)">◀</button>
-    <span id="calendarMonthYear"></span>
-    <button class="calendar-btn" onclick="changeMonth(1)">▶</button>
-  </div>
-
-  <div id="calendar"></div>
-
-  <!-- Admin Only Blocked Date Manager -->
-  <div id="blockDateAdmin" style="margin-top:12px; text-align:left; color:#333; display:none;">
+  <div style="margin-top:12px; text-align:left; color:#333;">
     <label style="font-weight:700; display:block; margin-bottom:6px;">Block a date</label>
     <div style="display:flex; gap:8px;">
       <input id="blockDateInput" type="date" style="flex:1; padding:8px; border-radius:6px; border:1px solid #ccc;">
@@ -789,11 +775,22 @@ button:hover, #calendarNav button:hover, .cart-btn:hover { background: darkorang
     <div style="margin-top:10px;">
       <label style="font-weight:700; display:block; margin-bottom:6px;">Blocked dates</label>
       <ul id="blockedDatesList" style="padding-left:18px; margin:0; color:#4a2b20;"></ul>
-      <small style="color:#666">Blocked dates persist in this browser only.</small>
+      <small style="color:#666">Blocked dates persist in this browser only. To block dates site-wide you need a server-side list.</small>
     </div>
   </div>
 </div>
+
+    <div class="agreements" style="margin-top:10px;">
+      <label class="checkbox-group"><input type="checkbox" id="privacyCheck"><span>I agree to Privacy Policy *</span></label>
+      <label class="checkbox-group"><input type="checkbox" id="termsCheck"><span>I agree to Terms & Conditions *</span></label>
+    </div>
+
+    <button onclick="handleOrder()" class="order-button">Send Order & Pay</button>
+  </div>
 </div>
+
+<div id="toast"></div>
+
 <script>
 // ---------- Cart ----------
 let cartItems=[];
@@ -849,14 +846,8 @@ function saveBlockedDates(){
 function addBlockedDateFromInput(){
   const val = document.getElementById('blockDateInput').value;
   if(!val){ showToast('⚠️ Pick a date to block'); return; }
-  if (!disabledDates.includes(val)){
-    disabledDates.push(val);
-    disabledDates.sort();
-    saveBlockedDates();
-    showToast('Blocked ' + val);
-  } else {
-    showToast('Date already blocked');
-  }
+  if (!disabledDates.includes(val)){ disabledDates.push(val); disabledDates.sort(); saveBlockedDates(); showToast('Blocked ' + val); }
+  else showToast('Date already blocked');
   document.getElementById('blockDateInput').value = '';
 }
 
@@ -870,10 +861,7 @@ function renderBlockedList(){
   const ul = document.getElementById('blockedDatesList');
   if(!ul) return;
   ul.innerHTML = '';
-  if(disabledDates.length === 0){
-    ul.innerHTML = '<li style="color:#666">No blocked dates</li>';
-    return;
-  }
+  if(disabledDates.length === 0){ ul.innerHTML = '<li style="color:#666">No blocked dates</li>'; return; }
   disabledDates.forEach(d => {
     const li = document.createElement('li');
     li.style.marginBottom = '6px';
@@ -883,69 +871,35 @@ function renderBlockedList(){
 }
 
 function renderCalendar(month=currentMonth, year=currentYear){
-  const calendarDiv=document.getElementById('calendar');
-  calendarDiv.innerHTML='';
-  const firstDay=new Date(year, month, 1).getDay();
-  const daysInMonth=new Date(year, month+1,0).getDate();
-  document.getElementById('calendarMonthYear').textContent=`${new Date(year, month).toLocaleString('default',{month:'long'})} ${year}`;
-  const table=document.createElement('table');
-  const headerRow=document.createElement('tr');
-  ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(d=>{
-    const th=document.createElement('th');
-    th.textContent=d;
-    headerRow.appendChild(th);
-  });
-  table.appendChild(headerRow);
-  let row=document.createElement('tr');
-  for(let i=0;i<firstDay;i++) row.appendChild(document.createElement('td'));
-
-  const today=new Date();
-  for(let day=1; day<=daysInMonth; day++){
-    const td=document.createElement('td');
-    td.textContent=day;
-    const dateStr=`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-    if(disabledDates.includes(dateStr) || new Date(dateStr) < new Date(today.getFullYear(), today.getMonth(), today.getDate())){
-      td.classList.add('disabled');
-    } else {
-      td.addEventListener('click',()=>selectDate(dateStr));
-      if(new Date(dateStr).getDay()===0||new Date(dateStr).getDay()===6) td.classList.add('weekend');
+    const calendarDiv=document.getElementById('calendar'); calendarDiv.innerHTML='';
+    const firstDay=new Date(year, month, 1).getDay();
+    const daysInMonth=new Date(year, month+1,0).getDate();
+    document.getElementById('calendarMonthYear').textContent=`${new Date(year, month).toLocaleString('default',{month:'long'})} ${year}`;
+    const table=document.createElement('table');
+    const headerRow=document.createElement('tr'); ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(d=>{const th=document.createElement('th'); th.textContent=d; headerRow.appendChild(th);});
+    table.appendChild(headerRow);
+    let row=document.createElement('tr'); for(let i=0;i<firstDay;i++) row.appendChild(document.createElement('td'));
+    const today=new Date();
+    for(let day=1; day<=daysInMonth; day++){
+      const td=document.createElement('td'); td.textContent=day;
+      const dateStr=`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      // disable blocked dates or past dates
+      if(disabledDates.includes(dateStr) || new Date(dateStr) < new Date(today.getFullYear(), today.getMonth(), today.getDate())) td.classList.add('disabled');
+    else{ td.addEventListener('click',()=>selectDate(dateStr)); if(new Date(dateStr).getDay()===0||new Date(dateStr).getDay()===6) td.classList.add('weekend'); }
+      row.appendChild(td); if((day+firstDay)%7===0){ table.appendChild(row); row=document.createElement('tr'); }
     }
-    row.appendChild(td);
-    if((day+firstDay)%7===0){
-      table.appendChild(row);
-      row=document.createElement('tr');
-    }
+    if(row.children.length>0) table.appendChild(row); calendarDiv.appendChild(table);
   }
-  if(row.children.length>0) table.appendChild(row);
-  calendarDiv.appendChild(table);
-}
-
-function selectDate(dateStr){
-  document.getElementById('deliveryDate').value=dateStr;
-  hideCalendar();
-}
-
-function changeMonth(delta){
-  currentMonth+=delta;
-  if(currentMonth<0){ currentMonth=11; currentYear--; }
-  else if(currentMonth>11){ currentMonth=0; currentYear++; }
-  renderCalendar(currentMonth,currentYear);
-}
-
-// INITIAL RENDER
-if (document.getElementById('calendar')) {
-  renderCalendar();
-  renderBlockedList();
-  const popup = document.getElementById('calendarPopup');
-  if (popup) popup.addEventListener('click', e => e.stopPropagation());
-}
-
-// ADMIN VISIBILITY CONTROL
-const isAdmin = window.location.search.includes('admin');
-const adminUI = document.getElementById('blockDateAdmin');
-if (adminUI) adminUI.style.display = isAdmin ? 'block' : 'none';
-
-
+  function selectDate(dateStr){ document.getElementById('deliveryDate').value=dateStr; hideCalendar(); }
+  function changeMonth(delta){ currentMonth+=delta; if(currentMonth<0){ currentMonth=11; currentYear--;} else if(currentMonth>11){ currentMonth=0; currentYear++;} renderCalendar(currentMonth,currentYear);}
+  // initial guarded render
+  if (document.getElementById('calendar')) {
+    renderCalendar();
+    renderBlockedList();
+    const popup = document.getElementById('calendarPopup');
+    if (popup) popup.addEventListener('click', e => e.stopPropagation());
+  }
+  
 // ---------- Send Order ----------
 async function sendOrder(){
   const name=document.getElementById('customerName').value.trim();
@@ -987,12 +941,11 @@ async function payOrder() {
   const reference = "ORDER" + Date.now(); // unique reference for this order
 
   try {
-    // Call Netlify function to create SumUp checkout link
-    const res = await fetch("/.netlify/functions/createCheckout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ total, reference }),
-    });
+   fetch("https://sumup-backend.vercel.app/api/create-checkout", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ total, reference }),
+})
 
     const data = await res.json();
     if (data.checkout_url) {
