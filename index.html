@@ -929,37 +929,40 @@ Total: £${total.toFixed(2)}`;
 }
 
 // ---------- Payment ----------
-// ---------- Pay Order (SumUp + Netlify) ----------
+// ---------- Pay Order (SumUp + Vercel) ----------
 async function payOrder() {
   if (cartItems.length === 0) {
     showToast("⚠️ Cart is empty!");
     return;
   }
 
-  // Calculate cart total
-  const total = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0).toFixed(2);
-  const reference = "ORDER" + Date.now(); // unique reference for this order
+  const total = cartItems
+    .reduce((sum, i) => sum + i.price * i.quantity, 0)
+    .toFixed(2);
 
-try {
-  const res = await fetch("https://sumup-backend.vercel.app/api/create-checkout", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ total, reference }),
-  });
+  const reference = "ORDER" + Date.now(); // unique reference
 
-  const data = await res.json();
+  try {
+    const res = await fetch("https://sumup-backend.vercel.app/api/create-checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ total, reference }),
+    });
 
-  if (data.checkout_url) {
-    window.open(data.checkout_url, "_blank");
-    showToast(`Redirecting to payment for £${total}...`);
-  } else {
-    console.error("No checkout URL received:", data);
-    showToast("⚠️ Failed to get checkout link!");
+    const data = await res.json();
+
+    if (data.checkout_url) {
+      window.open(data.checkout_url, "_blank");
+      showToast(`Redirecting to payment for £${total}...`);
+    } else {
+      console.error("No checkout URL received:", data);
+      showToast("⚠️ Failed to get checkout link!");
+    }
+
+  } catch (err) {
+    console.error("Payment request error:", err);
+    showToast("⚠️ Payment error!");
   }
-
-} catch (err) {
-  console.error("Payment request error:", err);
-  showToast("⚠️ Payment error!");
 }
 
 
@@ -1063,34 +1066,32 @@ Total: £${total.toFixed(2)}`;
             body: JSON.stringify({ content: orderText })
         });
 
-        // If order sent successfully, proceed to payment
-        const reference = "ORDER" + Date.now();
-        try {
-            const res = await fetch("/.netlify/functions/createCheckout", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    total: total.toFixed(2), 
-                    reference 
-                }),
-            });
+      // If order sent successfully, proceed to payment
+const reference = "ORDER" + Date.now();
+try {
+    const res = await fetch("https://sumup-backend.vercel.app/api/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            total: total.toFixed(2),
+            reference
+        }),
+    });
 
-            const data = await res.json();
-            if (data.checkout_url) {
-                showToast("✅ Order sent! Redirecting to payment...");
-                window.open(data.checkout_url, "_blank");
-            } else {
-                showToast("⚠️ Order sent but payment link failed!");
-            }
-        } catch (err) {
-            console.error(err);
-            showToast("✅ Order sent but payment failed - we'll contact you!");
-        }
-    } catch (err) {
-        console.error(err);
-        showToast("⚠️ Failed to send order!");
+    const data = await res.json();
+
+    if (data.checkout_url) {
+        showToast("✅ Order sent! Redirecting to payment...");
+        window.open(data.checkout_url, "_blank");
+    } else {
+        console.error("Payment response:", data);
+        showToast("⚠️ Order sent but payment link failed!");
     }
+} catch (err) {
+    console.error(err);
+    showToast("✅ Order sent but payment failed - we'll contact you!");
 }
+  
 
 // Replace the unconditional renderCalendar(); call with this guarded init:
 if (document.getElementById('calendar')) {
