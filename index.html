@@ -882,6 +882,8 @@ footer img {
 </footer>
 
 <script>
+const BACKEND_BASE = 'https://sumup-backend.vercel.app';
+
 document.addEventListener('DOMContentLoaded', () => {
   let cart = [];
   let currentMonth = new Date().getMonth();
@@ -1126,40 +1128,21 @@ ${items}
       console.log('✅ Discord message sent');
 
       // Send email (non-blocking)
-      fetch('https://sumup-backend-6e2u3pczi-jack-wicks-projects.vercel.app/api/send-email', {
+      fetch(`${BACKEND_BASE}/api/send-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email,
-          name,
-          mobile,
-          orderItems: items,
-          total: `£${total.toFixed(2)}`,
-          delivery,
-          date,
-          address,
-          notes: notes || 'None',
-          businessPhone: '07842817789'
-        })
-      }).then(() => console.log('✅ Email sent'))
-        .catch(err => console.warn('⚠️ Email failed:', err));
-
-      showToast('✅ Order placed! Redirecting to payment...', 2000);
-
-      // Clear cart and form
-      cart = [];
-      updateCart();
-      document.querySelectorAll('.customer-form input, .customer-form select, .customer-form textarea').forEach(el => el.value = '');
-      document.getElementById('privacyCheck').checked = false;
-      document.getElementById('termsCheck').checked = false;
+          email, name, mobile, orderItems: items,
+          total: `£${total.toFixed(2)}`, delivery, date, address,
+          notes: notes || 'None', businessPhone: '07842817789'
+        }).then(() => console.log('✅ Email sent'))
+          .catch(err => console.warn('⚠️ Email failed:', err));
 
       // Redirect to SumUp payment
       const reference = 'ORDER-' + Date.now();
-      const paymentUrl = `https://sumup-backend-6e2u3pczi-jack-wicks-projects.vercel.app/api/create-checkout?total=${total.toFixed(2)}&reference=${reference}`;
-      
+      const paymentUrl = `${BACKEND_BASE}/api/create-checkout?total=${total.toFixed(2)}&reference=${reference}`;
+
       console.log('🔗 Payment URL:', paymentUrl);
-      console.log('💰 Total:', total.toFixed(2));
-      console.log('🔖 Reference:', reference);
 
       setTimeout(() => {
         console.log('🚀 Redirecting to payment...');
