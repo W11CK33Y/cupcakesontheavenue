@@ -1126,7 +1126,7 @@ ${items}
       console.log('✅ Discord message sent');
 
       // Send email (non-blocking)
-      fetch('https://sumup-backend-29ugvqc1l-jack-wicks-projects.vercel.app/api/send-email', {
+      fetch('https://sumup-backend-6e2u3pczi-jack-wicks-projects.vercel.app/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1155,8 +1155,8 @@ ${items}
 
       // Redirect to SumUp payment
       const reference = 'ORDER-' + Date.now();
-      const paymentUrl = `https://sumup-backend-29ugvqc1l-jack-wicks-projects.vercel.app/api/create-checkout?total=${total.toFixed(2)}&reference=${reference}`;
-
+      const paymentUrl = `https://sumup-backend-6e2u3pczi-jack-wicks-projects.vercel.app/api/create-checkout?total=${total.toFixed(2)}&reference=${reference}`;
+      
       console.log('🔗 Payment URL:', paymentUrl);
       console.log('💰 Total:', total.toFixed(2));
       console.log('🔖 Reference:', reference);
