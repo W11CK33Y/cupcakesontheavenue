@@ -1072,7 +1072,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Validate UK mobile number
     if (!/^[0-9]{11}$/.test(mobile)) {
       showToast('⚠️ Please enter a valid 11-digit UK mobile number!');
       return;
@@ -1106,13 +1105,14 @@ ${items}
 
 **TOTAL: £${total.toFixed(2)}**`;
 
-    // Disable button to prevent double-clicks
     const orderBtn = document.getElementById('placeOrderBtn');
     orderBtn.disabled = true;
-    orderBtn.textContent = 'Processing Order...';
+    orderBtn.textContent = 'Processing...';
 
     try {
-      // Send to Discord (critical - must succeed)
+      console.log('Sending order to Discord...');
+      
+      // Send to Discord
       const discordResponse = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1120,10 +1120,12 @@ ${items}
       });
 
       if (!discordResponse.ok) {
-        throw new Error('Failed to send order to Discord');
+        throw new Error('Discord webhook failed');
       }
 
-      // Send confirmation email (non-blocking - don't wait for it)
+      console.log('✅ Discord message sent');
+
+      // Send email (non-blocking)
       fetch('https://sumup-backend-29ugvqc1l-jack-wicks-projects.vercel.app/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1139,9 +1141,8 @@ ${items}
           notes: notes || 'None',
           businessPhone: '07842817789'
         })
-      }).catch(err => {
-        console.warn('Email failed but order was placed:', err);
-      });
+      }).then(() => console.log('✅ Email sent'))
+        .catch(err => console.warn('⚠️ Email failed:', err));
 
       showToast('✅ Order placed! Redirecting to payment...', 2000);
 
@@ -1152,76 +1153,6 @@ ${items}
       document.getElementById('privacyCheck').checked = false;
       document.getElementById('termsCheck').checked = false;
 
-      // Redirect to payment after short delay
-      setTimeout(() => {
-        const reference = 'ORDER' + Date.now();
-        const paymentUrl = `https://sumup-backend-29ugvqc1l-jack-wicks-projects.vercel.app/api/create-checkout?total=${total.toFixed(2)}&reference=${reference}`;
-        console.log('Redirecting to payment:', paymentUrl);
-        window.location.href = paymentUrl;
-      }, 2000);
-
-    } catch (error) {
-      console.error('Order placement error:', error);
-      showToast('⚠️ Failed to place order. Please try again.');
-      orderBtn.disabled = false;
-      orderBtn.textContent = 'Place Order & Pay';
-    }
-  });
-
-  // Special request
-  document.getElementById('specialForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('srName').value.trim();
-    const email = document.getElementById('srEmail').value.trim();
-    const message = document.getElementById('srMessage').value.trim();
-
-    const discordMsg = `💌 **SPECIAL REQUEST**
-
-**From:** ${name}
-**Email:** ${email}
-
-**Request:**
-${message}`;
-
-    try {
-      await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: discordMsg })
-      });
-
-      showToast('✅ Special request sent! We\'ll contact you soon.');
-      e.target.reset();
-    } catch (error) {
-      showToast('⚠️ Failed to send request. Please email us.');
-    }
-  });
-
-  // Toast
-  function showToast(msg, duration = 3000) {
-    const toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), duration);
-  }
-
-  // Snow
-  function createSnow() {
-    for (let i = 0; i < 30; i++) {
-      const flake = document.createElement('div');
-      flake.className = 'snowflake';
-      flake.textContent = ['❄', '❅', '❆'][Math.floor(Math.random() * 3)];
-      flake.style.left = Math.random() * 100 + 'vw';
-      flake.style.animationDuration = (Math.random() * 10 + 8) + 's';
-      flake.style.animationDelay = Math.random() * 5 + 's';
-      document.body.appendChild(flake);
-    }
-  }
-
-  createSnow();
-  renderCalendar();
-});
-</script>
-
-</body>
-</html>
+      // Redirect to SumUp payment
+      const reference = 'ORDER-' + Date.now();
+      const paymentUrl = `https://sumup-backend-29ugvqc1l-jack-wicks-projects.vercel.app/api/create-checkout?total=${total.toFixed(2)}&reference=${reference}`;
