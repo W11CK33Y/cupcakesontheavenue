@@ -1187,6 +1187,20 @@ ${items}
     }
   });
 
+  // Payment integration
+  function initiatePayment(total, orderReference) {
+    window.location.href = `https://sumup-backend-ka4im7xlf-jack-wicks-projects.vercel.app/api/create-checkout?total=${total}&reference=${orderReference}`;
+  }
+
+  // Email notification
+  async function sendOrderConfirmation(orderData) {
+    await fetch('https://sumup-backend-ka4im7xlf-jack-wicks-projects.vercel.app/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData)
+    });
+  }
+
   // Toast notification
   function showToast(message, duration = 3000) {
     const toast = document.getElementById('toast');
