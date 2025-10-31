@@ -1142,13 +1142,9 @@ ${items}
       // Redirect to SumUp payment
       const reference = 'ORDER-' + Date.now();
       const paymentUrl = `${BACKEND_BASE}/api/checkout?total=${total.toFixed(2)}&reference=${reference}`;
-
-      console.log('🔗 Payment URL:', paymentUrl);
-
-      setTimeout(() => {
-        console.log('🚀 Redirecting to payment...');
-        window.location.href = paymentUrl;
-      }, 2000);
+      
+      console.log('Redirecting to:', paymentUrl);
+      window.location.href = paymentUrl;
 
     } catch (error) {
       console.error('❌ Order failed:', error);
