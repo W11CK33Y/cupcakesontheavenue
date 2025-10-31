@@ -534,6 +534,35 @@ footer img {
   margin-top: 10px;
 }
 
+/* New lead time section styles */
+.leadtime-group {
+  margin: 15px 0;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+}
+
+.leadtime-group p {
+  margin-bottom: 8px;
+  color: #444;
+  font-weight: 600;
+}
+
+.leadtime-group label {
+  margin-right: 15px;
+  font-weight: 500;
+}
+
+.leadtime-note {
+  margin-top: 8px;
+  color: #b45309; /* amber */
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
 @media (max-width: 768px) {
   .products-grid {
     grid-template-columns: 1fr;
@@ -759,7 +788,16 @@ footer img {
       <option value="Collection">Collection from Market</option>
     </select>
 
-    <input type="text" id="deliveryDate" placeholder="Click to select delivery date *" readonly style="cursor: pointer;">
+    <input type="text" id="deliveryDate" placeholder="Click to select delivery date (min 7 days) *" readonly style="cursor: pointer;">
+
+    <div class="leadtime-group">
+      <p>Is your delivery date at least one week from today?</p>
+      <label><input type="radio" name="leadTime" id="leadTimeYes" checked> Yes</label>
+      <label><input type="radio" name="leadTime" id="leadTimeNo"> No</label>
+      <p id="leadTimeWarning" class="leadtime-note" style="display:none;">
+        Please call <a href="tel:07842817789">07842817789</a> to discuss if we can make it earlier.
+      </p>
+    </div>
 
     <div class="checkbox-group">
       <label>
@@ -1017,8 +1055,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const firstDay = new Date(currentYear, currentMonth, 1).getDay();
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    // Today at midnight
     const today = new Date();
     today.setHours(0,0,0,0);
+    // Minimum selectable date = today + 7 days
+    const minDate = new Date(today);
+    minDate.setDate(minDate.getDate() + 7);
 
     let html = '<table><tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr><tr>';
 
@@ -1028,13 +1071,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentYear, currentMonth, day);
+      date.setHours(0,0,0,0);
       const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      const isPast = date < today;
       const isBlocked = blockedDates.includes(dateStr);
       const isWeekend = date.getDay() === 0 || date.getDay() === 6;
 
+      // Disable any date earlier than minDate (today + 7)
+      const isBeforeMin = date < minDate;
+
       let className = '';
-      if (isPast || isBlocked) className = 'disabled';
+      if (isBeforeMin || isBlocked) className = 'disabled';
       else if (isWeekend) className = 'weekend';
 
       html += `<td class="${className}" data-date="${dateStr}">${day}</td>`;
@@ -1224,6 +1270,24 @@ ${items}
   }
 
   setInterval(createSnowflake, 300);
+
+  // Lead time radio toggle (show phone if "No")
+  const leadTimeYes = document.getElementById('leadTimeYes');
+  const leadTimeNo = document.getElementById('leadTimeNo');
+  const leadTimeWarning = document.getElementById('leadTimeWarning');
+
+  function updateLeadTimeWarning() {
+    if (leadTimeNo && leadTimeNo.checked) {
+      leadTimeWarning.style.display = 'block';
+    } else {
+      leadTimeWarning.style.display = 'none';
+    }
+  }
+  if (leadTimeYes && leadTimeNo) {
+    leadTimeYes.addEventListener('change', updateLeadTimeWarning);
+    leadTimeNo.addEventListener('change', updateLeadTimeWarning);
+    updateLeadTimeWarning();
+  }
 });
 </script>
 </body>
