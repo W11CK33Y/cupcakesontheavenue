@@ -1135,8 +1135,9 @@ ${items}
           email, name, mobile, orderItems: items,
           total: `£${total.toFixed(2)}`, delivery, date, address,
           notes: notes || 'None', businessPhone: '07842817789'
-        }).then(() => console.log('✅ Email sent'))
-          .catch(err => console.warn('⚠️ Email failed:', err));
+        })
+      }).then(() => console.log('✅ Email sent'))
+        .catch(err => console.warn('⚠️ Email failed:', err));
 
       // Redirect to SumUp payment
       const reference = 'ORDER-' + Date.now();
@@ -1214,6 +1215,17 @@ ${items}
 
   setInterval(createSnowflake, 300);
 });
+
+// On cupcakesontheavenue.co.uk
+async function createCheckout(total, orderReference) {
+  const url = `https://sumup-backend-ka4im7xlf-jack-wicks-projects.vercel.app/api/create-checkout?total=${total}&reference=${orderReference}`;
+  
+  // Redirect user to payment page
+  window.location.href = url;
+}
+
+// Example usage
+createCheckout(25.50, 'ORDER-' + Date.now());
 </script>
 </body>
 </html>
