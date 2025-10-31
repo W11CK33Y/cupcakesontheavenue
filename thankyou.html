@@ -1,1 +1,202 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><title>Thanks</title></head><body style="font-family:Arial,sans-serif;text-align:center;padding:50px;"><h1>Thanks — request sent</h1><p>We’ll be in touch soon.</p><a href="index.html">Return</a></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thank You - Cupcakes on the Avenue</title>
+  <link rel="icon" type="image/x-icon" href="pictures/favicon.ico">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      transition: background 1s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* Seasonal Theme Variables */
+    body.spring { background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%); }
+    body.summer { background: linear-gradient(135deg, #FFE135 0%, #FFA500 100%); }
+    body.autumn { background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%); }
+    body.winter { background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%); }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff6b9d, #c44569, #ff6b9d);
+      background-size: 200% 100%;
+      animation: gradientShift 3s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.8;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    h1 {
+      color: #ff6b9d;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+      font-weight: 700;
+    }
+
+    p {
+      color: #2c3e50;
+      margin-bottom: 30px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+    }
+
+    .highlight {
+      background: rgba(255, 107, 157, 0.1);
+      border: 1px solid rgba(255, 107, 157, 0.3);
+      padding: 20px;
+      border-radius: 15px;
+      margin: 20px 0;
+      backdrop-filter: blur(5px);
+    }
+
+    .social-links {
+      margin: 30px 0;
+    }
+
+    .social-links a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      text-decoration: none;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-block;
+      margin: 10px;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn.pink {
+      background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+      box-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
+    }
+
+    .btn.pink:hover {
+      box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">🧁</div>
+    <h1>Thank You!</h1>
+    
+    <div class="highlight">
+      <p><strong>We appreciate your business!</strong></p>
+      <p>Your support means the world to us at Cupcakes on the Avenue.</p>
+    </div>
+    
+    <p>We hope you enjoyed your delicious treats and look forward to serving you again soon!</p>
+    
+    <div class="social-links">
+      <p style="margin-bottom: 15px; font-weight: 600;">Follow us for updates:</p>
+      <a href="#" title="Facebook">📘</a>
+      <a href="#" title="Instagram">📷</a>
+      <a href="#" title="Twitter">🐦</a>
+    </div>
+    
+    <div style="margin-top: 30px;">
+      <a href="index.html" class="btn">Return Home</a>
+      <a href="shop.html" class="btn pink">Order Again</a>
+    </div>
+    
+    <p style="margin-top: 30px; font-size: 0.9rem; opacity: 0.8;">
+      Rate your experience or leave a review - it helps us improve!
+    </p>
+  </div>
+
+  <script>
+    function setSeasonalTheme() {
+      const now = new Date();
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+      
+      document.body.classList.remove('spring', 'summer', 'autumn', 'winter');
+      
+      if ((month === 3 && day >= 20) || month === 4 || month === 5 || (month === 6 && day < 21)) {
+        document.body.classList.add('spring');
+      } else if ((month === 6 && day >= 21) || month === 7 || month === 8 || (month === 9 && day < 22)) {
+        document.body.classList.add('summer');
+      } else if ((month === 9 && day >= 22) || month === 10 || month === 11 || (month === 12 && day < 21)) {
+        document.body.classList.add('autumn');
+      } else {
+        document.body.classList.add('winter');
+      }
+    }
+    
+    setSeasonalTheme();
+  </script>
+</body>
+</html>

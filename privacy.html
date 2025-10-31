@@ -1,97 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Privacy Policy – Cupcakes on the Avenue</title>
-<style>
-body {
-  font-family: 'Poppins', sans-serif;
-  background-color: #fffaf5;
-  color: #333;
-  padding: 20px;
-  line-height: 1.6;
-}
-h1, h2 { color: #ff6600; }
-a { color: #ff6600; text-decoration: none; }
-a:hover { text-decoration: underline; }
-section { margin-bottom: 30px; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privacy Policy - Cupcakes on the Avenue</title>
+  <link rel="icon" type="image/x-icon" href="pictures/favicon.ico">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      transition: background 1s ease-in-out;
+      padding: 40px 20px;
+    }
+
+    /* Seasonal Theme Variables */
+    body.spring { background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%); }
+    body.summer { background: linear-gradient(135deg, #FFE135 0%, #FFA500 100%); }
+    body.autumn { background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%); }
+    body.winter { background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%); }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 30px;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      color: #2c3e50;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+      background-size: 200% 100%;
+      animation: gradientShift 3s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    h1 {
+      color: #667eea;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    h2 {
+      color: #667eea;
+      font-size: 1.5rem;
+      margin: 30px 0 15px 0;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+      font-weight: 600;
+    }
+
+    p, li {
+      color: #2c3e50;
+      line-height: 1.6;
+      margin-bottom: 15px;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+    }
+
+    ul { margin-left: 20px; margin-bottom: 20px; }
+    li { margin-bottom: 8px; }
+
+    .note {
+      background: rgba(238, 247, 255, 0.4);
+      border: 1px solid rgba(205, 227, 255, 0.5);
+      padding: 20px;
+      border-radius: 15px;
+      margin: 20px 0;
+      backdrop-filter: blur(5px);
+    }
+
+    a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    a:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+
+    .back-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 30px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      color: white;
+    }
+  </style>
 </head>
 <body>
-  <h1>Privacy Policy</h1>
-  <p>Effective Date: 09 October 2025</p>
+  <div class="container">
+    <h1>🔒 Privacy Policy</h1>
 
-  <section>
-    <h2>Introduction</h2>
-    <p>Cupcakes on the Avenue (“we”, “our”, “us”) respects your privacy and is committed to protecting your personal data. This privacy policy explains how we collect, use, and protect your information when you use our website and place orders.</p>
-  </section>
-
-  <section>
     <h2>Information We Collect</h2>
-    <p>When you place an order or contact us, we may collect the following information:</p>
+    <p>We collect information you provide when placing orders, including:</p>
     <ul>
-      <li>Full Name</li>
-      <li>Email Address</li>
-      <li>Delivery Address</li>
-      <li>Toppings or custom order requests</li>
-      <li>Delivery preferences (date, method)</li>
-      <li>Payment information (processed securely via third-party payment providers)</li>
+      <li>Name, email address, and phone number</li>
+      <li>Delivery address and special instructions</li>
+      <li>Payment information (processed securely by our payment provider)</li>
+      <li>Dietary requirements and allergen information</li>
     </ul>
-  </section>
 
-  <section>
     <h2>How We Use Your Information</h2>
-    <p>We use your information to:</p>
+    <p>Your information is used to:</p>
     <ul>
-      <li>Process and deliver your order</li>
-      <li>Communicate with you about your order status</li>
-      <li>Send you order confirmations or receipts</li>
-      <li>Improve our website and services</li>
+      <li>Process and fulfill your orders</li>
+      <li>Communicate about your order status</li>
+      <li>Ensure food safety and allergen requirements</li>
+      <li>Improve our products and services</li>
     </ul>
-  </section>
 
-  <section>
-    <h2>Payment Information</h2>
-    <p>Payments are processed through secure third-party services (e.g., SumUp). We do not store your payment card details on our website. All payment processing follows strict security standards.</p>
-  </section>
+    <h2>Information Sharing</h2>
+    <p>We do not sell, trade, or share your personal information with third parties except:</p>
+    <ul>
+      <li>Payment processors for order completion</li>
+      <li>Delivery services when applicable</li>
+      <li>As required by law</li>
+    </ul>
 
-  <section>
-    <h2>Data Sharing</h2>
-    <p>We do not sell, trade, or otherwise transfer your personal data to outside parties except for trusted service providers who assist us in processing payments or delivering your orders, under strict confidentiality agreements.</p>
-  </section>
+    <h2>Data Security</h2>
+    <div class="note">
+      <p><strong>Your data is protected:</strong> We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.</p>
+    </div>
 
-  <section>
-    <h2>Cookies</h2>
-    <p>Our website may use cookies to enhance user experience. Cookies are small files stored on your device to help improve site navigation and functionality.</p>
-  </section>
-
-  <section>
     <h2>Your Rights</h2>
     <p>You have the right to:</p>
     <ul>
-      <li>Access the personal data we hold about you</li>
-      <li>Request corrections to inaccurate data</li>
-      <li>Request deletion of your personal data</li>
-      <li>Withdraw consent to data processing at any time</li>
+      <li>Access your personal data</li>
+      <li>Correct inaccurate information</li>
+      <li>Request deletion of your data</li>
+      <li>Withdraw consent for marketing communications</li>
     </ul>
-    <p>To exercise these rights, please contact us at <a href="mailto:CupcakesontheAvenue@gmail.com">CupcakesontheAvenue@gmail.com</a>.</p>
-  </section>
 
-  <section>
-    <h2>Data Security</h2>
-    <p>We implement appropriate technical and organizational measures to protect your personal information from unauthorized access, disclosure, alteration, or destruction.</p>
-  </section>
-
-  <section>
-    <h2>Changes to This Privacy Policy</h2>
-    <p>We may update this privacy policy periodically. The updated version will be posted on this page with the effective date updated accordingly.</p>
-  </section>
-
-  <section>
     <h2>Contact Us</h2>
-    <p>If you have any questions about this privacy policy or our practices, please contact us at:</p>
-    <p><b>Email:</b> <a href="mailto:CupcakesontheAvenue@gmail.com">CupcakesontheAvenue@gmail.com</a></p>
-  </section>
+    <p>For any privacy-related questions, contact us at <a href="tel:07842817789">07842817789</a> or email cupcakesontheavenue@gmail.com</p>
+
+    <a href="index.html" class="back-btn">← Back to Home</a>
+  </div>
+
+  <script>
+    function setSeasonalTheme() {
+      const now = new Date();
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+      
+      document.body.classList.remove('spring', 'summer', 'autumn', 'winter');
+      
+      if ((month === 3 && day >= 20) || month === 4 || month === 5 || (month === 6 && day < 21)) {
+        document.body.classList.add('spring');
+      } else if ((month === 6 && day >= 21) || month === 7 || month === 8 || (month === 9 && day < 22)) {
+        document.body.classList.add('summer');
+      } else if ((month === 9 && day >= 22) || month === 10 || month === 11 || (month === 12 && day < 21)) {
+        document.body.classList.add('autumn');
+      } else {
+        document.body.classList.add('winter');
+      }
+    }
+    
+    setSeasonalTheme();
+  </script>
 </body>
 </html>

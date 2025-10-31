@@ -1,37 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cupcakes on the Avenue – Terms & Conditions</title>
-<style>
-body { font-family: 'Poppins', sans-serif; background:#fffaf5; color:#333; padding:20px; }
-h1, h2 { color: #ff6600; }
-a { color: #ff6600; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Terms & Conditions - Cupcakes on the Avenue</title>
+  <link rel="icon" type="image/x-icon" href="pictures/favicon.ico">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      transition: background 1s ease-in-out;
+      padding: 40px 20px;
+    }
+
+    /* Seasonal Theme Variables */
+    body.spring { background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%); }
+    body.summer { background: linear-gradient(135deg, #FFE135 0%, #FFA500 100%); }
+    body.autumn { background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%); }
+    body.winter { background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%); }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 30px;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      color: #2c3e50;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+      background-size: 200% 100%;
+      animation: gradientShift 3s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    h1 {
+      color: #667eea;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    h2 {
+      color: #667eea;
+      font-size: 1.5rem;
+      margin: 30px 0 15px 0;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+      font-weight: 600;
+    }
+
+    p, li {
+      color: #2c3e50;
+      line-height: 1.6;
+      margin-bottom: 15px;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+    }
+
+    ul, ol { margin-left: 20px; margin-bottom: 20px; }
+    li { margin-bottom: 8px; }
+
+    .note {
+      background: rgba(238, 247, 255, 0.4);
+      border: 1px solid rgba(205, 227, 255, 0.5);
+      padding: 20px;
+      border-radius: 15px;
+      margin: 20px 0;
+      backdrop-filter: blur(5px);
+    }
+
+    a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    a:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+
+    .back-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 30px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      color: white;
+    }
+  </style>
 </head>
 <body>
-<h1>Terms and Conditions</h1>
-<p>Welcome to Cupcakes on the Avenue. By placing an order with us, you agree to the following terms and conditions:</p>
+  <div class="container">
+    <h1>📋 Terms & Conditions</h1>
 
-<h2>1. Orders & Payment</h2>
-<p>All orders must be placed via our website. Payments are processed securely through SumUp. By placing an order, you confirm that the payment details are valid and authorized.</p>
+    <h2>🛍️ Ordering & Payment</h2>
+    <ul>
+      <li>All orders require a minimum 7-day lead time</li>
+      <li>Payment is required at the time of ordering</li>
+      <li>We accept cash, card, and online payments</li>
+      <li>Prices are subject to change without notice</li>
+    </ul>
 
-<h2>2. Delivery & Collection</h2>
-<p>Delivery dates must be selected at checkout. We aim to deliver on the requested date but cannot guarantee exact timing. For collection, please arrive during the specified collection window.</p>
+    <h2>🎂 Custom Orders</h2>
+    <div class="note">
+      <p><strong>Special Requirements:</strong> Custom cakes and special dietary requirements may require additional time and costs. Please discuss your needs when ordering.</p>
+    </div>
 
-<h2>3. Refunds & Cancellations</h2>
-<p>Custom orders cannot be cancelled once confirmed. Refunds for errors or damaged items will be considered on a case-by-case basis.</p>
+    <h2>🚚 Delivery & Collection</h2>
+    <ul>
+      <li>Collection times must be adhered to</li>
+      <li>Delivery fees apply based on location</li>
+      <li>We are not responsible for delays due to traffic or weather</li>
+      <li>Products left uncollected after 24 hours may incur storage fees</li>
+    </ul>
 
-<h2>4. Personal Data</h2>
-<p>We collect personal information (name, email, address) solely for fulfilling orders and communicating with customers. For details, see our <a href="privacy.html">Privacy Policy</a>.</p>
+    <h2>⚠️ Allergens & Dietary</h2>
+    <ul>
+      <li>We handle all 14 major allergens in our kitchen</li>
+      <li>Cross-contamination cannot be completely eliminated</li>
+      <li>Please inform us of all allergies when ordering</li>
+      <li>We cannot guarantee products are suitable for severe allergies</li>
+    </ul>
 
-<h2>5. Liability</h2>
-<p>Cupcakes on the Avenue is not responsible for any indirect losses arising from delayed delivery or other unforeseen issues. Our liability for any order is limited to the purchase price.</p>
+    <h2>🔄 Cancellations & Refunds</h2>
+    <ul>
+      <li>48+ hours notice: Full refund</li>
+      <li>24-48 hours notice: 50% refund</li>
+      <li>Less than 24 hours: No refund</li>
+      <li>Custom orders require 72 hours notice</li>
+    </ul>
 
-<h2>6. Governing Law</h2>
-<p>These terms are governed by the laws of United Kindom.</p>
+    <h2>🛡️ Liability</h2>
+    <p>Our liability is limited to the cost of the product. We are not responsible for:</p>
+    <ul>
+      <li>Allergic reactions where allergens have been disclosed</li>
+      <li>Damage after collection/delivery</li>
+      <li>Consequential losses from delayed orders</li>
+      <li>Products stored incorrectly after collection</li>
+    </ul>
 
-<p>Thank you for ordering with us! 🍰</p>
+    <h2>📞 Contact</h2>
+    <p>For questions about these terms, contact us at <a href="tel:07842817789">07842817789</a></p>
+
+    <a href="index.html" class="back-btn">← Back to Home</a>
+  </div>
+
+  <script>
+    function setSeasonalTheme() {
+      const now = new Date();
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+      
+      document.body.classList.remove('spring', 'summer', 'autumn', 'winter');
+      
+      if ((month === 3 && day >= 20) || month === 4 || month === 5 || (month === 6 && day < 21)) {
+        document.body.classList.add('spring');
+      } else if ((month === 6 && day >= 21) || month === 7 || month === 8 || (month === 9 && day < 22)) {
+        document.body.classList.add('summer');
+      } else if ((month === 9 && day >= 22) || month === 10 || month === 11 || (month === 12 && day < 21)) {
+        document.body.classList.add('autumn');
+      } else {
+        document.body.classList.add('winter');
+      }
+    }
+    
+    setSeasonalTheme();
+  </script>
 </body>
 </html>

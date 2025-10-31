@@ -1,40 +1,232 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Delivery & Collection Policy</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: Inter, Arial, sans-serif; margin: 0; padding: 24px; color: #111; line-height: 1.6; }
+<!DOCTYPE html><!DOCTYPE html>
+
+<html lang="en"><html lang="en">
+
+<head><head>
+
+  <meta charset="UTF-8" />  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Delivery & Collection Policy - Cupcakes on the Avenue</title>  <title>Delivery & Collection Policy</title>
+
+  <link rel="icon" type="image/x-icon" href="pictures/favicon.ico">  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>  <style>
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }    body { font-family: Inter, Arial, sans-serif; margin: 0; padding: 24px; color: #111; line-height: 1.6; }
+
     h1 { font-size: 28px; margin-bottom: 12px; }
-    h2 { font-size: 20px; margin-top: 24px; }
-    p, li { color: #333; }
-    .note { background: #eef7ff; border: 1px solid #cde3ff; padding: 10px 12px; border-radius: 8px; }
-    a { color: #0b66c3; }
+
+    body {    h2 { font-size: 20px; margin-top: 24px; }
+
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;    p, li { color: #333; }
+
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);    .note { background: #eef7ff; border: 1px solid #cde3ff; padding: 10px 12px; border-radius: 8px; }
+
+      min-height: 100vh;    a { color: #0b66c3; }
+
+      color: #333;  </style>
+
+      transition: background 1s ease-in-out;</head>
+
+      padding: 40px 20px;<body>
+
+    }  <h1>Delivery & Collection Policy</h1>
+
+
+
+    /* Seasonal Theme Variables */  <h2>Lead time</h2>
+
+    body.spring {  <p>Minimum order lead time is 7 days. For urgent orders, call <a href="tel:07842817789">07842817789</a> and we'll try to help.</p>
+
+      background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%);
+
+    }  <h2>Collection</h2>
+
+  <p>If delivery is at market please be there at the time requested otherwise collection from address provided.</p>
+
+    body.summer {
+
+      background: linear-gradient(135deg, #FFE135 0%, #FFA500 100%);  <h2>Local delivery</h2>
+
+    }  <ul>
+
+    <li>Delivery area and fee are agreed at checkout or via message.</li>
+
+    body.autumn {    <li>We’ll provide a delivery window; if no one is available, we’ll attempt to call. Re‑delivery may incur a fee.</li>
+
+      background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%);  </ul>
+
+    }
+
+  <h2>Allergens</h2>
+
+    body.winter {  <p>We handle the 14 major allergens. While care is taken, cross‑contamination risk cannot be entirely eliminated. Please inform us of any allergies when ordering.</p>
+
+      background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%);
+
+    }  <h2>Weather and traffic</h2>
+
+  <p>Severe weather or traffic may affect delivery windows. We’ll keep you updated if delays occur.</p>
+
+    .container {
+
+      max-width: 800px;  <p><a href="index.html">Back to Home</a></p>
+
+      margin: 0 auto;</body>
+
+      padding: 40px 30px;</html>
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      color: #2c3e50;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+      background-size: 200% 100%;
+      animation: gradientShift 3s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    h1 {
+      color: #667eea;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    h2 {
+      color: #667eea;
+      font-size: 1.5rem;
+      margin: 30px 0 15px 0;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+      font-weight: 600;
+    }
+
+    p, li {
+      color: #2c3e50;
+      line-height: 1.6;
+      margin-bottom: 15px;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+    }
+
+    ul {
+      margin-left: 20px;
+      margin-bottom: 20px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    .note {
+      background: rgba(238, 247, 255, 0.4);
+      border: 1px solid rgba(205, 227, 255, 0.5);
+      padding: 20px;
+      border-radius: 15px;
+      margin: 20px 0;
+      backdrop-filter: blur(5px);
+    }
+
+    a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    a:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+
+    .back-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 30px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      color: white;
+    }
   </style>
 </head>
 <body>
-  <h1>Delivery & Collection Policy</h1>
+  <div class="container">
+    <h1>🚚 Delivery & Collection Policy</h1>
 
-  <h2>Lead time</h2>
-  <p>Minimum order lead time is 7 days. For urgent orders, call <a href="tel:07842817789">07842817789</a> and we'll try to help.</p>
+    <h2>⏰ Lead Time</h2>
+    <p>Minimum order lead time is 7 days. For urgent orders, call <a href="tel:07842817789">07842817789</a> and we'll try to help.</p>
 
-  <h2>Collection</h2>
-  <p>If delivery is at market please be there at the time requested otherwise collection from address provided.</p>
+    <h2>📦 Collection</h2>
+    <p>If delivery is at market please be there at the time requested otherwise collection from address provided.</p>
 
-  <h2>Local delivery</h2>
-  <ul>
-    <li>Delivery area and fee are agreed at checkout or via message.</li>
-    <li>We’ll provide a delivery window; if no one is available, we’ll attempt to call. Re‑delivery may incur a fee.</li>
-  </ul>
+    <h2>🚗 Local Delivery</h2>
+    <ul>
+      <li>Delivery area and fee are agreed at checkout or via message.</li>
+      <li>We'll provide a delivery window; if no one is available, we'll attempt to call. Re‑delivery may incur a fee.</li>
+    </ul>
 
-  <h2>Allergens</h2>
-  <p>We handle the 14 major allergens. While care is taken, cross‑contamination risk cannot be entirely eliminated. Please inform us of any allergies when ordering.</p>
+    <h2>⚠️ Allergens</h2>
+    <div class="note">
+      <p><strong>Important:</strong> We handle the 14 major allergens. While care is taken, cross‑contamination risk cannot be entirely eliminated. Please inform us of any allergies when ordering.</p>
+    </div>
 
-  <h2>Weather and traffic</h2>
-  <p>Severe weather or traffic may affect delivery windows. We’ll keep you updated if delays occur.</p>
+    <h2>🌦️ Weather and Traffic</h2>
+    <p>Severe weather or traffic may affect delivery windows. We'll keep you updated if delays occur.</p>
 
-  <p><a href="index.html">Back to Home</a></p>
+    <a href="index.html" class="back-btn">← Back to Home</a>
+  </div>
+
+  <script>
+    // Seasonal Theme System
+    function setSeasonalTheme() {
+      const now = new Date();
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+      
+      document.body.classList.remove('spring', 'summer', 'autumn', 'winter');
+      
+      if ((month === 3 && day >= 20) || month === 4 || month === 5 || (month === 6 && day < 21)) {
+        document.body.classList.add('spring');
+      } else if ((month === 6 && day >= 21) || month === 7 || month === 8 || (month === 9 && day < 22)) {
+        document.body.classList.add('summer');
+      } else if ((month === 9 && day >= 22) || month === 10 || month === 11 || (month === 12 && day < 21)) {
+        document.body.classList.add('autumn');
+      } else {
+        document.body.classList.add('winter');
+      }
+    }
+    
+    setSeasonalTheme();
+  </script>
 </body>
 </html>

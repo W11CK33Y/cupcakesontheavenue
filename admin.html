@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin Dashboard - Cupcakes on the Avenue</title>
+<link rel="icon" type="image/x-icon" href="pictures/favicon.ico">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: #333;
+}
+
+/* Login Screen */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.login-box {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.login-box h1 {
+  color: #667eea;
+  margin-bottom: 30px;
+  font-size: 2rem;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 15px;
+  margin: 10px 0;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+.login-box input:focus {
+  border-color: #667eea;
+  outline: none;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: #dc3545;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+/* Dashboard */
+.dashboard {
+  display: none;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-header h1 {
+  color: #667eea;
+  font-size: 2.5rem;
+}
+
+.logout-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.dashboard-card {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.dashboard-card h2 {
+  color: #667eea;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.stat-item:last-child {
+  border-bottom: none;
+}
+
+.stat-value {
+  font-weight: bold;
+  color: #667eea;
+}
+
+/* Orders Table */
+.orders-section {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.orders-table th,
+.orders-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.orders-table th {
+  background: #f8f9fa;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.orders-table tr:hover {
+  background: #f8f9fa;
+}
+
+.status-badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.status-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-confirmed {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-completed {
+  background: #cce5ff;
+  color: #004085;
+}
+
+.order-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  padding: 5px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.btn-confirm {
+  background: #28a745;
+  color: white;
+}
+
+.btn-complete {
+  background: #007bff;
+  color: white;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+/* Discord Integration */
+.discord-section {
+  background: #7289da;
+  color: white;
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 20px;
+}
+
+.discord-section h3 {
+  margin-bottom: 15px;
+}
+
+.discord-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #43b581;
+}
+
+.test-webhook-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .orders-table {
+    font-size: 0.9rem;
+  }
+  
+  .orders-table th,
+  .orders-table td {
+    padding: 10px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login-container" id="loginContainer">
+  <div class="login-box">
+    <h1>🔐 Admin Login</h1>
+    <p style="color: #666; margin-bottom: 30px;">Access the admin dashboard</p>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit" class="login-btn">Login</button>
+      <div class="error-message" id="errorMessage"></div>
+    </form>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+  <div class="dashboard-header">
+    <div>
+      <h1>📊 Admin Dashboard</h1>
+      <p style="color: #666;">Cupcakes on the Avenue Management</p>
+    </div>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Quick Stats -->
+    <div class="dashboard-card">
+      <h2>📈 Quick Stats</h2>
+      <div class="stat-item">
+        <span>Total Orders Today</span>
+        <span class="stat-value" id="ordersToday">0</span>
+      </div>
+      <div class="stat-item">
+        <span>Revenue Today</span>
+        <span class="stat-value" id="revenueToday">£0.00</span>
+      </div>
+      <div class="stat-item">
+        <span>Pending Orders</span>
+        <span class="stat-value" id="pendingOrders">0</span>
+      </div>
+      <div class="stat-item">
+        <span>Popular Item</span>
+        <span class="stat-value" id="popularItem">-</span>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="dashboard-card">
+      <h2>🔔 Recent Activity</h2>
+      <div id="recentActivity">
+        <p style="color: #999; text-align: center; padding: 20px;">No recent activity</p>
+      </div>
+    </div>
+
+    <!-- System Status -->
+    <div class="dashboard-card">
+      <h2>⚙️ System Status</h2>
+      <div class="stat-item">
+        <span>Website Status</span>
+        <span class="stat-value" style="color: #28a745;">✅ Online</span>
+      </div>
+      <div class="stat-item">
+        <span>Orders Processing</span>
+        <span class="stat-value" style="color: #28a745;">✅ Active</span>
+      </div>
+      <div class="stat-item">
+        <span>Last Backup</span>
+        <span class="stat-value">2 hours ago</span>
+      </div>
+      <div class="stat-item">
+        <span>Storage Used</span>
+        <span class="stat-value">45% (2.3GB)</span>
+      </div>
+      
+      <div class="discord-section">
+        <h3>Discord Integration</h3>
+        <div class="discord-status">
+          <div class="status-indicator"></div>
+          <span>Webhook Connected</span>
+        </div>
+        <p style="font-size: 0.9rem; margin-bottom: 15px;">
+          Orders are automatically sent to Discord channel #orders
+        </p>
+        <button class="test-webhook-btn" id="testWebhook">Test Webhook</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Orders Management -->
+  <div class="orders-section">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h2>📋 Orders Management</h2>
+      <button id="refreshOrders" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+        🔄 Refresh
+      </button>
+    </div>
+    
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Items</th>
+          <th>Total</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="ordersTableBody">
+        <!-- Orders will be populated here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Check for direct access via special URL parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const directAccess = urlParams.get('access');
+  
+  // Mock admin credentials (in production, use proper authentication)
+  const ADMIN_CREDENTIALS = {
+    username: 'admin',
+    password: 'cupcakes2025'
+  };
+
+  // Allow direct access with special parameter
+  if (directAccess === 'cota2025admin') {
+    document.getElementById('loginContainer').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadDashboard();
+    return;
+  }
+
+  // Mock orders data (in production, fetch from your backend)
+  let orders = JSON.parse(localStorage.getItem('adminOrders') || '[]');
+  
+  // Add some sample orders if none exist
+  if (orders.length === 0) {
+    orders = [
+      {
+        id: 'ORD-001',
+        customer: 'Sarah Johnson',
+        email: 'sarah@example.com',
+        phone: '07123456789',
+        items: [
+          { name: 'Shortbread Delight (6 inch)', quantity: 1, price: 20 }
+        ],
+        total: 20,
+        date: new Date().toISOString(),
+        status: 'pending'
+      },
+      {
+        id: 'ORD-002',
+        customer: 'Mike Smith',
+        email: 'mike@example.com',
+        phone: '07987654321',
+        items: [
+          { name: 'Cupcakes (Pack of 12)', quantity: 1, price: 28 },
+          { name: 'Rice Crispy Treats (Pack of 6)', quantity: 1, price: 10 }
+        ],
+        total: 38,
+        date: new Date(Date.now() - 86400000).toISOString(), // Yesterday
+        status: 'confirmed'
+      }
+    ];
+    localStorage.setItem('adminOrders', JSON.stringify(orders));
+  }
+
+  // Login functionality
+  document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const errorMessage = document.getElementById('errorMessage');
+
+    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+      document.getElementById('loginContainer').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      loadDashboard();
+    } else {
+      errorMessage.textContent = 'Invalid credentials. Try: admin / cupcakes2025';
+    }
+  });
+
+  // Logout functionality
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    document.getElementById('loginContainer').style.display = 'flex';
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('loginForm').reset();
+    document.getElementById('errorMessage').textContent = '';
+  });
+
+  // Load dashboard data
+  function loadDashboard() {
+    updateStats();
+    updateRecentActivity();
+    updateOrdersTable();
+  }
+
+  // Update statistics
+  function updateStats() {
+    const today = new Date().toDateString();
+    const todayOrders = orders.filter(order => 
+      new Date(order.date).toDateString() === today
+    );
+    
+    const todayRevenue = todayOrders.reduce((sum, order) => sum + order.total, 0);
+    const pendingCount = orders.filter(order => order.status === 'pending').length;
+    
+    // Count popular items
+    const itemCounts = {};
+    orders.forEach(order => {
+      order.items.forEach(item => {
+        const baseName = item.name.split(' (')[0];
+        itemCounts[baseName] = (itemCounts[baseName] || 0) + item.quantity;
+      });
+    });
+    
+    const popularItem = Object.keys(itemCounts).reduce((a, b) => 
+      itemCounts[a] > itemCounts[b] ? a : b, 'None'
+    );
+
+    document.getElementById('ordersToday').textContent = todayOrders.length;
+    document.getElementById('revenueToday').textContent = `£${todayRevenue.toFixed(2)}`;
+    document.getElementById('pendingOrders').textContent = pendingCount;
+    document.getElementById('popularItem').textContent = popularItem;
+  }
+
+  // Update recent activity
+  function updateRecentActivity() {
+    const recentOrders = orders
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 5);
+    
+    const activityHtml = recentOrders.length > 0 
+      ? recentOrders.map(order => `
+          <div style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">
+            <strong>${order.customer}</strong> placed order ${order.id}
+            <br><small style="color: #666;">${new Date(order.date).toLocaleString()}</small>
+          </div>
+        `).join('')
+      : '<p style="color: #999; text-align: center; padding: 20px;">No recent activity</p>';
+    
+    document.getElementById('recentActivity').innerHTML = activityHtml;
+  }
+
+  // Update orders table
+  function updateOrdersTable() {
+    const tbody = document.getElementById('ordersTableBody');
+    const sortedOrders = orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    tbody.innerHTML = sortedOrders.map(order => `
+      <tr>
+        <td><strong>${order.id}</strong></td>
+        <td>
+          ${order.customer}<br>
+          <small style="color: #666;">${order.email}</small><br>
+          <small style="color: #666;">${order.phone}</small>
+        </td>
+        <td>
+          ${order.items.map(item => `${item.name} x${item.quantity}`).join('<br>')}
+        </td>
+        <td><strong>£${order.total.toFixed(2)}</strong></td>
+        <td>${new Date(order.date).toLocaleDateString()}</td>
+        <td>
+          <span class="status-badge status-${order.status}">
+            ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+          </span>
+        </td>
+        <td>
+          <div class="order-actions">
+            ${order.status === 'pending' ? `
+              <button class="action-btn btn-confirm" onclick="updateOrderStatus('${order.id}', 'confirmed')">
+                Confirm
+              </button>
+            ` : ''}
+            ${order.status === 'confirmed' ? `
+              <button class="action-btn btn-complete" onclick="updateOrderStatus('${order.id}', 'completed')">
+                Complete
+              </button>
+            ` : ''}
+            <button class="action-btn btn-delete" onclick="deleteOrder('${order.id}')">
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // Update order status
+  window.updateOrderStatus = (orderId, newStatus) => {
+    const order = orders.find(o => o.id === orderId);
+    if (order) {
+      order.status = newStatus;
+      localStorage.setItem('adminOrders', JSON.stringify(orders));
+      loadDashboard();
+      
+      // Send Discord notification
+      sendDiscordNotification(`Order ${orderId} status updated to: ${newStatus}`);
+    }
+  };
+
+  // Delete order
+  window.deleteOrder = (orderId) => {
+    if (confirm('Are you sure you want to delete this order?')) {
+      orders = orders.filter(o => o.id !== orderId);
+      localStorage.setItem('adminOrders', JSON.stringify(orders));
+      loadDashboard();
+    }
+  };
+
+  // Refresh orders
+  document.getElementById('refreshOrders').addEventListener('click', () => {
+    // In production, this would fetch fresh data from your backend
+    loadDashboard();
+    alert('Orders refreshed!');
+  });
+
+  // Test Discord webhook
+  document.getElementById('testWebhook').addEventListener('click', async () => {
+    await sendDiscordNotification('🧪 Test message from admin dashboard - webhook is working!');
+  });
+
+  // Discord webhook function
+  async function sendDiscordNotification(message) {
+    const webhookUrl = "https://discord.com/api/webhooks/1426192909044023297/Ilgqgr8p7buI95ai-zssfphPLzQlNBBZf6PY31BhVuptPd-ZyccSq5kAQJPoBkUt4PHK";
+    
+    try {
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: `🧁 **Admin Dashboard** 🧁\n${message}`,
+          username: 'Cupcakes Admin',
+          avatar_url: 'https://cdn.discordapp.com/emojis/1028516711491154031.webp'
+        })
+      });
+
+      if (response.ok) {
+        alert('✅ Discord notification sent successfully!');
+      } else {
+        alert('❌ Failed to send Discord notification');
+      }
+    } catch (error) {
+      console.error('Discord webhook error:', error);
+      alert('❌ Error sending Discord notification');
+    }
+  }
+
+  // Listen for new orders from localStorage
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'adminOrders') {
+      orders = JSON.parse(e.newValue || '[]');
+      loadDashboard();
+    }
+  });
+
+  // Auto-refresh every 30 seconds
+  setInterval(() => {
+    const currentPage = document.getElementById('dashboard').style.display;
+    if (currentPage === 'block') {
+      loadDashboard();
+    }
+  }, 30000);
+});
+</script>
+
+</body>
+</html>

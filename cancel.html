@@ -3,57 +3,157 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Payment Cancelled</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <title>Payment Cancelled - Cupcakes on the Avenue</title>
+  <link rel="icon" type="image/x-icon" href="pictures/favicon.ico">
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background: #f9fafb;
-      color: #111827;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      transition: background 1s ease-in-out;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      margin: 0;
+      padding: 20px;
+    }
+
+    /* Seasonal Theme Variables */
+    body.spring {
+      background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%);
+    }
+
+    body.summer {
+      background: linear-gradient(135deg, #FFE135 0%, #FFA500 100%);
+    }
+
+    body.autumn {
+      background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%);
+    }
+
+    body.winter {
+      background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%);
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      color: #2c3e50;
       text-align: center;
     }
-    .card {
-      background: #fff;
-      padding: 2rem 3rem;
-      border-radius: 1rem;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-      max-width: 400px;
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #dc2626, #b91c1c, #dc2626);
+      background-size: 200% 100%;
+      animation: gradientShift 3s ease-in-out infinite;
     }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
     h1 {
       color: #dc2626;
-      font-size: 1.8rem;
-      margin-bottom: 0.75rem;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+      font-weight: 700;
     }
+
     p {
-      color: #374151;
-      margin-bottom: 1.5rem;
+      color: #2c3e50;
+      margin-bottom: 30px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
     }
+
     .btn {
-      background-color: #dc2626;
-      color: #fff;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
       border: none;
-      border-radius: 0.5rem;
-      padding: 0.75rem 1.25rem;
-      font-weight: 600;
+      border-radius: 12px;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: bold;
       text-decoration: none;
-      transition: background 0.2s ease;
+      transition: all 0.3s ease;
+      display: inline-block;
+      margin: 10px;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
     }
+
     .btn:hover {
-      background-color: #b91c1c;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn.secondary {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
+    }
+
+    .btn.secondary:hover {
+      box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+    }
+
+    .icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>❌ Payment Cancelled</h1>
-    <p>Your payment was not completed.<br />No charges have been made.</p>
-    <a href="/" class="btn">Try Again</a>
+  <div class="container">
+    <div class="icon">❌</div>
+    <h1>Payment Cancelled</h1>
+    <p>Your payment was not completed. No charges have been made to your account.</p>
+    <p>If you encountered any issues, please don't hesitate to contact us.</p>
+    <a href="index.html" class="btn">Return Home</a>
+    <a href="shop.html" class="btn secondary">Try Again</a>
   </div>
+
+  <script>
+    // Seasonal Theme System
+    function setSeasonalTheme() {
+      const now = new Date();
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+      
+      document.body.classList.remove('spring', 'summer', 'autumn', 'winter');
+      
+      if ((month === 3 && day >= 20) || month === 4 || month === 5 || (month === 6 && day < 21)) {
+        document.body.classList.add('spring');
+      } else if ((month === 6 && day >= 21) || month === 7 || month === 8 || (month === 9 && day < 22)) {
+        document.body.classList.add('summer');
+      } else if ((month === 9 && day >= 22) || month === 10 || month === 11 || (month === 12 && day < 21)) {
+        document.body.classList.add('autumn');
+      } else {
+        document.body.classList.add('winter');
+      }
+    }
+    
+    setSeasonalTheme();
+  </script>
 </body>
 </html>

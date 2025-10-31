@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shop - Cupcakes on the Avenue | Premium Baked Goods</title>
+<meta name="description" content="Browse our full range of artisan cupcakes, custom cakes, and baked goods. Order online for delivery or collection at Highworth Market.">
+<link rel="icon" type="image/x-icon" href="pictures/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="pictures/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="pictures/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="pictures/apple-touch-icon.png">
+<style>
+/* Import shared styles */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: #333;
+  transition: background 1s ease-in-out;
+  padding-top: 120px; /* Space for sticky cart */
+}
+
+/* Seasonal Theme Variables */
+body.spring {
+  background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%);
+}
+
+body.summer {
+  background: linear-gradient(135deg, #FFE135 0%, #FFA500 100%);
+}
+
+body.autumn {
+  background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%);
+}
+
+body.winter {
+  background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%);
+}
+
+/* Sticky Cart Bar */
+.sticky-cart {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid #667eea;
+  padding: 15px 20px;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+
+.cart-summary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.cart-icon {
+  font-size: 1.5rem;
+  color: #667eea;
+}
+
+.cart-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cart-count {
+  font-weight: bold;
+  color: #333;
+}
+
+.cart-total {
+  color: #667eea;
+  font-size: 0.9rem;
+}
+
+.checkout-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.checkout-btn:hover {
+  transform: scale(1.05);
+}
+
+.checkout-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Header */
+header {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+  backdrop-filter: blur(10px);
+}
+
+header h1 {
+  color: #667eea;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+nav a {
+  color: #667eea;
+  text-decoration: none;
+  margin: 0 15px;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+nav a:hover, nav a.active {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
+/* Sections */
+section {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 40px 20px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(15px);
+  border-radius: 25px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  color: #2c3e50;
+}
+
+section p, section li, section label {
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+}
+
+section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease-in-out infinite;
+}
+
+section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.18), 0 10px 20px rgba(0,0,0,0.12);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Seasonal Section Adaptations */
+body.spring section {
+  background: rgba(255, 255, 255, 0.20);
+  border: 1px solid rgba(144, 238, 144, 0.25);
+  box-shadow: 0 15px 35px rgba(50, 205, 50, 0.12), 0 5px 15px rgba(50, 205, 50, 0.06);
+}
+
+body.spring section::before {
+  background: linear-gradient(90deg, #90EE90, #32CD32, #90EE90);
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease-in-out infinite;
+}
+
+body.summer section {
+  background: rgba(255, 255, 255, 0.20);
+  border: 1px solid rgba(255, 225, 53, 0.25);
+  box-shadow: 0 15px 35px rgba(255, 165, 0, 0.12), 0 5px 15px rgba(255, 165, 0, 0.06);
+}
+
+body.summer section::before {
+  background: linear-gradient(90deg, #FFE135, #FFA500, #FFE135);
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease-in-out infinite;
+}
+
+body.autumn section {
+  background: rgba(255, 255, 255, 0.20);
+  border: 1px solid rgba(255, 107, 53, 0.25);
+  box-shadow: 0 15px 35px rgba(255, 107, 53, 0.12), 0 5px 15px rgba(255, 107, 53, 0.06);
+}
+
+body.autumn section::before {
+  background: linear-gradient(90deg, #FF6B35, #8B4513, #FF6B35);
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease-in-out infinite;
+}
+
+body.winter section {
+  background: rgba(255, 255, 255, 0.20);
+  border: 1px solid rgba(176, 224, 230, 0.25);
+  box-shadow: 0 15px 35px rgba(70, 130, 180, 0.12), 0 5px 15px rgba(70, 130, 180, 0.06);
+}
+
+body.winter section::before {
+  background: linear-gradient(90deg, #B0E0E6, #4682B4, #B0E0E6);
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease-in-out infinite;
+}
+
+/* Floating Particle Effect for Sections */
+section::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  width: 6px;
+  height: 6px;
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 50%;
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+  50% { transform: translateY(-10px) rotate(180deg); opacity: 0.7; }
+}
+
+/* Enhanced Glass Effect on Hover */
+section:hover {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(20px);
+}
+
+/* Seasonal Particle Colors */
+body.spring section::after {
+  background: rgba(50, 205, 50, 0.4);
+}
+
+body.summer section::after {
+  background: rgba(255, 165, 0, 0.4);
+}
+
+body.autumn section::after {
+  background: rgba(255, 107, 53, 0.4);
+}
+
+body.winter section::after {
+  background: rgba(70, 130, 180, 0.4);
+}
+
+section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #667eea;
+  margin-bottom: 40px;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+  font-weight: 700;
+}
+
+/* Product Grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.product-tile {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+  position: relative;
+  height: 350px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.product-tile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+
+.product-tile:hover::before {
+  transform: translateX(100%);
+}
+
+.product-tile:hover {
+  transform: translateY(-15px) scale(1.02);
+  box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Seasonal Product Tile Styles */
+body.spring .product-tile {
+  background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%);
+}
+
+body.spring .product-tile:hover {
+  box-shadow: 0 20px 50px rgba(50, 205, 50, 0.3);
+}
+
+body.summer .product-tile {
+  background: linear-gradient(135deg, #FFE135 0%, #FFA500 100%);
+}
+
+body.summer .product-tile:hover {
+  box-shadow: 0 20px 50px rgba(255, 165, 0, 0.3);
+}
+
+body.autumn .product-tile {
+  background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%);
+}
+
+body.autumn .product-tile:hover {
+  box-shadow: 0 20px 50px rgba(255, 107, 53, 0.3);
+}
+
+body.winter .product-tile {
+  background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%);
+}
+
+body.winter .product-tile:hover {
+  box-shadow: 0 20px 50px rgba(70, 130, 180, 0.3);
+}
+
+.product-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 25px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.product-tile:hover .product-overlay {
+  opacity: 1;
+}
+
+.product-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #667eea;
+  margin-bottom: 10px;
+}
+
+.product-description {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.product-select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 10px;
+  background: white;
+}
+
+.add-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.add-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Badges */
+.popular-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: linear-gradient(45deg, #FF6B6B, #FF8E8E);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  z-index: 10;
+  animation: pulse 2s infinite;
+}
+
+.trending-indicator {
+  position: absolute;
+  top: 10px;
+  right: 50px;
+  background: #FFD700;
+  color: #333;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.wishlist-heart {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 100;
+  color: #ccc;
+}
+
+.wishlist-heart:hover,
+.wishlist-heart.loved {
+  color: #ff6b6b;
+  transform: scale(1.2);
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Footer */
+footer {
+  background: white;
+  text-align: center;
+  padding: 40px 20px;
+  margin-top: 60px;
+  box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+}
+
+footer img {
+  max-width: 200px;
+  margin-top: 20px;
+  border-radius: 10px;
+}
+
+.site-footer {
+  margin-top: 40px;
+  padding: 24px 16px;
+  background: #f7f7f8;
+  border-top: 1px solid #eaeaea;
+  text-align: center;
+  color: #555;
+}
+
+.site-footer nav a {
+  margin: 0 10px;
+  color: #0b66c3;
+  text-decoration: none;
+}
+
+.site-footer nav a:hover { text-decoration: underline; }
+
+/* Toast */
+#toast {
+  visibility: hidden;
+  min-width: 300px;
+  background: #667eea;
+  color: white;
+  text-align: center;
+  border-radius: 10px;
+  padding: 16px;
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  font-size: 1rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  opacity: 0;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+#toast.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  header h1 {
+    font-size: 2rem;
+  }
+  
+  .sticky-cart {
+    padding: 10px 15px;
+  }
+  
+  .cart-summary {
+    gap: 10px;
+  }
+}
+
+/* Footer Styling */
+.site-footer {
+  margin-top: 40px;
+  padding: 30px 20px;
+  background: rgba(247, 247, 248, 0.25);
+  backdrop-filter: blur(15px);
+  border-top: 1px solid rgba(234, 234, 234, 0.3);
+  text-align: center;
+  color: #333;
+  border-radius: 25px 25px 0 0;
+  position: relative;
+}
+
+.site-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease-in-out infinite;
+}
+
+.site-footer nav {
+  margin-bottom: 15px;
+}
+
+.site-footer nav a {
+  margin: 0 15px;
+  color: #0b66c3;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.site-footer nav a:hover { 
+  text-decoration: underline;
+  background: rgba(11, 102, 195, 0.1);
+  transform: translateY(-2px);
+}
+
+.admin-link:hover {
+  opacity: 1 !important;
+  color: #667eea !important;
+  transform: scale(1.2) translateY(-2px) !important;
+}
+</style>
+</head>
+<body>
+
+<!-- Sticky Cart Bar -->
+<div class="sticky-cart">
+  <div class="cart-summary">
+    <div class="cart-icon">🛒</div>
+    <div class="cart-info">
+      <div class="cart-count" id="cartCount">0 items</div>
+      <div class="cart-total" id="cartTotal">£0.00</div>
+    </div>
+  </div>
+  <button class="checkout-btn" id="checkoutBtn" disabled>Checkout</button>
+</div>
+
+<header role="banner">
+  <h1>🛍️ Shop - Cupcakes on the Avenue</h1>
+  <p>Browse our full range of premium baked goods</p>
+  <nav role="navigation" aria-label="Main navigation">
+    <a href="index.html">Home</a>
+    <a href="shop.html" class="active">Shop</a>
+    <a href="index.html#market">Market</a>
+    <a href="index.html#account">Account</a>
+  </nav>
+</header>
+
+<section id="regular-bakes">
+  <h2>🍪 Regular Bakes</h2>
+  <div class="products-grid">
+
+    <div class="product-tile">
+      <div class="popular-badge">🔥 Most Popular</div>
+      <div class="wishlist-heart" data-product="Shortbread Delight">♡</div>
+      <img src="pictures/shortbread.jpg" alt="Shortbread">
+      <div class="product-overlay">
+        <div>
+          <div class="product-title">Exclusive Shortbread Delight</div>
+          <div class="product-description">Our signature buttery, melt-in-your-mouth shortbread. A customer favorite!</div>
+        </div>
+        <div>
+          <select class="product-select" data-id="regular-1" aria-label="Select Shortbread Delight size">
+            <option value="6 inch|20">6 inch - £20</option>
+            <option value="8 inch|25">8 inch - £25</option>
+            <option value="10 inch|30">10 inch - £30</option>
+          </select>
+          <button class="add-btn" data-name="Shortbread Delight" data-id="regular-1" aria-label="Add Shortbread Delight to cart">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-tile">
+      <div class="wishlist-heart" data-product="Iced Shortbread">♡</div>
+      <img src="pictures/icedshortbread.jpg" alt="Iced Shortbread">
+      <div class="product-overlay">
+        <div>
+          <div class="product-title">Iced Shortbread</div>
+          <div class="product-description">Buttery shortbread topped with smooth icing. Perfect for special occasions!</div>
+        </div>
+        <div>
+          <select class="product-select" data-id="regular-2" aria-label="Select Iced Shortbread pack size">
+            <option value="Pack of 10|10">Pack of 10 - £10</option>
+            <option value="Pack of 20|18">Pack of 20 - £18</option>
+          </select>
+          <button class="add-btn" data-name="Iced Shortbread" data-id="regular-2" aria-label="Add Iced Shortbread to cart">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-tile">
+      <div class="wishlist-heart" data-product="Rice Crispy Treats">♡</div>
+      <img src="pictures/ricecrispy.jpg" alt="Rice Crispy Treats">
+      <div class="product-overlay">
+        <div>
+          <div class="product-title">Rice Crispy Treats</div>
+          <div class="product-description">Classic marshmallow rice crispy treats. Light, crispy, and delicious!</div>
+        </div>
+        <div>
+          <select class="product-select" data-id="regular-3" aria-label="Select Rice Crispy Treats pack size">
+            <option value="Pack of 6|10">Pack of 6 - £10</option>
+            <option value="Pack of 12|18">Pack of 12 - £18</option>
+          </select>
+          <button class="add-btn" data-name="Rice Crispy Treats" data-id="regular-3" aria-label="Add Rice Crispy Treats to cart">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-tile">
+      <div class="trending-indicator">📈 Trending</div>
+      <div class="wishlist-heart" data-product="Cupcakes">♡</div>
+      <img src="pictures/cupcakes.jpg" alt="Cupcakes">
+      <div class="product-overlay">
+        <div>
+          <div class="product-title">Cupcakes</div>
+          <div class="product-description">Delicious cupcakes in various flavors. Choose from vanilla, chocolate, and seasonal specialties!</div>
+        </div>
+        <div>
+          <select class="product-select" data-id="regular-4" aria-label="Select Cupcakes pack size">
+            <option value="Pack of 6|15">Pack of 6 - £15</option>
+            <option value="Pack of 12|28">Pack of 12 - £28</option>
+            <option value="Pack of 24|50">Pack of 24 - £50</option>
+          </select>
+          <button class="add-btn" data-name="Cupcakes" data-id="regular-4" aria-label="Add Cupcakes to cart">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-tile">
+      <div class="wishlist-heart" data-product="Celebration Cake">♡</div>
+      <img src="pictures/purplecake.jpg" alt="Celebration Cake">
+      <div class="product-overlay">
+        <div>
+          <div class="product-title">Custom Celebration Cake</div>
+          <div class="product-description">Bespoke cakes for birthdays, weddings, and special occasions. Contact us for custom designs!</div>
+        </div>
+        <div>
+          <select class="product-select" data-id="regular-5" aria-label="Select Celebration Cake size">
+            <option value="6 inch|35">6 inch - £35</option>
+            <option value="8 inch|50">8 inch - £50</option>
+            <option value="10 inch|70">10 inch - £70</option>
+          </select>
+          <button class="add-btn" data-name="Celebration Cake" data-id="regular-5" aria-label="Add Celebration Cake to cart">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-tile">
+      <div class="wishlist-heart" data-product="Sweet Trimming Pots">♡</div>
+      <img src="pictures/sweettrimmings.jpg" alt="Sweet Trimming Pots">
+      <div class="product-overlay">
+        <div>
+          <div class="product-title">Sweet Trimming Pots</div>
+          <div class="product-description">Adorable individual dessert pots filled with cake, cream, and sweet trimmings. Perfect party treats!</div>
+        </div>
+        <div>
+          <select class="product-select" data-id="regular-6" aria-label="Select Sweet Trimming Pots pack size">
+            <option value="Single Pot|4">Single Pot - £4</option>
+            <option value="Pack of 6|22">Pack of 6 - £22</option>
+            <option value="Pack of 12|42">Pack of 12 - £42</option>
+          </select>
+          <button class="add-btn" data-name="Sweet Trimming Pots" data-id="regular-6" aria-label="Add Sweet Trimming Pots to cart">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-tile">
+      <div class="wishlist-heart" data-product="Gourmet Brownies">♡</div>
+      <img src="pictures/brownies.jpg" alt="Gourmet Brownies">
+      <div class="product-overlay">
+        <div>
+          <div class="product-title">Gourmet Brownies</div>
+          <div class="product-description">Rich, fudgy brownies that melt in your mouth! Decadently chocolatey with a perfect chewy texture - pure brownie bliss!</div>
+        </div>
+        <div>
+          <select class="product-select" data-id="regular-7" aria-label="Select Gourmet Brownies pack size">
+            <option value="Single|3">Single - £3</option>
+            <option value="Pack of 6|16">Pack of 6 - £16</option>
+            <option value="Pack of 12|30">Pack of 12 - £30</option>
+          </select>
+          <button class="add-btn" data-name="Gourmet Brownies" data-id="regular-7" aria-label="Add Gourmet Brownies to cart">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Checkout Modal -->
+<div id="checkoutModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 10000;">
+  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 20px; max-width: 600px; width: 90%; max-height: 90%; overflow-y: auto;">
+    <h2 style="color: #667eea; margin-bottom: 20px;">Complete Your Order</h2>
+    
+    <div id="checkoutItems" style="margin-bottom: 20px;"></div>
+    
+    <div style="border-top: 2px solid #f0f0f0; padding-top: 20px; margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; font-size: 1.5rem; font-weight: bold; color: #667eea;">
+        <span>Total:</span>
+        <span id="checkoutTotal">£0.00</span>
+      </div>
+    </div>
+
+    <form id="checkoutForm">
+      <h3 style="color: #667eea; margin-bottom: 15px;">Customer Details</h3>
+      <input type="text" id="customerName" placeholder="Full Name *" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <input type="email" id="customerEmail" placeholder="Email Address *" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <input type="tel" id="customerMobile" placeholder="Mobile Number *" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <input type="text" id="customerAddress" placeholder="Delivery Address *" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <textarea id="customerNotes" rows="3" placeholder="Special Requests (optional)" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;"></textarea>
+      
+      <div style="margin: 20px 0;">
+        <label style="display: flex; align-items: center; margin: 8px 0; cursor: pointer;">
+          <input type="checkbox" id="termsCheck" required style="margin-right: 10px;">
+          I agree to the <a href="terms.html" target="_blank" style="color: #667eea;">Terms & Conditions</a> *
+        </label>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button type="button" id="closeCheckout" style="flex: 1; padding: 15px; background: #ccc; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Cancel</button>
+        <button type="submit" style="flex: 2; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Place Order & Pay</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<footer class="site-footer">
+  <nav>
+    <a href="terms.html" target="_blank" rel="noopener">Terms & Conditions</a>
+    <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>
+    <a href="refunds.html" target="_blank" rel="noopener">Refunds & Cancellations</a>
+    <a href="delivery.html" target="_blank" rel="noopener">Delivery & Collection</a>
+    <a href="admin.html" class="admin-link" style="opacity: 0.3; font-size: 0.8rem; color: #999;" title="Admin Access">⚙️</a>
+  </nav>
+  <p>© Cupcakes on the Avenue</p>
+  <img src="pictures/food hygiene.jpg" alt="Food hygiene certificate" style="width: 80px; margin-top: 12px; opacity: 0.8;">
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Seasonal Theme System
+  function setSeasonalTheme() {
+    const now = new Date();
+    const month = now.getMonth() + 1; // 1-12
+    const day = now.getDate();
+    
+    // Remove existing seasonal classes
+    document.body.classList.remove('spring', 'summer', 'autumn', 'winter');
+    
+    // Determine season based on UK seasons
+    if ((month === 3 && day >= 20) || month === 4 || month === 5 || (month === 6 && day < 21)) {
+      document.body.classList.add('spring');
+    } else if ((month === 6 && day >= 21) || month === 7 || month === 8 || (month === 9 && day < 22)) {
+      document.body.classList.add('summer');
+    } else if ((month === 9 && day >= 22) || month === 10 || month === 11 || (month === 12 && day < 21)) {
+      document.body.classList.add('autumn');
+    } else {
+      document.body.classList.add('winter');
+    }
+  }
+  
+  // Set theme on load
+  setSeasonalTheme();
+  
+  // Update theme every hour
+  setInterval(setSeasonalTheme, 3600000);
+
+  let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+
+  // Update sticky cart display
+  function updateStickyCart() {
+    const cartCount = document.getElementById('cartCount');
+    const cartTotal = document.getElementById('cartTotal');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    
+    cartCount.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+    cartTotal.textContent = `£${totalPrice.toFixed(2)}`;
+    
+    checkoutBtn.disabled = cart.length === 0;
+  }
+
+  // Add to cart
+  document.querySelectorAll('.add-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const name = btn.getAttribute('data-name');
+      const selectId = btn.getAttribute('data-id');
+      const select = document.querySelector(`[data-id="${selectId}"]`);
+      const [size, price] = select.value.split('|');
+      
+      const item = {
+        name: `${name} (${size})`,
+        price: parseFloat(price),
+        quantity: 1
+      };
+
+      const existing = cart.find(i => i.name === item.name);
+      if (existing) {
+        existing.quantity++;
+      } else {
+        cart.push(item);
+      }
+
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateStickyCart();
+      showToast(`✅ ${name} added to cart!`);
+    });
+  });
+
+  // Wishlist functionality
+  document.querySelectorAll('.wishlist-heart').forEach(heart => {
+    const productName = heart.getAttribute('data-product');
+    if (wishlist.includes(productName)) {
+      heart.textContent = '♥';
+      heart.classList.add('loved');
+    }
+    
+    heart.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const index = wishlist.indexOf(productName);
+      if (index > -1) {
+        wishlist.splice(index, 1);
+        heart.textContent = '♡';
+        heart.classList.remove('loved');
+        showToast(`Removed ${productName} from wishlist`);
+      } else {
+        wishlist.push(productName);
+        heart.textContent = '♥';
+        heart.classList.add('loved');
+        showToast(`Added ${productName} to wishlist`);
+      }
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    });
+  });
+
+  // Checkout functionality
+  document.getElementById('checkoutBtn').addEventListener('click', () => {
+    if (cart.length === 0) return;
+    
+    const modal = document.getElementById('checkoutModal');
+    const itemsContainer = document.getElementById('checkoutItems');
+    const totalElement = document.getElementById('checkoutTotal');
+    
+    // Populate checkout items
+    itemsContainer.innerHTML = cart.map(item => `
+      <div style="display: flex; justify-content: space-between; padding: 10px; background: #f8f9fa; margin: 5px 0; border-radius: 8px;">
+        <span>${item.name} x${item.quantity}</span>
+        <span>£${(item.price * item.quantity).toFixed(2)}</span>
+      </div>
+    `).join('');
+    
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    totalElement.textContent = `£${total.toFixed(2)}`;
+    
+    modal.style.display = 'block';
+  });
+
+  // Close checkout modal
+  document.getElementById('closeCheckout').addEventListener('click', () => {
+    document.getElementById('checkoutModal').style.display = 'none';
+  });
+
+  // Form submission
+  document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = {
+      name: document.getElementById('customerName').value,
+      email: document.getElementById('customerEmail').value,
+      mobile: document.getElementById('customerMobile').value,
+      address: document.getElementById('customerAddress').value,
+      notes: document.getElementById('customerNotes').value,
+      items: cart,
+      total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+    };
+
+    // Here you would normally send to your backend
+    console.log('Order placed:', formData);
+    
+    // Clear cart and close modal
+    cart = [];
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateStickyCart();
+    document.getElementById('checkoutModal').style.display = 'none';
+    
+    showToast('🎉 Order placed successfully! You will receive a confirmation email.');
+    
+    // Reset form
+    document.getElementById('checkoutForm').reset();
+  });
+
+  // Toast notification
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  // Initialize cart display
+  updateStickyCart();
+});
+</script>
+
+</body>
+</html>
