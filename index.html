@@ -2019,6 +2019,174 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentYear = new Date().getFullYear();
   let blockedDates = JSON.parse(localStorage.getItem('blockedDates') || '[]');
 
+  // PWA Notification System
+  async function initializeNotifications() {
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        console.log('✅ Service Worker registered:', registration.scope);
+        
+        // Request notification permission
+        if ('Notification' in window) {
+          const permission = await Notification.requestPermission();
+          if (permission === 'granted') {
+            console.log('✅ Notification permission granted');
+            
+            // Store notification preference
+            localStorage.setItem('notificationsEnabled', 'true');
+            
+            // Show welcome notification
+            showWelcomeNotification();
+            
+            // Set up periodic checks for updates
+            setupUpdateChecks();
+          } else {
+            console.log('❌ Notification permission denied');
+          }
+        }
+      } catch (error) {
+        console.error('❌ Service Worker registration failed:', error);
+      }
+    }
+  }
+
+  function showWelcomeNotification() {
+    if (Notification.permission === 'granted') {
+      new Notification('Welcome to Cupcakes on the Avenue! 🧁', {
+        body: 'You\'ll now receive notifications about weekly bakes, new products, and special offers!',
+        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🧁</text></svg>',
+        tag: 'welcome'
+      });
+    }
+  }
+
+  // Function to send notifications about updates
+  function sendUpdateNotification(type, title, body) {
+    if (Notification.permission === 'granted' && localStorage.getItem('notificationsEnabled') === 'true') {
+      const notification = new Notification(title, {
+        body: body,
+        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🧁</text></svg>',
+        badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🧁</text></svg>',
+        tag: type,
+        vibrate: [200, 100, 200],
+        data: { type: type }
+      });
+
+      notification.onclick = function() {
+        window.focus();
+        if (type === 'weekly-bakes') {
+          // Scroll to market section
+          document.getElementById('marketToggle').click();
+        } else if (type === 'new-product' || type === 'discount') {
+          // Go to shop
+          window.location.href = '/shop.html';
+        }
+        notification.close();
+      };
+    }
+  }
+
+  // Setup periodic checks for updates
+  function setupUpdateChecks() {
+    // Check for weekly bakes updates (every hour)
+    setInterval(() => {
+      checkForWeeklyBakesUpdate();
+    }, 60 * 60 * 1000); // 1 hour
+
+    // Check for new products/discounts (every 30 minutes)
+    setInterval(() => {
+      checkForProductUpdates();
+    }, 30 * 60 * 1000); // 30 minutes
+  }
+
+  function checkForWeeklyBakesUpdate() {
+    const lastCheck = localStorage.getItem('lastWeeklyBakesCheck');
+    const now = Date.now();
+    
+    // Check if it's been more than 24 hours since last check
+    if (!lastCheck || (now - parseInt(lastCheck)) > 24 * 60 * 60 * 1000) {
+      const currentWeek = getWeekNumber(new Date());
+      const lastNotifiedWeek = localStorage.getItem('lastNotifiedWeek');
+      
+      if (lastNotifiedWeek !== currentWeek.toString()) {
+        sendUpdateNotification(
+          'weekly-bakes',
+          'This Week\'s Fresh Bakes Are Here! 🍰',
+          'New weekly selection available at Highworth Market every Saturday!'
+        );
+        localStorage.setItem('lastNotifiedWeek', currentWeek.toString());
+      }
+      
+      localStorage.setItem('lastWeeklyBakesCheck', now.toString());
+    }
+  }
+
+  function checkForProductUpdates() {
+    // This would typically check your server for new products or discounts
+    // For demo purposes, we'll simulate random notifications
+    const random = Math.random();
+    
+    if (random < 0.1) { // 10% chance every 30 minutes
+      const notifications = [
+        {
+          type: 'new-product',
+          title: 'New Product Alert! 🆕',
+          body: 'Check out our latest delicious creation in the shop!'
+        },
+        {
+          type: 'discount',
+          title: 'Special Offer! 💰',
+          body: '15% off all cupcakes this weekend only!'
+        },
+        {
+          type: 'market-special',
+          title: 'Market Special Today! 🎪',
+          body: 'Fresh shortbread delight available at Highworth Market!'
+        }
+      ];
+      
+      const randomNotification = notifications[Math.floor(Math.random() * notifications.length)];
+      sendUpdateNotification(randomNotification.type, randomNotification.title, randomNotification.body);
+    }
+  }
+
+  function getWeekNumber(date) {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+  }
+
+  // Manual notification triggers for admin use
+  window.notifyWeeklyBakes = () => {
+    sendUpdateNotification(
+      'weekly-bakes',
+      'Weekly Bakes Updated! 🧁',
+      'Fresh new selection ready at Highworth Market this Saturday!'
+    );
+  };
+
+  window.notifyNewProduct = (productName) => {
+    sendUpdateNotification(
+      'new-product',
+      'New Product Launch! 🎉',
+      `Introducing ${productName || 'our latest delicious creation'}! Available now in our shop.`
+    );
+  };
+
+  window.notifyDiscount = (discount) => {
+    sendUpdateNotification(
+      'discount',
+      'Special Offer! 💰',
+      `${discount || 'Special discount'} available now! Don't miss out on these sweet savings.`
+    );
+  };
+
+  // Initialize notifications when page loads
+  initializeNotifications();
+
   // Seasonal Theme System
   function setSeasonalTheme() {
     const month = new Date().getMonth(); // 0-11

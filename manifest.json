@@ -25,5 +25,11 @@
   "lang": "en-GB",
   "dir": "ltr",
   "scope": "/",
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "gcm_sender_id": "103953800507",
+  "permissions": ["notifications"],
+  "notification": {
+    "icon": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧁</text></svg>",
+    "vibrate": [200, 100, 200]
+  }
 }
