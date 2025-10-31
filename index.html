@@ -1141,7 +1141,7 @@ ${items}
 
       // Redirect to SumUp payment
       const reference = 'ORDER-' + Date.now();
-      const paymentUrl = `${BACKEND_BASE}/api/create-checkout?total=${total.toFixed(2)}&reference=${reference}`;
+      const paymentUrl = `${BACKEND_BASE}/api/checkout?total=${total.toFixed(2)}&reference=${reference}`;
 
       console.log('🔗 Payment URL:', paymentUrl);
 
