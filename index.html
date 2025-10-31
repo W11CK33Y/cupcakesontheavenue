@@ -882,7 +882,7 @@ footer img {
 </footer>
 
 <script>
-const BACKEND_BASE = 'https://sumup-backend.vercel.app';
+const BACKEND_BASE = 'https://sumup-backend-ka4im7xlf-jack-wicks-projects.vercel.app';
 
 document.addEventListener('DOMContentLoaded', () => {
   let cart = [];
@@ -1189,7 +1189,7 @@ ${items}
 
   // Payment integration
   function initiatePayment(total, orderReference) {
-    window.location.href = `https://sumup-backend-ka4im7xlf-jack-wicks-projects.vercel.app/api/create-checkout?total=${total}&reference=${orderReference}`;
+    window.location.href = `${BACKEND_BASE}/api/create-checkout?total=${total}&reference=${orderReference}`;
   }
 
   // Email notification
@@ -1229,17 +1229,6 @@ ${items}
 
   setInterval(createSnowflake, 300);
 });
-
-// On cupcakesontheavenue.co.uk
-async function createCheckout(total, orderReference) {
-  const url = `https://sumup-backend-ka4im7xlf-jack-wicks-projects.vercel.app/api/create-checkout?total=${total}&reference=${orderReference}`;
-  
-  // Redirect user to payment page
-  window.location.href = url;
-}
-
-// Example usage
-createCheckout(25.50, 'ORDER-' + Date.now());
 </script>
 </body>
 </html>
