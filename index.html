@@ -563,6 +563,21 @@ footer img {
   border-radius: 8px;
 }
 
+.site-footer {
+  margin-top: 40px;
+  padding: 24px 16px;
+  background: #f7f7f8;
+  border-top: 1px solid #eaeaea;
+  text-align: center;
+  color: #555;
+}
+.site-footer nav a {
+  margin: 0 10px;
+  color: #0b66c3;
+  text-decoration: none;
+}
+.site-footer nav a:hover { text-decoration: underline; }
+
 @media (max-width: 768px) {
   .products-grid {
     grid-template-columns: 1fr;
@@ -782,10 +797,12 @@ footer img {
     <input type="text" id="customerAddress" placeholder="Delivery Address *" required>
     <textarea id="customerNotes" rows="3" placeholder="Special Requests / Toppings (optional)"></textarea>
 
-    <select id="deliveryMethod" required>
-      <option value="">Select Delivery Method *</option>
-      <option value="Delivery">Home Delivery</option>
-      <option value="Collection">Collection from Market</option>
+    <label for="deliveryMethod">Delivery method *</label>
+    <select id="deliveryMethod" name="deliveryMethod" required>
+      <option value="" disabled selected>Select delivery method</option>
+      <option value="collect">Collect</option>
+      <option value="collect_market">Collect from market</option>
+      <option value="delivery">Delivery</option>
     </select>
 
     <input type="text" id="deliveryDate" placeholder="Click to select delivery date (min 7 days) *" readonly style="cursor: pointer;">
@@ -802,11 +819,11 @@ footer img {
     <div class="checkbox-group">
       <label>
         <input type="checkbox" id="privacyCheck" required>
-        I agree to the Privacy Policy *
+        I agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> *
       </label>
       <label>
         <input type="checkbox" id="termsCheck" required>
-        I agree to the Terms & Conditions *
+        I agree to the <a href="terms.html" target="_blank" rel="noopener">Terms & Conditions</a> *
       </label>
     </div>
 
@@ -912,12 +929,15 @@ footer img {
 
 <div id="toast"></div>
 
-<footer>
-  <p style="font-size: 1.2rem; color: #667eea; font-weight: bold;">© 2025 Cupcakes on the Avenue</p>
-  <p style="margin: 10px 0; color: #666;">📧 CupcakesontheAvenue@gmail.com</p>
-  <p style="margin: 10px 0; color: #666;">🎪 Highworth Market • Every Saturday 8am-2pm</p>
-  <img src="pictures/food hygiene.jpg" alt="Food Hygiene Rating 5">
-</footer>
+<footer class="site-footer">
+    <nav>
+      <a href="terms.html" target="_blank" rel="noopener">Terms & Conditions</a>
+      <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>
+      <a href="refunds.html" target="_blank" rel="noopener">Refunds & Cancellations</a>
+      <a href="delivery.html" target="_blank" rel="noopener">Delivery & Collection</a>
+    </nav>
+    <p>© Cupcakes on the Avenue</p>
+  </footer>
 
 <script>
 const BACKEND_BASE = 'https://sumup-backend.vercel.app'; // Try this instead
@@ -1289,6 +1309,25 @@ ${items}
     updateLeadTimeWarning();
   }
 });
+
+function getDeliveryLabel(val) {
+  switch (val) {
+    case 'collect': return 'Collect';
+    case 'collect_market': return 'Collect from market';
+    case 'delivery': return 'Delivery';
+    default: return val || 'N/A';
+  }
+}
+
+// Example usage when submitting:
+async function submitOrder(orderData) {
+  // ...existing code...
+  const deliveryVal = document.getElementById('deliveryMethod').value;
+  const deliveryLabel = getDeliveryLabel(deliveryVal);
+
+  // include deliveryLabel in email/discord payloads
+  // ...existing code...
+}
 </script>
 </body>
 </html>
