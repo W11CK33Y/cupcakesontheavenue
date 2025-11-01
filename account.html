@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Account - Cupcakes on the Avenue</title>
+<meta name="description" content="View your orders, track deliveries, and manage your account at Cupcakes on the Avenue.">
+<link rel="icon" type="image/x-icon" href="pictures/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="pictures/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="pictures/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="pictures/apple-touch-icon.png">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: #333;
+  transition: background 1s ease-in-out;
+}
+
+/* Seasonal Theme Variables */
+body.spring {
+  background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%);
+}
+
+body.summer {
+  background: linear-gradient(135deg, #FFE135 0%, #FFA500 100%);
+}
+
+body.autumn {
+  background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%);
+}
+
+body.winter {
+  background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%);
+}
+
+/* Header */
+header {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+header h1 {
+  color: #667eea;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+header p {
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+}
+
+nav a {
+  color: #667eea;
+  text-decoration: none;
+  margin: 0 15px;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: #764ba2;
+}
+
+nav a.active {
+  color: #764ba2;
+  font-weight: bold;
+}
+
+/* Container */
+.container {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 40px 20px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(15px);
+  border-radius: 25px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  color: #2c3e50;
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+}
+
+/* Login/Account Section */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 20px;
+}
+
+.login-box {
+  padding: 40px;
+  border-radius: 20px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.login-box h1 {
+  color: #667eea;
+  margin-bottom: 30px;
+  font-size: 2rem;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 15px;
+  margin: 10px 0;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  border-radius: 10px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.login-box input:focus {
+  border-color: #667eea;
+  outline: none;
+  background: white;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: transform 0.2s ease;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+}
+
+.error-message {
+  color: #dc3545;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+/* Account Dashboard */
+.account-dashboard {
+  display: none;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+.dashboard-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.welcome-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.welcome-text h1 {
+  color: #667eea;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.welcome-text p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.account-actions {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary { background: #667eea; color: white; }
+.btn-secondary { background: #6c757d; color: white; }
+.btn-success { background: #28a745; color: white; }
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* Order Cards */
+.orders-section {
+  margin-bottom: 30px;
+}
+
+.section-title {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 20px 30px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.section-title h2 {
+  color: #667eea;
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.orders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.order-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-5px);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.order-id {
+  font-weight: bold;
+  color: #667eea;
+  font-size: 1.1rem;
+}
+
+.order-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-pending { background: #fff3cd; color: #856404; }
+.status-confirmed { background: #d4edda; color: #155724; }
+.status-preparing { background: #cce5ff; color: #004085; }
+.status-ready { background: #d1ecf1; color: #0c5460; }
+.status-completed { background: #e2e3e5; color: #383d41; }
+.status-cancelled { background: #f8d7da; color: #721c24; }
+
+.order-items {
+  margin-bottom: 15px;
+}
+
+.order-items h4 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.item-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.item-list li {
+  padding: 5px 0;
+  color: #666;
+}
+
+.delivery-info {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  margin: 15px 0;
+}
+
+.delivery-method {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  color: #667eea;
+  margin-bottom: 10px;
+}
+
+.delivery-details {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.order-timeline {
+  margin: 20px 0;
+}
+
+.timeline-title {
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 30px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #e0e0e0;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #e0e0e0;
+  background: white;
+}
+
+.timeline-item.completed::before {
+  background: #28a745;
+  border-color: #28a745;
+}
+
+.timeline-item.current::before {
+  background: #667eea;
+  border-color: #667eea;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.timeline-content {
+  padding-left: 10px;
+}
+
+.timeline-title {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.timeline-desc {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.timeline-time {
+  color: #999;
+  font-size: 0.8rem;
+}
+
+.order-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.order-total {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #667eea;
+  text-align: right;
+  margin-top: 15px;
+}
+
+/* Notifications */
+.notification-panel {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  max-width: 350px;
+  z-index: 1000;
+}
+
+.notification {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-left: 4px solid #667eea;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  animation: slideIn 0.3s ease;
+}
+
+.notification.warning { border-left-color: #ffc107; }
+.notification.error { border-left-color: #dc3545; }
+.notification.success { border-left-color: #28a745; }
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #999;
+}
+
+.close-modal:hover {
+  color: #333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  /* Header adjustments */
+  header h1 {
+    font-size: 1.8rem;
+  }
+  
+  header p {
+    font-size: 1rem;
+  }
+  
+  nav a {
+    margin: 0 8px;
+    font-size: 0.9rem;
+  }
+  
+  /* Container adjustments */
+  .container {
+    margin: 20px 10px;
+    padding: 20px 15px;
+  }
+  
+  /* Welcome section */
+  .welcome-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  
+  .welcome-text h1 {
+    font-size: 1.8rem;
+  }
+  
+  .welcome-text p {
+    font-size: 1rem;
+  }
+  
+  /* Account actions */
+  .account-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  
+  .action-btn {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+    font-size: 0.9rem;
+    padding: 10px 16px;
+  }
+  
+  /* Orders section */
+  .section-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .section-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .filter-tabs {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .filter-tab {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+  
+  /* Orders grid */
+  .orders-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  /* Order cards */
+  .order-card {
+    padding: 20px 15px;
+  }
+  
+  .order-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  
+  .order-number {
+    font-size: 1.1rem;
+  }
+  
+  /* Progress timeline mobile */
+  .progress-timeline {
+    padding: 0 10px;
+  }
+  
+  .timeline-step {
+    font-size: 0.9rem;
+    margin: 8px 0;
+  }
+  
+  .timeline-step::before {
+    width: 10px;
+    height: 10px;
+    margin-right: 12px;
+  }
+  
+  /* Delivery info */
+  .delivery-info {
+    padding: 12px;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  
+  /* Order items */
+  .order-item {
+    padding: 6px 0;
+    font-size: 0.9rem;
+  }
+  
+  .order-total {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+  
+  /* Order actions mobile */
+  .order-actions {
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .order-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+  
+  /* Login container mobile */
+  .login-container {
+    padding: 15px;
+    min-height: 70vh;
+  }
+  
+  .login-box {
+    padding: 30px 20px;
+    max-width: 100%;
+  }
+  
+  .login-box h1 {
+    font-size: 1.8rem;
+  }
+  
+  .login-box input {
+    padding: 12px;
+    font-size: 1rem;
+    margin: 8px 0;
+  }
+  
+  .login-btn {
+    padding: 12px;
+    font-size: 1rem;
+  }
+  
+  /* Notification panel mobile */
+  .notification-panel {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .notification {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+  
+  /* Modal mobile */
+  .modal-content {
+    width: 95%;
+    padding: 20px 15px;
+    max-height: 90vh;
+  }
+  
+  .modal-header h3 {
+    font-size: 1.2rem;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  /* Header extra small */
+  header {
+    padding: 15px 10px;
+  }
+  
+  header h1 {
+    font-size: 1.5rem;
+  }
+  
+  nav a {
+    margin: 0 5px;
+    font-size: 0.8rem;
+  }
+  
+  /* Container extra small */
+  .container {
+    margin: 15px 5px;
+    padding: 15px 10px;
+  }
+  
+  /* Welcome section extra small */
+  .welcome-text h1 {
+    font-size: 1.5rem;
+  }
+  
+  /* Action buttons stack vertically */
+  .account-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .action-btn {
+    width: 100%;
+    margin: 5px 0;
+  }
+  
+  /* Order cards extra small */
+  .order-card {
+    padding: 15px 10px;
+  }
+  
+  /* Timeline more compact */
+  .timeline-step {
+    font-size: 0.8rem;
+    margin: 6px 0;
+  }
+  
+  .timeline-step::before {
+    width: 8px;
+    height: 8px;
+    margin-right: 10px;
+  }
+  
+  /* Order actions stack vertically */
+  .order-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .order-btn {
+    width: 100%;
+    min-width: none;
+  }
+  
+  /* Filter tabs stack */
+  .filter-tabs {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .filter-tab {
+    width: 100%;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+  .login-container {
+    min-height: 100vh;
+    padding: 10px;
+  }
+  
+  .login-box {
+    padding: 20px;
+  }
+  
+  .container {
+    margin: 10px;
+  }
+  
+  .welcome-section {
+    flex-direction: row;
+    text-align: left;
+  }
+  
+  .account-actions {
+    flex-direction: row;
+  }
+}
+
+/* Touch-friendly adjustments */
+@media (hover: none) and (pointer: coarse) {
+  .action-btn,
+  .order-btn,
+  .filter-tab {
+    min-height: 44px; /* iOS recommended touch target */
+  }
+  
+  .order-card {
+    transition: none; /* Disable hover animations on touch */
+  }
+  
+  .order-card:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.empty-state h3 {
+  color: #667eea;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.empty-state p {
+  color: #666;
+  margin-bottom: 25px;
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header role="banner">
+  <h1>👤 My Account - Cupcakes on the Avenue</h1>
+  <p>Track your orders and manage your account</p>
+  <nav role="navigation" aria-label="Main navigation">
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="account.html" class="active">My Account</a>
+    <a href="#" id="logoutBtn" style="display: none;">Logout</a>
+  </nav>
+</header>
+
+<!-- Notification Panel -->
+<div class="notification-panel" id="notificationPanel"></div>
+
+<!-- Login Section -->
+<div class="login-container" id="loginContainer">
+  <div class="container" style="max-width: 500px;">
+    <div class="login-box">
+      <h1>👤 My Account</h1>
+      <p style="color: #666; margin-bottom: 30px;">Sign in to track your orders and manage your account</p>
+      <form id="loginForm">
+        <input type="email" id="customerEmail" placeholder="Email Address" required>
+        <input type="tel" id="customerPhone" placeholder="Phone Number (last 4 digits)" required>
+        <button type="submit" class="login-btn">Sign In</button>
+        <div class="error-message" id="errorMessage"></div>
+      </form>
+      <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
+        New customer? Your account is automatically created when you place your first order.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Account Dashboard -->
+<div class="account-dashboard" id="accountDashboard">
+  <div class="container">
+    <div class="dashboard-header">
+      <div class="welcome-section">
+        <div class="welcome-text">
+          <h1>Welcome back, <span id="customerName">Customer</span>! 👋</h1>
+          <p>Here's what's happening with your orders</p>
+        </div>
+        <div class="account-actions">
+          <a href="shop.html" class="action-btn btn-primary">🛒 Shop Now</a>
+          <button class="action-btn btn-secondary" onclick="editProfile()">✏️ Edit Profile</button>
+          <button class="action-btn btn-success" onclick="contactUs()">📞 Contact Us</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Orders -->
+    <div class="orders-section">
+    <div class="section-title">
+      <h2>📋 Your Orders</h2>
+    </div>
+    <div class="orders-grid" id="ordersContainer">
+      <!-- Orders will be populated here -->
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalTitle">Modal Title</h3>
+      <button class="close-modal" onclick="closeModal()">&times;</button>
+    </div>
+    <div id="modalBody">
+      <!-- Modal content will be populated here -->
+    </div>
+  </div>
+</div>
+
+<script>
+// Global variables
+let currentCustomer = null;
+let customerOrders = [];
+
+// Initialize app
+document.addEventListener('DOMContentLoaded', () => {
+  // Set seasonal theme
+  setSeasonalTheme();
+  
+  checkExistingLogin();
+  setupEventListeners();
+  
+  // Check for automatic notifications
+  checkForUpcomingOrders();
+  
+  // Set up periodic notification checks
+  setInterval(checkForUpcomingOrders, 60000); // Check every minute
+});
+
+// Seasonal theme function
+function setSeasonalTheme() {
+  const month = new Date().getMonth() + 1; // 1-12
+  
+  if (month >= 3 && month <= 5) { // March-May
+    document.body.className = 'spring';
+  } else if (month >= 6 && month <= 8) { // June-August
+    document.body.className = 'summer';
+  } else if (month >= 9 && month <= 11) { // September-November
+    document.body.className = 'autumn';
+  } else { // December-February
+    document.body.className = 'winter';
+  }
+}
+
+function setupEventListeners() {
+  // Login form
+  document.getElementById('loginForm').addEventListener('submit', handleLogin);
+  
+  // Logout button
+  document.getElementById('logoutBtn').addEventListener('click', logout);
+}
+
+function checkExistingLogin() {
+  const savedCustomer = localStorage.getItem('customerAccount');
+  if (savedCustomer) {
+    currentCustomer = JSON.parse(savedCustomer);
+    showDashboard();
+  }
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('customerEmail').value.toLowerCase();
+  const phone = document.getElementById('customerPhone').value;
+  
+  // Get customer data from various sources
+  const adminCustomers = JSON.parse(localStorage.getItem('adminCustomers') || '[]');
+  const webCustomers = JSON.parse(localStorage.getItem('webCustomers') || '[]');
+  const shopOrders = JSON.parse(localStorage.getItem('shopOrders') || '[]');
+  
+  // Find customer by email
+  let customer = adminCustomers.find(c => c.email.toLowerCase() === email) ||
+                 webCustomers.find(c => c.email.toLowerCase() === email);
+  
+  // If not found, check if they have any orders
+  if (!customer) {
+    const customerOrder = shopOrders.find(o => o.email.toLowerCase() === email);
+    if (customerOrder) {
+      customer = {
+        name: customerOrder.name,
+        email: customerOrder.email,
+        phone: customerOrder.mobile,
+        joinDate: new Date().toISOString().split('T')[0]
+      };
+    }
+  }
+  
+  if (customer) {
+    // Simple phone verification (last 4 digits)
+    const customerPhone = customer.phone || '';
+    const lastFour = customerPhone.slice(-4);
+    
+    if (phone === lastFour || phone === customerPhone) {
+      currentCustomer = customer;
+      localStorage.setItem('customerAccount', JSON.stringify(currentCustomer));
+      showDashboard();
+      showNotification('Welcome back! Logged in successfully.', 'success');
+    } else {
+      document.getElementById('errorMessage').textContent = 'Phone number does not match our records';
+    }
+  } else {
+    document.getElementById('errorMessage').textContent = 'No account found with this email address';
+  }
+}
+
+function logout() {
+  localStorage.removeItem('customerAccount');
+  currentCustomer = null;
+  document.getElementById('loginContainer').style.display = 'flex';
+  document.getElementById('accountDashboard').style.display = 'none';
+  document.getElementById('logoutBtn').style.display = 'none';
+  showNotification('Logged out successfully', 'success');
+}
+
+function showDashboard() {
+  document.getElementById('loginContainer').style.display = 'none';
+  document.getElementById('accountDashboard').style.display = 'block';
+  document.getElementById('logoutBtn').style.display = 'block';
+  document.getElementById('customerName').textContent = currentCustomer.name;
+  
+  loadCustomerOrders();
+}
+
+function loadCustomerOrders() {
+  // Get orders from various sources
+  const adminOrders = JSON.parse(localStorage.getItem('adminOrders') || '[]');
+  const shopOrders = JSON.parse(localStorage.getItem('shopOrders') || '[]');
+  
+  // Find customer's orders
+  customerOrders = [
+    ...adminOrders.filter(o => o.customerEmail && o.customerEmail.toLowerCase() === currentCustomer.email.toLowerCase()),
+    ...shopOrders.filter(o => o.email && o.email.toLowerCase() === currentCustomer.email.toLowerCase())
+  ];
+  
+  // Sort by date (newest first)
+  customerOrders.sort((a, b) => new Date(b.orderDate || b.date) - new Date(a.orderDate || a.date));
+  
+  displayOrders();
+}
+
+function displayOrders() {
+  const container = document.getElementById('ordersContainer');
+  
+  if (customerOrders.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <h3>No Orders Yet</h3>
+        <p>You haven't placed any orders with us yet. Ready to treat yourself?</p>
+        <a href="shop.html" class="action-btn btn-primary">🛒 Start Shopping</a>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = customerOrders.map(order => createOrderCard(order)).join('');
+}
+
+function createOrderCard(order) {
+  const deliveryMethod = order.deliveryMethod || 'delivery';
+  const methodIcon = deliveryMethod === 'delivery' ? '🚚' : '🏪';
+  const methodText = deliveryMethod === 'delivery' ? 'Home Delivery' : 'Market Collection';
+  
+  const status = order.status || 'pending';
+  const orderDate = new Date(order.orderDate || order.date).toLocaleDateString();
+  const deliveryDate = new Date(order.deliveryDate).toLocaleDateString();
+  
+  // Calculate days until delivery
+  const today = new Date();
+  const delivery = new Date(order.deliveryDate);
+  const daysUntil = Math.ceil((delivery - today) / (1000 * 60 * 60 * 24));
+  
+  // Create items list
+  let itemsList = '';
+  if (Array.isArray(order.items)) {
+    itemsList = order.items.map(item => `<li>${item.name} x${item.quantity}</li>`).join('');
+  } else {
+    itemsList = `<li>${order.items}</li>`;
+  }
+  
+  // Generate timeline
+  const timeline = generateOrderTimeline(order, daysUntil);
+  
+  // Show notification reminder
+  const showReminder = daysUntil <= 3 && daysUntil >= 0 && status !== 'completed' && status !== 'cancelled';
+  
+  return `
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-id">#${order.id}</div>
+        <div class="order-status status-${status}">${status}</div>
+      </div>
+      
+      <div class="order-items">
+        <h4>🧁 Items Ordered</h4>
+        <ul class="item-list">${itemsList}</ul>
+      </div>
+      
+      <div class="delivery-info">
+        <div class="delivery-method">
+          ${methodIcon} ${methodText}
+        </div>
+        <div class="delivery-details">
+          ${deliveryMethod === 'delivery' 
+            ? `📍 Delivery to: ${order.address || order.customerAddress}<br>📅 Delivery Date: ${deliveryDate}` 
+            : `📍 Collection from: Highworth Market<br>📅 Collection Date: ${deliveryDate} (8 AM - 2 PM)`
+          }
+          ${daysUntil >= 0 ? `<br>⏰ ${daysUntil === 0 ? 'Today!' : daysUntil === 1 ? 'Tomorrow' : `${daysUntil} days to go`}` : '<br>⏰ Completed'}
+        </div>
+      </div>
+      
+      ${showReminder ? `
+        <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 10px; margin: 15px 0;">
+          <strong>📢 Reminder:</strong> Your order is coming up soon! Any last minute changes? 
+          <button class="action-btn btn-primary" onclick="requestChanges('${order.id}')" style="padding: 8px 15px; margin-top: 10px;">Request Changes</button>
+        </div>
+      ` : ''}
+      
+      <div class="order-timeline">
+        <div class="timeline-title">📊 Order Progress</div>
+        <div class="timeline">${timeline}</div>
+      </div>
+      
+      <div class="order-actions">
+        <button class="action-btn btn-primary" onclick="viewOrderDetails('${order.id}')">👁️ View Details</button>
+        ${status === 'pending' ? `<button class="action-btn btn-secondary" onclick="requestChanges('${order.id}')">✏️ Request Changes</button>` : ''}
+        <button class="action-btn btn-success" onclick="contactAboutOrder('${order.id}')">📞 Contact Us</button>
+      </div>
+      
+      <div class="order-total">
+        Total: £${order.total}
+        ${order.deliveryFee > 0 ? `<br><small>(includes £${order.deliveryFee} delivery fee)</small>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function generateOrderTimeline(order, daysUntil) {
+  const status = order.status || 'pending';
+  const deliveryMethod = order.deliveryMethod || 'delivery';
+  
+  const stages = [
+    { id: 'placed', title: 'Order Placed', desc: 'Your order has been received', completed: true },
+    { id: 'confirmed', title: 'Order Confirmed', desc: 'We\'ve confirmed your order details', completed: status !== 'pending' },
+    { id: 'preparing', title: 'Preparing', desc: 'Your delicious treats are being made', completed: ['preparing', 'ready', 'completed'].includes(status) },
+    { id: 'ready', title: deliveryMethod === 'delivery' ? 'Out for Delivery' : 'Ready for Collection', 
+      desc: deliveryMethod === 'delivery' ? 'Your order is on its way' : 'Ready to collect from the market', 
+      completed: ['ready', 'completed'].includes(status) },
+    { id: 'completed', title: 'Completed', desc: deliveryMethod === 'delivery' ? 'Delivered successfully!' : 'Collected successfully!', completed: status === 'completed' }
+  ];
+  
+  let currentIndex = stages.findIndex(stage => !stage.completed);
+  if (currentIndex === -1) currentIndex = stages.length - 1;
+  
+  return stages.map((stage, index) => `
+    <div class="timeline-item ${stage.completed ? 'completed' : ''} ${index === currentIndex ? 'current' : ''}">
+      <div class="timeline-content">
+        <div class="timeline-title">${stage.title}</div>
+        <div class="timeline-desc">${stage.desc}</div>
+        ${stage.completed ? '<div class="timeline-time">✅ Completed</div>' : 
+          index === currentIndex ? '<div class="timeline-time">🔄 In Progress</div>' : 
+          '<div class="timeline-time">⏳ Pending</div>'}
+      </div>
+    </div>
+  `).join('');
+}
+
+function checkForUpcomingOrders() {
+  if (!currentCustomer) return;
+  
+  const today = new Date();
+  customerOrders.forEach(order => {
+    const deliveryDate = new Date(order.deliveryDate);
+    const daysUntil = Math.ceil((deliveryDate - today) / (1000 * 60 * 60 * 24));
+    
+    // Send notification 3 days before, if not already sent
+    if (daysUntil === 3 && !order.reminderSent && order.status !== 'completed' && order.status !== 'cancelled') {
+      showNotification(
+        `📢 Your order #${order.id} is coming up in 3 days! Any last minute changes? Contact us soon.`,
+        'warning'
+      );
+      
+      // Mark reminder as sent
+      order.reminderSent = true;
+      saveOrderUpdates();
+    }
+  });
+}
+
+function saveOrderUpdates() {
+  // Update the orders in localStorage
+  let adminOrders = JSON.parse(localStorage.getItem('adminOrders') || '[]');
+  let shopOrders = JSON.parse(localStorage.getItem('shopOrders') || '[]');
+  
+  customerOrders.forEach(customerOrder => {
+    // Update in admin orders
+    const adminIndex = adminOrders.findIndex(o => o.id === customerOrder.id);
+    if (adminIndex !== -1) {
+      adminOrders[adminIndex] = customerOrder;
+    }
+    
+    // Update in shop orders
+    const shopIndex = shopOrders.findIndex(o => o.id === customerOrder.id);
+    if (shopIndex !== -1) {
+      shopOrders[shopIndex] = customerOrder;
+    }
+  });
+  
+  localStorage.setItem('adminOrders', JSON.stringify(adminOrders));
+  localStorage.setItem('shopOrders', JSON.stringify(shopOrders));
+}
+
+function viewOrderDetails(orderId) {
+  const order = customerOrders.find(o => o.id === orderId);
+  if (!order) return;
+  
+  const orderDate = new Date(order.orderDate || order.date).toLocaleString();
+  const deliveryDate = new Date(order.deliveryDate).toLocaleString();
+  const deliveryMethod = order.deliveryMethod || 'delivery';
+  
+  let itemsList = '';
+  if (Array.isArray(order.items)) {
+    itemsList = order.items.map(item => `<li>${item.name} x${item.quantity} - £${(item.price * item.quantity).toFixed(2)}</li>`).join('');
+  } else {
+    itemsList = `<li>${order.items}</li>`;
+  }
+  
+  const content = `
+    <h4>Order #${order.id}</h4>
+    <p><strong>Order Date:</strong> ${orderDate}</p>
+    <p><strong>Status:</strong> <span class="order-status status-${order.status}">${order.status}</span></p>
+    
+    <h5 style="margin-top: 20px;">Items:</h5>
+    <ul>${itemsList}</ul>
+    
+    <h5 style="margin-top: 20px;">${deliveryMethod === 'delivery' ? 'Delivery' : 'Collection'} Details:</h5>
+    <p><strong>Date:</strong> ${deliveryDate}</p>
+    <p><strong>Method:</strong> ${deliveryMethod === 'delivery' ? '🚚 Home Delivery' : '🏪 Market Collection'}</p>
+    ${order.address ? `<p><strong>Address:</strong> ${order.address}</p>` : ''}
+    
+    ${order.notes ? `<h5 style="margin-top: 20px;">Special Requests:</h5><p>${order.notes}</p>` : ''}
+    
+    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+      ${order.subtotal ? `<p><strong>Subtotal:</strong> £${order.subtotal}</p>` : ''}
+      ${order.deliveryFee > 0 ? `<p><strong>Delivery Fee:</strong> £${order.deliveryFee}</p>` : ''}
+      <p style="font-size: 1.2rem;"><strong>Total: £${order.total}</strong></p>
+    </div>
+  `;
+  
+  showModal('Order Details', content);
+}
+
+function requestChanges(orderId) {
+  const order = customerOrders.find(o => o.id === orderId);
+  if (!order) return;
+  
+  const content = `
+    <h4>Request Changes for Order #${orderId}</h4>
+    <p>We'll do our best to accommodate changes, but please note that some modifications may not be possible if your order is already being prepared.</p>
+    
+    <form id="changesForm">
+      <div style="margin: 20px 0;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold;">What changes would you like to make?</label>
+        <textarea id="changesText" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" placeholder="Please describe the changes you'd like to make to your order..."></textarea>
+      </div>
+      
+      <div style="margin: 20px 0;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Your Contact Number</label>
+        <input type="tel" id="contactNumber" value="${currentCustomer.phone || ''}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+      </div>
+      
+      <button type="submit" class="action-btn btn-primary" style="width: 100%;">📤 Send Change Request</button>
+    </form>
+  `;
+  
+  showModal('Request Changes', content);
+  
+  document.getElementById('changesForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const changes = document.getElementById('changesText').value;
+    const contact = document.getElementById('contactNumber').value;
+    
+    if (changes.trim()) {
+      // In a real app, this would send to your backend/admin system
+      showNotification('Change request sent! We\'ll contact you shortly.', 'success');
+      closeModal();
+      
+      // Add to order notes for admin visibility
+      order.changeRequest = {
+        date: new Date().toISOString(),
+        changes: changes,
+        contact: contact,
+        status: 'pending'
+      };
+      saveOrderUpdates();
+    }
+  });
+}
+
+function contactAboutOrder(orderId) {
+  const order = customerOrders.find(o => o.id === orderId);
+  if (!order) return;
+  
+  const content = `
+    <h4>Contact Us About Order #${orderId}</h4>
+    <p>Need help with your order? Here are the best ways to reach us:</p>
+    
+    <div style="margin: 20px 0;">
+      <div style="padding: 15px; background: #f8f9fa; border-radius: 10px; margin: 10px 0;">
+        <strong>📞 Phone:</strong> 07842817789<br>
+        <small>Monday-Friday: 9 AM - 5 PM</small>
+      </div>
+      
+      <div style="padding: 15px; background: #f8f9fa; border-radius: 10px; margin: 10px 0;">
+        <strong>📧 Email:</strong> cupcakesontheavenue@gmail.com<br>
+        <small>We typically respond within 2 hours</small>
+      </div>
+      
+      <div style="padding: 15px; background: #f8f9fa; border-radius: 10px; margin: 10px 0;">
+        <strong>🏪 In Person:</strong> Highworth Market<br>
+        <small>Saturdays: 8 AM - 2 PM</small>
+      </div>
+    </div>
+    
+    <p style="color: #666; font-size: 0.9rem;">When contacting us, please mention order #${orderId} for faster service.</p>
+  `;
+  
+  showModal('Contact Information', content);
+}
+
+function contactUs() {
+  contactAboutOrder('general inquiry');
+}
+
+function editProfile() {
+  const content = `
+    <h4>Edit Profile</h4>
+    <form id="profileForm">
+      <div style="margin: 15px 0;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Name</label>
+        <input type="text" id="profileName" value="${currentCustomer.name}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+      </div>
+      
+      <div style="margin: 15px 0;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Email</label>
+        <input type="email" id="profileEmail" value="${currentCustomer.email}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+      </div>
+      
+      <div style="margin: 15px 0;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Phone</label>
+        <input type="tel" id="profilePhone" value="${currentCustomer.phone || ''}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+      </div>
+      
+      <button type="submit" class="action-btn btn-primary" style="width: 100%;">💾 Save Changes</button>
+    </form>
+  `;
+  
+  showModal('Edit Profile', content);
+  
+  document.getElementById('profileForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    currentCustomer.name = document.getElementById('profileName').value;
+    currentCustomer.email = document.getElementById('profileEmail').value;
+    currentCustomer.phone = document.getElementById('profilePhone').value;
+    
+    localStorage.setItem('customerAccount', JSON.stringify(currentCustomer));
+    document.getElementById('customerName').textContent = currentCustomer.name;
+    
+    showNotification('Profile updated successfully!', 'success');
+    closeModal();
+  });
+}
+
+// Utility functions
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.innerHTML = `
+    <strong>${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
+    <p>${message}</p>
+  `;
+  
+  document.getElementById('notificationPanel').appendChild(notification);
+  
+  setTimeout(() => {
+    notification.remove();
+  }, 5000);
+}
+
+function showModal(title, content) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = content;
+  document.getElementById('modal').style.display = 'block';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', (e) => {
+  const modal = document.getElementById('modal');
+  if (e.target === modal) {
+    closeModal();
+  }
+});
+</script>
+
+</body>
+</html>

@@ -898,9 +898,38 @@ body {
           <label>Message</label>
           <textarea class="form-control" id="notificationMessage" rows="3" placeholder="Enter your notification message..."></textarea>
         </div>
-        <button class="action-btn btn-primary" onclick="sendPushNotification()">📤 Send Notification</button>
+        <button class="action-btn btn-primary" onclick="sendPushNotification()">📤 Send to All</button>
       </div>
       
+      <div class="dashboard-card">
+        <h2>👤 Individual Customer Contact</h2>
+        <div class="form-group">
+          <label>Select Customer</label>
+          <select class="form-control" id="individualCustomer">
+            <option value="">Choose a customer...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Contact Method</label>
+          <select class="form-control" id="contactMethod">
+            <option value="push">Push Notification</option>
+            <option value="email">Email</option>
+            <option value="sms">SMS</option>
+            <option value="call">Phone Call</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea class="form-control" id="individualMessage" rows="3" placeholder="Personal message to customer..."></textarea>
+        </div>
+        <div class="form-group">
+          <button class="action-btn btn-success" onclick="contactIndividualCustomer()">📞 Send Message</button>
+          <button class="action-btn btn-info" onclick="viewCustomerHistory()">📋 View History</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="dashboard-grid">
       <div class="dashboard-card">
         <h2>📧 Email Campaign</h2>
         <div class="form-group">
@@ -921,6 +950,26 @@ body {
           <textarea class="form-control" id="emailMessage" rows="4" placeholder="Email content..."></textarea>
         </div>
         <button class="action-btn btn-primary" onclick="sendEmailCampaign()">📧 Send Email</button>
+      </div>
+      
+      <div class="dashboard-card">
+        <h2>📊 Communication History</h2>
+        <div class="table-container" style="max-height: 300px; overflow-y: auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Method</th>
+                <th>Message</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="communicationHistory">
+              <!-- Communication history will be populated here -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     
@@ -1184,19 +1233,28 @@ function loadOrdersTable() {
   tbody.innerHTML = '';
   
   orders.forEach(order => {
+    const deliveryMethod = order.deliveryMethod || 'delivery';
+    const methodIcon = deliveryMethod === 'delivery' ? '🚚' : '🏪';
+    
+    // Calculate days until delivery
+    const today = new Date();
+    const deliveryDate = new Date(order.deliveryDate);
+    const daysUntil = Math.ceil((deliveryDate - deliveryDate) / (1000 * 60 * 60 * 24));
+    
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>#${order.id}</td>
-      <td>${order.customerName}</td>
+      <td>${order.customerName}<br><small>${order.customerEmail || ''}</small></td>
       <td>${order.items}</td>
-      <td>£${order.total}</td>
+      <td>£${order.total}<br><small>${methodIcon} ${deliveryMethod}</small></td>
       <td><span class="status-badge status-${order.status}">${order.status}</span></td>
       <td><span class="status-badge status-${order.paymentStatus}">${order.paymentStatus}</span></td>
-      <td>${order.deliveryDate}</td>
+      <td>${order.deliveryDate}<br><small>${order.reminderSent ? '✅ Reminder sent' : '📅 No reminder'}</small></td>
       <td>
         <button class="action-btn btn-info" onclick="viewOrder('${order.id}')">👁️</button>
         <button class="action-btn btn-success" onclick="updateOrderStatus('${order.id}', 'confirmed')">✅</button>
         <button class="action-btn btn-warning" onclick="updateOrderStatus('${order.id}', 'completed')">🎯</button>
+        <button class="action-btn btn-primary" onclick="sendManualReminder('${order.id}')" title="Send Reminder">📱</button>
         <button class="action-btn btn-danger" onclick="deleteOrder('${order.id}')">🗑️</button>
       </td>
     `;
@@ -1598,14 +1656,395 @@ function showDayDetails(dateStr) {
   if (dayOrders.length > 0) {
     content += '<ul>';
     dayOrders.forEach(order => {
-      content += `<li>${order.customerName} - ${order.items} (£${order.total})</li>`;
+      const deliveryMethod = order.deliveryMethod || 'delivery';
+      const methodIcon = deliveryMethod === 'delivery' ? '🚚' : '🏪';
+      const methodText = deliveryMethod === 'delivery' ? 'Delivery' : 'Market Collection';
+      content += `<li><strong>${order.customerName}</strong><br>
+                      ${order.items}<br>
+                      <span style="color: #667eea;">${methodIcon} ${methodText} - £${order.total}</span></li>`;
     });
     content += '</ul>';
   } else {
     content += '<p>No orders for this date.</p>';
   }
   
+  // Add day-specific info
+  const dayOfWeek = new Date(dateStr).getDay();
+  if (dayOfWeek === 6) { // Saturday
+    content += '<hr><p style="color: #667eea; font-weight: bold;">📍 Saturday: Market Collection Available (8 AM - 2 PM)</p>';
+  } else if (dayOfWeek >= 1 && dayOfWeek <= 5) { // Monday-Friday
+    content += '<hr><p style="color: #667eea; font-weight: bold;">🚚 Weekday: Home Delivery Available</p>';
+  } else { // Sunday
+    content += '<hr><p style="color: #999;">📅 Sunday: No services available</p>';
+  }
+  
   showModal('Day Details', content);
+}
+
+// Calendar Sync Functions
+function syncCalendarWithOrders() {
+  // Sync admin calendar with shop orders from localStorage
+  const shopOrders = JSON.parse(localStorage.getItem('shopOrders') || '[]');
+  const webOrders = JSON.parse(localStorage.getItem('webOrders') || '[]');
+  
+  // Merge shop and web orders into admin system
+  shopOrders.forEach(shopOrder => {
+    const existingOrder = orders.find(o => o.id === shopOrder.id);
+    if (!existingOrder) {
+      orders.push({
+        id: shopOrder.id || `WEB-${Date.now()}`,
+        customerName: shopOrder.name,
+        customerEmail: shopOrder.email,
+        customerPhone: shopOrder.mobile,
+        customerAddress: shopOrder.address,
+        deliveryMethod: shopOrder.deliveryMethod || 'delivery',
+        deliveryFee: shopOrder.deliveryFee || 0,
+        items: shopOrder.items.map(item => `${item.name} x${item.quantity}`).join(', '),
+        subtotal: shopOrder.subtotal ? shopOrder.subtotal.toFixed(2) : (shopOrder.total - (shopOrder.deliveryFee || 0)).toFixed(2),
+        total: shopOrder.total.toFixed(2),
+        status: 'pending',
+        paymentStatus: 'unpaid',
+        deliveryDate: shopOrder.deliveryDate || getTomorrowDate(),
+        date: new Date().toISOString().split('T')[0],
+        deposit: (shopOrder.total * 0.25).toFixed(2),
+        remaining: (shopOrder.total * 0.75).toFixed(2),
+        notes: shopOrder.notes || '',
+        source: 'website'
+      });
+      
+      // Add customer if new
+      addCustomerFromOrder(shopOrder);
+    }
+  });
+  
+  // Save updated orders
+  localStorage.setItem('adminOrders', JSON.stringify(orders));
+  generateCalendar();
+  loadOrdersTable();
+  showNotification('Calendar synced with website orders!', 'success');
+}
+
+function getTomorrowDate() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 7); // 7 days minimum lead time
+  return tomorrow.toISOString().split('T')[0];
+}
+
+// Customer Management Functions
+function addCustomerFromOrder(orderData) {
+  const existingCustomer = customers.find(c => c.email === orderData.email);
+  
+  if (!existingCustomer) {
+    const newCustomer = {
+      name: orderData.name,
+      email: orderData.email,
+      phone: orderData.mobile || '',
+      address: orderData.address || '',
+      joinDate: new Date().toISOString().split('T')[0],
+      loyaltyPoints: 10, // Welcome points
+      notes: '',
+      preferences: [],
+      communicationHistory: [],
+      lastContact: null
+    };
+    
+    customers.push(newCustomer);
+    localStorage.setItem('adminCustomers', JSON.stringify(customers));
+    updateCustomerDropdown();
+    showNotification(`New customer added: ${newCustomer.name}`, 'success');
+  }
+}
+
+function updateCustomerDropdown() {
+  const dropdown = document.getElementById('individualCustomer');
+  if (dropdown) {
+    dropdown.innerHTML = '<option value="">Choose a customer...</option>';
+    customers.forEach(customer => {
+      const option = document.createElement('option');
+      option.value = customer.email;
+      option.textContent = `${customer.name} - ${customer.email}`;
+      dropdown.appendChild(option);
+    });
+  }
+}
+
+// Individual Customer Communication
+function contactIndividualCustomer() {
+  const customerEmail = document.getElementById('individualCustomer').value;
+  const method = document.getElementById('contactMethod').value;
+  const message = document.getElementById('individualMessage').value;
+  
+  if (!customerEmail || !message.trim()) {
+    showNotification('Please select a customer and enter a message', 'error');
+    return;
+  }
+  
+  const customer = customers.find(c => c.email === customerEmail);
+  if (!customer) {
+    showNotification('Customer not found', 'error');
+    return;
+  }
+  
+  // Record communication
+  const communication = {
+    date: new Date().toISOString(),
+    customer: customer.name,
+    email: customerEmail,
+    method: method,
+    message: message,
+    status: 'sent',
+    sentBy: currentUser.username
+  };
+  
+  // Add to customer's communication history
+  if (!customer.communicationHistory) {
+    customer.communicationHistory = [];
+  }
+  customer.communicationHistory.push(communication);
+  customer.lastContact = new Date().toISOString().split('T')[0];
+  
+  // Add to global communication history
+  let commHistory = JSON.parse(localStorage.getItem('communicationHistory') || '[]');
+  commHistory.unshift(communication);
+  localStorage.setItem('communicationHistory', JSON.stringify(commHistory));
+  
+  // Save updated customer data
+  localStorage.setItem('adminCustomers', JSON.stringify(customers));
+  
+  // Send notification based on method
+  switch(method) {
+    case 'push':
+      sendPushToCustomer(customer, message);
+      break;
+    case 'email':
+      sendEmailToCustomer(customer, message);
+      break;
+    case 'sms':
+      sendSMSToCustomer(customer, message);
+      break;
+    case 'call':
+      initiatePhoneCall(customer, message);
+      break;
+  }
+  
+  // Clear form and update history
+  document.getElementById('individualMessage').value = '';
+  loadCommunicationHistory();
+  showNotification(`${method.toUpperCase()} sent to ${customer.name}`, 'success');
+}
+
+function sendPushToCustomer(customer, message) {
+  // In a real app, this would send a targeted push notification
+  console.log(`Push notification to ${customer.email}:`, message);
+  
+  // Simulate sending to their browser if they have the PWA installed
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    // This would be handled by your service worker and push service
+    showNotification(`Push notification queued for ${customer.name}`, 'info');
+  }
+}
+
+function sendEmailToCustomer(customer, message) {
+  // In a real app, this would integrate with your email service
+  console.log(`Email to ${customer.email}:`, message);
+  showNotification(`Email queued for ${customer.name}`, 'info');
+}
+
+function sendSMSToCustomer(customer, message) {
+  // In a real app, this would integrate with SMS service like Twilio
+  console.log(`SMS to ${customer.phone}:`, message);
+  showNotification(`SMS queued for ${customer.name}`, 'info');
+}
+
+function initiatePhoneCall(customer, message) {
+  // Open phone dialer with customer's number
+  if (customer.phone) {
+    window.open(`tel:${customer.phone}`);
+    showNotification(`Call initiated to ${customer.name} (${customer.phone})`, 'info');
+  } else {
+    showNotification('No phone number on file for this customer', 'error');
+  }
+}
+
+function viewCustomerHistory() {
+  const customerEmail = document.getElementById('individualCustomer').value;
+  if (!customerEmail) {
+    showNotification('Please select a customer first', 'error');
+    return;
+  }
+  
+  const customer = customers.find(c => c.email === customerEmail);
+  if (!customer) {
+    showNotification('Customer not found', 'error');
+    return;
+  }
+  
+  const customerOrders = orders.filter(o => o.customerEmail === customerEmail);
+  const commHistory = customer.communicationHistory || [];
+  
+  let content = `
+    <h4>Customer Profile: ${customer.name}</h4>
+    <p><strong>Email:</strong> ${customer.email}</p>
+    <p><strong>Phone:</strong> ${customer.phone || 'Not provided'}</p>
+    <p><strong>Address:</strong> ${customer.address || 'Not provided'}</p>
+    <p><strong>Join Date:</strong> ${customer.joinDate}</p>
+    <p><strong>Loyalty Points:</strong> ${customer.loyaltyPoints || 0}</p>
+    <p><strong>Total Orders:</strong> ${customerOrders.length}</p>
+    <p><strong>Total Spent:</strong> £${customerOrders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0).toFixed(2)}</p>
+    
+    <h5 style="margin-top: 20px;">Recent Orders</h5>
+    <ul>
+  `;
+  
+  customerOrders.slice(0, 5).forEach(order => {
+    content += `<li>${order.date} - ${order.items} (£${order.total}) - ${order.status}</li>`;
+  });
+  
+  content += `</ul><h5 style="margin-top: 20px;">Communication History</h5><ul>`;
+  
+  commHistory.slice(0, 10).forEach(comm => {
+    const date = new Date(comm.date).toLocaleDateString();
+    content += `<li>${date} - ${comm.method.toUpperCase()}: ${comm.message}</li>`;
+  });
+  
+  content += '</ul>';
+  showModal('Customer History', content);
+}
+
+function loadCommunicationHistory() {
+  const commHistory = JSON.parse(localStorage.getItem('communicationHistory') || '[]');
+  const tbody = document.getElementById('communicationHistory');
+  
+  if (tbody) {
+    tbody.innerHTML = '';
+    commHistory.slice(0, 20).forEach(comm => {
+      const row = document.createElement('tr');
+      const date = new Date(comm.date).toLocaleDateString();
+      row.innerHTML = `
+        <td>${date}</td>
+        <td>${comm.customer}</td>
+        <td><span class="status-badge status-${comm.method}">${comm.method.toUpperCase()}</span></td>
+        <td>${comm.message.length > 50 ? comm.message.substring(0, 50) + '...' : comm.message}</td>
+        <td><span class="status-badge status-${comm.status}">${comm.status}</span></td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+}
+
+// Enhanced Data Sync Functions
+function exportCustomerData() {
+  const data = {
+    customers: customers,
+    orders: orders,
+    communicationHistory: JSON.parse(localStorage.getItem('communicationHistory') || '[]'),
+    exportDate: new Date().toISOString()
+  };
+  
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `customer-data-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  showNotification('Customer data exported successfully!', 'success');
+}
+
+function importWebOrderData() {
+  // This function would be called periodically or manually to sync with web orders
+  syncCalendarWithOrders();
+}
+
+// Enhanced order functions with delivery date
+function addOrder() {
+  const content = `
+    <h4>Add New Order</h4>
+    <form id="newOrderForm">
+      <div class="form-group">
+        <label>Customer Name</label>
+        <input type="text" class="form-control" id="newOrderName" required>
+      </div>
+      <div class="form-group">
+        <label>Customer Email</label>
+        <input type="email" class="form-control" id="newOrderEmail" required>
+      </div>
+      <div class="form-group">
+        <label>Customer Phone</label>
+        <input type="tel" class="form-control" id="newOrderPhone">
+      </div>
+      <div class="form-group">
+        <label>Items</label>
+        <textarea class="form-control" id="newOrderItems" rows="3" placeholder="List items ordered..." required></textarea>
+      </div>
+      <div class="form-group">
+        <label>Total Amount (£)</label>
+        <input type="number" class="form-control" id="newOrderTotal" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label>Delivery Date</label>
+        <input type="date" class="form-control" id="newOrderDeliveryDate" required min="${getTomorrowDate()}">
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea class="form-control" id="newOrderNotes" rows="2" placeholder="Special instructions..."></textarea>
+      </div>
+      <button type="submit" class="action-btn btn-success">Add Order</button>
+    </form>
+  `;
+  
+  showModal('Add New Order', content);
+  
+  // Add form submission handler
+  document.getElementById('newOrderForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const newOrder = {
+      id: `ADM-${Date.now()}`,
+      customerName: document.getElementById('newOrderName').value,
+      customerEmail: document.getElementById('newOrderEmail').value,
+      customerPhone: document.getElementById('newOrderPhone').value,
+      items: document.getElementById('newOrderItems').value,
+      total: document.getElementById('newOrderTotal').value,
+      status: 'pending',
+      paymentStatus: 'unpaid',
+      deliveryDate: document.getElementById('newOrderDeliveryDate').value,
+      date: new Date().toISOString().split('T')[0],
+      deposit: (parseFloat(document.getElementById('newOrderTotal').value) * 0.25).toFixed(2),
+      remaining: (parseFloat(document.getElementById('newOrderTotal').value) * 0.75).toFixed(2),
+      notes: document.getElementById('newOrderNotes').value,
+      source: 'admin'
+    };
+    
+    orders.push(newOrder);
+    localStorage.setItem('adminOrders', JSON.stringify(orders));
+    
+    // Add customer if new
+    addCustomerFromOrder({
+      name: newOrder.customerName,
+      email: newOrder.customerEmail,
+      mobile: newOrder.customerPhone
+    });
+    
+    loadOrdersTable();
+    generateCalendar();
+    closeModal();
+    showNotification('Order added successfully!', 'success');
+  });
+}
+
+// Initialize enhanced functions when dashboard loads
+function initializeEnhancedFeatures() {
+  updateCustomerDropdown();
+  loadCommunicationHistory();
+  
+  // Auto-sync with web orders every 30 seconds
+  setInterval(() => {
+    if (currentUser && document.getElementById('dashboard').style.display === 'block') {
+      importWebOrderData();
+    }
+  }, 30000);
 }
 
 // Close modal when clicking outside
@@ -1620,8 +2059,177 @@ window.addEventListener('click', (e) => {
 setInterval(() => {
   if (currentUser && document.getElementById('dashboard').style.display === 'block') {
     refreshAllData();
+    checkUpcomingOrdersForNotifications();
   }
 }, 300000);
+
+// Automatic notification system for upcoming orders
+function checkUpcomingOrdersForNotifications() {
+  const today = new Date();
+  
+  orders.forEach(order => {
+    const deliveryDate = new Date(order.deliveryDate);
+    const daysUntil = Math.ceil((deliveryDate - today) / (1000 * 60 * 60 * 24));
+    
+    // Send 3-day reminder if not already sent
+    if (daysUntil === 3 && !order.reminderSent && order.status !== 'completed' && order.status !== 'cancelled') {
+      sendAutomaticReminder(order);
+      order.reminderSent = true;
+      localStorage.setItem('adminOrders', JSON.stringify(orders));
+    }
+  });
+}
+
+function sendAutomaticReminder(order) {
+  const deliveryMethod = order.deliveryMethod || 'delivery';
+  const methodText = deliveryMethod === 'delivery' ? 'delivery' : 'collection from Highworth Market';
+  
+  const message = `Hi ${order.customerName}! Your order #${order.id} is scheduled for ${methodText} in 3 days (${order.deliveryDate}). Any last minute changes? Please contact us soon! 🧁`;
+  
+  // Send push notification to customer
+  sendPushToCustomer({
+    name: order.customerName,
+    email: order.customerEmail,
+    phone: order.customerPhone
+  }, message);
+  
+  // Log in communication history
+  const communication = {
+    date: new Date().toISOString(),
+    customer: order.customerName,
+    email: order.customerEmail,
+    method: 'automatic-push',
+    message: message,
+    status: 'sent',
+    sentBy: 'system',
+    orderId: order.id
+  };
+  
+  let commHistory = JSON.parse(localStorage.getItem('communicationHistory') || '[]');
+  commHistory.unshift(communication);
+  localStorage.setItem('communicationHistory', JSON.stringify(commHistory));
+  
+  // Show admin notification
+  showNotification(`📱 Automatic reminder sent to ${order.customerName} for order #${order.id}`, 'success');
+  
+  // Send Discord notification to admin
+  const webhookUrl = document.getElementById('discordWebhook')?.value;
+  if (webhookUrl) {
+    fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        content: `🔔 **Automatic Reminder Sent**\n📋 Order: #${order.id}\n👤 Customer: ${order.customerName}\n📅 ${methodText.charAt(0).toUpperCase() + methodText.slice(1)} in 3 days\n💬 Message: "${message}"`,
+        username: 'Order Reminder Bot',
+        avatar_url: 'https://cdn.discordapp.com/emojis/1028516711491154031.webp'
+      })
+    });
+  }
+}
+
+// Manual reminder function for admin use
+function sendManualReminder(orderId) {
+  const order = orders.find(o => o.id === orderId);
+  if (!order) return;
+  
+  const deliveryMethod = order.deliveryMethod || 'delivery';
+  const methodText = deliveryMethod === 'delivery' ? 'delivery' : 'collection from Highworth Market';
+  
+  const content = `
+    <h4>Send Reminder for Order #${orderId}</h4>
+    <p><strong>Customer:</strong> ${order.customerName}</p>
+    <p><strong>Scheduled:</strong> ${methodText} on ${order.deliveryDate}</p>
+    
+    <form id="reminderForm">
+      <div class="form-group">
+        <label>Reminder Message</label>
+        <textarea class="form-control" id="reminderMessage" rows="4">Hi ${order.customerName}! Your order #${order.id} is scheduled for ${methodText} on ${order.deliveryDate}. Any last minute changes? Please let us know! 🧁</textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Send Method</label>
+        <select class="form-control" id="reminderMethod">
+          <option value="push">Push Notification</option>
+          <option value="email">Email</option>
+          <option value="sms">SMS</option>
+        </select>
+      </div>
+      
+      <button type="submit" class="action-btn btn-primary">📤 Send Reminder</button>
+    </form>
+  `;
+  
+  showModal('Send Order Reminder', content);
+  
+  document.getElementById('reminderForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const message = document.getElementById('reminderMessage').value;
+    const method = document.getElementById('reminderMethod').value;
+    
+    // Send the reminder
+    const customer = {
+      name: order.customerName,
+      email: order.customerEmail,
+      phone: order.customerPhone
+    };
+    
+    switch(method) {
+      case 'push':
+        sendPushToCustomer(customer, message);
+        break;
+      case 'email':
+        sendEmailToCustomer(customer, message);
+        break;
+      case 'sms':
+        sendSMSToCustomer(customer, message);
+        break;
+    }
+    
+    // Log the communication
+    const communication = {
+      date: new Date().toISOString(),
+      customer: order.customerName,
+      email: order.customerEmail,
+      method: method,
+      message: message,
+      status: 'sent',
+      sentBy: currentUser.username,
+      orderId: order.id
+    };
+    
+    let commHistory = JSON.parse(localStorage.getItem('communicationHistory') || '[]');
+    commHistory.unshift(communication);
+    localStorage.setItem('communicationHistory', JSON.stringify(commHistory));
+    
+    loadCommunicationHistory();
+    closeModal();
+    showNotification(`Reminder sent via ${method.toUpperCase()} to ${order.customerName}`, 'success');
+  });
+}
+
+// Check for upcoming orders every hour
+setInterval(checkUpcomingOrdersForNotifications, 60 * 60 * 1000);
+
+// Initialize enhanced features on dashboard load
+document.addEventListener('DOMContentLoaded', () => {
+  // Add enhanced initialization when tab switches to communications
+  const originalSwitchTab = switchTab;
+  window.switchTab = function(tabName) {
+    originalSwitchTab(tabName);
+    if (tabName === 'communications') {
+      updateCustomerDropdown();
+      loadCommunicationHistory();
+    }
+  };
+  
+  // Run initial check for upcoming orders
+  setTimeout(() => {
+    if (currentUser) {
+      checkUpcomingOrdersForNotifications();
+    }
+  }, 5000);
+});
 </script>
 
 </body>

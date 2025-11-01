@@ -611,7 +611,7 @@ footer img {
     <a href="index.html">Home</a>
     <a href="shop.html" class="active">Shop</a>
     <a href="index.html#market">Market</a>
-    <a href="index.html#account">Account</a>
+    <a href="account.html">Account</a>
   </nav>
 </header>
 
@@ -801,9 +801,19 @@ footer img {
     <div id="checkoutItems" style="margin-bottom: 20px;"></div>
     
     <div style="border-top: 2px solid #f0f0f0; padding-top: 20px; margin-bottom: 20px;">
-      <div style="display: flex; justify-content: space-between; font-size: 1.5rem; font-weight: bold; color: #667eea;">
-        <span>Total:</span>
-        <span id="checkoutTotal">£0.00</span>
+      <div id="checkoutSummary">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+          <span>Subtotal:</span>
+          <span id="checkoutSubtotal">£0.00</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;" id="deliveryFeeRow">
+          <span>Delivery Fee:</span>
+          <span id="checkoutDeliveryFee">£5.00</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 1.5rem; font-weight: bold; color: #667eea; border-top: 1px solid #f0f0f0; padding-top: 10px;">
+          <span>Total:</span>
+          <span id="checkoutTotal">£0.00</span>
+        </div>
       </div>
     </div>
 
@@ -812,7 +822,28 @@ footer img {
       <input type="text" id="customerName" placeholder="Full Name *" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
       <input type="email" id="customerEmail" placeholder="Email Address *" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
       <input type="tel" id="customerMobile" placeholder="Mobile Number *" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
-      <input type="text" id="customerAddress" placeholder="Delivery Address *" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <input type="text" id="customerAddress" placeholder="Delivery Address (if delivery selected)" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      
+      <h3 style="color: #667eea; margin: 20px 0 15px 0;">Delivery & Collection</h3>
+      
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #555;">Delivery Method *</label>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <label style="display: flex; align-items: center; cursor: pointer; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; background: #f8f9fa;">
+            <input type="radio" name="deliveryMethod" value="delivery" required style="margin-right: 10px;" checked>
+            <span><strong>🚚 Home Delivery</strong> - Available Monday-Friday (£5 delivery fee)</span>
+          </label>
+          <label style="display: flex; align-items: center; cursor: pointer; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; background: #f8f9fa;">
+            <input type="radio" name="deliveryMethod" value="market" required style="margin-right: 10px;">
+            <span><strong>🏪 Collect from Highworth Market</strong> - Saturdays 8 AM - 2 PM (No fee)</span>
+          </label>
+        </div>
+      </div>
+      
+      <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #555;">Preferred Date *</label>
+      <input type="date" id="deliveryDate" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <p id="dateInfo" style="color: #666; font-size: 0.9rem; margin-top: -5px; margin-bottom: 15px;">Minimum 7 days notice required. Delivery available Monday-Friday.</p>
+      
       <textarea id="customerNotes" rows="3" placeholder="Special Requests (optional)" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;"></textarea>
       
       <div style="margin: 20px 0;">
@@ -950,7 +981,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const modal = document.getElementById('checkoutModal');
     const itemsContainer = document.getElementById('checkoutItems');
-    const totalElement = document.getElementById('checkoutTotal');
     
     // Populate checkout items
     itemsContainer.innerHTML = cart.map(item => `
@@ -960,30 +990,173 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `).join('');
     
-    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    totalElement.textContent = `£${total.toFixed(2)}`;
+    // Set minimum delivery date (7 days from now)
+    const minDate = new Date();
+    minDate.setDate(minDate.getDate() + 7);
+    document.getElementById('deliveryDate').min = minDate.toISOString().split('T')[0];
+    
+    // Initialize totals
+    updateCheckoutTotal();
     
     modal.style.display = 'block';
   });
+  
+  // Function to update checkout total based on delivery method
+  function updateCheckoutTotal() {
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const deliveryMethod = document.querySelector('input[name="deliveryMethod"]:checked').value;
+    const deliveryFee = deliveryMethod === 'delivery' ? 5.00 : 0.00;
+    const total = subtotal + deliveryFee;
+    
+    document.getElementById('checkoutSubtotal').textContent = `£${subtotal.toFixed(2)}`;
+    document.getElementById('checkoutDeliveryFee').textContent = `£${deliveryFee.toFixed(2)}`;
+    document.getElementById('checkoutTotal').textContent = `£${total.toFixed(2)}`;
+    
+    // Show/hide delivery fee row
+    const deliveryFeeRow = document.getElementById('deliveryFeeRow');
+    if (deliveryMethod === 'delivery') {
+      deliveryFeeRow.style.display = 'flex';
+    } else {
+      deliveryFeeRow.style.display = 'none';
+    }
+  }
 
   // Close checkout modal
   document.getElementById('closeCheckout').addEventListener('click', () => {
     document.getElementById('checkoutModal').style.display = 'none';
   });
 
+  // Delivery method change handler
+  document.querySelectorAll('input[name="deliveryMethod"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      const addressField = document.getElementById('customerAddress');
+      const dateInfo = document.getElementById('dateInfo');
+      
+      if (e.target.value === 'delivery') {
+        addressField.required = true;
+        addressField.placeholder = 'Delivery Address *';
+        dateInfo.textContent = 'Minimum 7 days notice required. Delivery available Monday-Friday.';
+      } else {
+        addressField.required = false;
+        addressField.placeholder = 'Delivery Address (not needed for market collection)';
+        dateInfo.textContent = 'Minimum 7 days notice required. Market collection available Saturdays 8 AM - 2 PM.';
+      }
+      
+      // Update checkout total when delivery method changes
+      if (document.getElementById('checkoutModal').style.display === 'block') {
+        updateCheckoutTotal();
+      }
+      
+      // Clear the date field to trigger re-validation
+      document.getElementById('deliveryDate').value = '';
+    });
+  });
+
+  // Delivery date validation
+  document.getElementById('deliveryDate').addEventListener('change', (e) => {
+    const selectedDate = new Date(e.target.value);
+    const today = new Date();
+    const minDate = new Date();
+    minDate.setDate(today.getDate() + 7);
+    
+    // Check if date is too soon
+    if (selectedDate < minDate) {
+      showToast('⚠️ Please select a date at least 7 days in advance');
+      e.target.value = '';
+      return;
+    }
+    
+    // Get selected delivery method
+    const deliveryMethod = document.querySelector('input[name="deliveryMethod"]:checked').value;
+    const dayOfWeek = selectedDate.getDay(); // 0=Sunday, 1=Monday, 2=Tuesday, etc.
+    
+    if (deliveryMethod === 'delivery') {
+      // For delivery: Monday-Friday only (1-5)
+      if (dayOfWeek === 0 || dayOfWeek === 6) {
+        showToast('⚠️ Delivery is only available Monday-Friday. Please choose another date or select market collection for Saturday.');
+        e.target.value = '';
+        return;
+      }
+    } else {
+      // For market collection: Saturday only (6)
+      if (dayOfWeek !== 6) {
+        showToast('⚠️ Market collection is only available on Saturdays. Please choose a Saturday or select home delivery for other days.');
+        e.target.value = '';
+        return;
+      }
+    }
+    
+    // Check against blocked dates
+    const blockedDates = JSON.parse(localStorage.getItem('adminBlockedDates') || '[]');
+    const dateStr = selectedDate.toISOString().split('T')[0];
+    if (blockedDates.includes(dateStr)) {
+      showToast('⚠️ Sorry, this date is not available. Please choose another date');
+      e.target.value = '';
+      return;
+    }
+  });
+
   // Form submission
   document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
+    const deliveryDate = document.getElementById('deliveryDate').value;
+    if (!deliveryDate) {
+      showToast('⚠️ Please select a delivery/collection date');
+      return;
+    }
+    
+    const deliveryMethod = document.querySelector('input[name="deliveryMethod"]:checked').value;
+    const customerAddress = document.getElementById('customerAddress').value;
+    
+    // Validate address for delivery
+    if (deliveryMethod === 'delivery' && !customerAddress.trim()) {
+      showToast('⚠️ Please enter a delivery address');
+      return;
+    }
+    
+    const deliveryFee = deliveryMethod === 'delivery' ? 5.00 : 0.00;
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const total = subtotal + deliveryFee;
+    
     const formData = {
+      id: `WEB-${Date.now()}`,
       name: document.getElementById('customerName').value,
       email: document.getElementById('customerEmail').value,
       mobile: document.getElementById('customerMobile').value,
-      address: document.getElementById('customerAddress').value,
+      address: deliveryMethod === 'delivery' ? customerAddress : 'Market Collection',
+      deliveryDate: deliveryDate,
+      deliveryMethod: deliveryMethod,
+      deliveryFee: deliveryFee,
       notes: document.getElementById('customerNotes').value,
       items: cart,
-      total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+      subtotal: subtotal,
+      total: total,
+      orderDate: new Date().toISOString(),
+      status: 'pending',
+      paymentStatus: 'unpaid',
+      source: 'website'
     };
+
+    // Save order to localStorage for admin sync
+    let shopOrders = JSON.parse(localStorage.getItem('shopOrders') || '[]');
+    shopOrders.push(formData);
+    localStorage.setItem('shopOrders', JSON.stringify(shopOrders));
+    
+    // Also save customer data for admin system
+    let customers = JSON.parse(localStorage.getItem('webCustomers') || '[]');
+    const existingCustomer = customers.find(c => c.email === formData.email);
+    if (!existingCustomer) {
+      customers.push({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.mobile,
+        address: formData.address,
+        joinDate: new Date().toISOString().split('T')[0],
+        source: 'website'
+      });
+      localStorage.setItem('webCustomers', JSON.stringify(customers));
+    }
 
     // Here you would normally send to your backend
     console.log('Order placed:', formData);
@@ -994,7 +1167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateStickyCart();
     document.getElementById('checkoutModal').style.display = 'none';
     
-    showToast('🎉 Order placed successfully! You will receive a confirmation email.');
+    showToast('🎉 Order placed successfully! You will receive a confirmation email. Admin has been notified.');
     
     // Reset form
     document.getElementById('checkoutForm').reset();
