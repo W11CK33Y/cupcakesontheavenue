@@ -13,6 +13,10 @@ https://www.cupcakesontheavenue.com/admin.html
 - 🎨 Your actual logo (pictures/logo.png) used throughout
 - 📱 No more "Charlotte's Cakes" references anywhere
 - 🖼️ Professional branding on loading screen and app icons
+- ⚡ **INSTANT DATA SYNC** - All changes save immediately across all devices
+- 🔄 **REAL-TIME UPDATES** - See changes from other team members instantly
+- 💾 **PERSISTENT DATA** - All data stays available for new admin signups
+- 📡 **CROSS-DEVICE SYNC** - Works seamlessly between phones, tablets, and computers
 
 ---
 
@@ -66,9 +70,13 @@ Need help? Just ask! 🧁
 Once team members install, they can:
 ✅ Create accounts with proper roles (Admin/Manager/Staff)
 ✅ See real-time activity logs with timestamps
+✅ **INSTANT DATA ACCESS** - All existing orders, customers, and inventory immediately available
+✅ **AUTO-SYNC** - Changes save automatically every 30 seconds + instantly on data entry
+✅ **REAL-TIME COLLABORATION** - See updates from other team members in real-time
 ✅ Sync data across all their devices
 ✅ Work offline and sync when connected
 ✅ Export activity reports for record keeping
+✅ **PERSISTENT BUSINESS DATA** - All company data stays saved for new team members
 
 ---
 

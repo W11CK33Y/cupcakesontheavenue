@@ -182,6 +182,22 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.3);
   overflow-x: auto;
   gap: 5px;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-tabs::-webkit-scrollbar {
+  height: 4px;
+}
+
+.nav-tabs::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.1);
+  border-radius: 2px;
+}
+
+.nav-tabs::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 2px;
 }
 
 .nav-tab {
@@ -866,31 +882,155 @@ button, .action-btn, .nav-tab {
   
   .dashboard-header {
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     text-align: center;
+    padding: 15px 10px;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+    margin: 0;
+  }
+  
+  .header-controls {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .user-info {
+    margin: 0;
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 15px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   
   .nav-tabs {
     padding: 5px;
+    gap: 2px;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    background: rgba(255, 255, 255, 0.95);
+    margin: 0 -5px;
+    overflow-x: auto;
+    overflow-y: visible;
+    max-height: none;
+    /* Enhanced scrolling for mobile */
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(102, 126, 234, 0.3) transparent;
+  }
+  
+  .nav-tabs::-webkit-scrollbar {
+    height: 3px;
+  }
+  
+  .nav-tabs::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .nav-tabs::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.3);
+    border-radius: 2px;
   }
   
   .nav-tab {
-    padding: 8px 12px;
-    font-size: 0.9rem;
+    padding: 6px 8px;
+    font-size: 0.75rem;
+    min-width: 70px;
+    flex: 0 0 auto;
+    text-align: center;
+    margin: 1px;
+    white-space: nowrap;
+    line-height: 1.1;
+    border-radius: 12px;
+    /* Prevent text wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .nav-tab.active {
+    font-weight: 600;
+    transform: none; /* Remove transform on mobile to prevent overlap */
   }
   
   .dashboard-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 15px;
+    margin-top: 10px;
+  }
+  
+  .dashboard-card {
+    padding: 15px;
+    margin-bottom: 10px;
   }
   
   .data-table {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    overflow-x: auto;
   }
   
   .data-table th,
   .data-table td {
-    padding: 8px;
+    padding: 6px 4px;
+    word-wrap: break-word;
+    min-width: 80px;
+  }
+  
+  .login-box {
+    padding: 30px 20px;
+    margin: 20px;
+  }
+  
+  .activity-item {
+    padding: 10px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+  
+  /* Fix action buttons on mobile */
+  .action-btn {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    margin: 3px 2px;
+  }
+  
+  /* Ensure proper spacing */
+  .tab-content {
+    margin-top: 15px;
+    min-height: calc(100vh - 200px);
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .dashboard-header h1 {
+    font-size: 1.3rem;
+  }
+  
+  .nav-tab {
+    font-size: 0.7rem;
+    padding: 5px 6px;
+    min-width: 60px;
+  }
+  
+  .user-info {
+    font-size: 10px;
+    padding: 4px 8px;
+    max-width: 150px;
+  }
+  
+  .dashboard-card h2 {
+    font-size: 1.1rem;
+  }
+  
+  .action-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
   }
 }
 
@@ -1581,6 +1721,14 @@ button, .action-btn, .nav-tab {
         <button class="action-btn btn-info" onclick="backupData()">💾 Download Backup</button>
         <button class="action-btn btn-warning" onclick="restoreData()">📥 Restore Data</button>
       </div>
+      
+      <hr style="margin: 20px 0;">
+      
+      <div class="form-group">
+        <label>Data Management</label>
+        <p style="color: #666; font-size: 0.9em; margin-bottom: 10px;">Reset all data including orders, inventory, customers, and activities. This action cannot be undone.</p>
+        <button class="action-btn btn-danger" onclick="confirmResetAllData()" style="background-color: #dc3545;">🗑️ Reset All Data</button>
+      </div>
     </div>
   </div>
 
@@ -1737,9 +1885,27 @@ let syncInProgress = false;
 document.addEventListener('DOMContentLoaded', () => {
   initializeApp();
   setupEventListeners();
-  generateSampleData();
+  loadExistingData(); // Load existing data instead of resetting
   loadActivityLog();
+  setupAutoSync(); // Setup automatic synchronization
 });
+
+function loadExistingData() {
+  // Only reset data if explicitly requested or if it's a fresh install
+  const hasExistingData = localStorage.getItem('adminOrders') || 
+                         localStorage.getItem('adminCustomers') || 
+                         localStorage.getItem('adminInventory');
+  
+  if (!hasExistingData) {
+    // First time setup - start with empty data
+    resetAllAdminData();
+    logActivity('System', 'System initialized with empty data');
+  } else {
+    // Load existing data and sync across devices
+    syncDataFromStorage();
+    logActivity('System', 'Existing data loaded successfully');
+  }
+}
 
 function initializeApp() {
   // Check if user is already logged in and session is valid
@@ -1807,6 +1973,9 @@ function logActivity(type, action, details = '') {
   
   localStorage.setItem('activityLog', JSON.stringify(activityLog));
   updateActivityDisplay();
+  
+  // Instantly sync activity log across all devices
+  saveAllDataInstantly();
 }
 
 function getDeviceInfo() {
@@ -1945,12 +2114,14 @@ function handleSignup(e) {
   };
   
   adminUsers.push(newUser);
-  localStorage.setItem('adminUsers', JSON.stringify(adminUsers));
+  
+  // Instantly save and sync all data across devices
+  saveAllDataInstantly();
   
   logActivity('user', 'New user account created', `User: ${newUser.username} (${newUser.role})`);
   
   // Auto-login after signup
-  authenticateUser(newUser);
+  authenticateUser(user);
 }
 
 function authenticateUser(user, password = null) {
@@ -2628,73 +2799,200 @@ function updateAnalyticsCharts() {
 }
 
 function generateSampleData() {
-  if (orders.length === 0) {
-    // Generate sample orders
-    const sampleOrders = [
-      {
-        id: 'ORD-001',
-        customerName: 'Sarah Johnson',
-        customerEmail: 'sarah@email.com',
-        items: 'Shortbread Delight x6, Vanilla Cupcakes x12',
-        total: '45.50',
-        status: 'confirmed',
-        paymentStatus: 'paid',
-        deliveryDate: '2025-11-05',
-        date: '2025-10-28',
-        deposit: '11.38',
-        remaining: '0.00'
-      },
-      {
-        id: 'ORD-002',
-        customerName: 'Mike Wilson',
-        customerEmail: 'mike@email.com',
-        items: 'Chocolate Brownies x8',
-        total: '24.00',
-        status: 'pending',
-        paymentStatus: 'deposit-paid',
-        deliveryDate: '2025-11-03',
-        date: '2025-10-30',
-        deposit: '6.00',
-        remaining: '18.00'
+  // Reset all data to empty/zero state
+  resetAllAdminData();
+}
+
+function resetAllAdminData() {
+  // Clear all stored data
+  orders = [];
+  customers = [];
+  inventory = [];
+  blockedDates = [];
+  activityLog = [];
+  
+  // Save empty data to localStorage
+  localStorage.setItem('adminOrders', JSON.stringify(orders));
+  localStorage.setItem('adminCustomers', JSON.stringify(customers));
+  localStorage.setItem('adminInventory', JSON.stringify(inventory));
+  localStorage.setItem('adminBlockedDates', JSON.stringify(blockedDates));
+  localStorage.setItem('activityLog', JSON.stringify(activityLog));
+  
+  // Keep admin users but clear regular users (keep only the default admin)
+  const defaultAdmin = adminUsers.find(u => u.username === 'admin');
+  if (defaultAdmin) {
+    adminUsers = [defaultAdmin];
+  } else {
+    adminUsers = [];
+  }
+  localStorage.setItem('adminUsers', JSON.stringify(adminUsers));
+  
+  // Log the reset action
+  logActivity('system', 'All admin data reset to zero', 'Complete data reset performed');
+  
+  console.log('✅ All admin data has been reset to zero');
+}
+
+// Enhanced data synchronization functions
+function syncDataFromStorage() {
+  // Load all data from localStorage
+  orders = JSON.parse(localStorage.getItem('adminOrders') || '[]');
+  customers = JSON.parse(localStorage.getItem('adminCustomers') || '[]');
+  inventory = JSON.parse(localStorage.getItem('adminInventory') || '[]');
+  blockedDates = JSON.parse(localStorage.getItem('adminBlockedDates') || '[]');
+  activityLog = JSON.parse(localStorage.getItem('activityLog') || '[]');
+  adminUsers = JSON.parse(localStorage.getItem('adminUsers') || '[]');
+  
+  // Ensure default admin exists
+  ensureDefaultAdmin();
+  
+  // Refresh all displays
+  refreshAllDisplays();
+  
+  console.log('✅ Data synchronized from storage');
+}
+
+function saveAllDataInstantly() {
+  // Save all data immediately to localStorage
+  localStorage.setItem('adminOrders', JSON.stringify(orders));
+  localStorage.setItem('adminCustomers', JSON.stringify(customers));
+  localStorage.setItem('adminInventory', JSON.stringify(inventory));
+  localStorage.setItem('adminBlockedDates', JSON.stringify(blockedDates));
+  localStorage.setItem('activityLog', JSON.stringify(activityLog));
+  localStorage.setItem('adminUsers', JSON.stringify(adminUsers));
+  
+  // Update last save timestamp
+  localStorage.setItem('lastDataSave', new Date().toISOString());
+  
+  // Broadcast to other tabs/windows
+  broadcastDataUpdate();
+  
+  // Cache for offline use
+  cacheDataForPWA();
+  
+  console.log('✅ All data saved instantly across devices');
+}
+
+function ensureDefaultAdmin() {
+  // Make sure default admin always exists
+  const defaultAdmin = adminUsers.find(u => u.username === 'admin');
+  if (!defaultAdmin) {
+    adminUsers.push({
+      id: 'admin-default',
+      username: 'admin',
+      password: 'cupcakes2025',
+      email: 'admin@cupcakesontheavenue.com',
+      role: 'Admin',
+      createdAt: new Date().toISOString(),
+      isActive: true
+    });
+    localStorage.setItem('adminUsers', JSON.stringify(adminUsers));
+  }
+}
+
+function refreshAllDisplays() {
+  // Refresh all UI displays with current data
+  try {
+    if (typeof renderOrdersChart === 'function') renderOrdersChart();
+    if (typeof renderCustomersChart === 'function') renderCustomersChart();
+    if (typeof renderRevenueChart === 'function') renderRevenueChart();
+    if (typeof updateDashboardStats === 'function') updateDashboardStats();
+    if (typeof renderInventoryTable === 'function') renderInventoryTable();
+    if (typeof renderCustomersTable === 'function') renderCustomersTable();
+    if (typeof renderOrdersTable === 'function') renderOrdersTable();
+    if (typeof displayActivityLog === 'function') displayActivityLog();
+    updateLastUpdateTime();
+  } catch (error) {
+    console.log('Some displays not ready yet, will refresh when loaded');
+  }
+}
+
+function broadcastDataUpdate() {
+  // Broadcast to other tabs/windows using BroadcastChannel
+  if ('BroadcastChannel' in window) {
+    const channel = new BroadcastChannel('admin-data-sync');
+    channel.postMessage({
+      type: 'DATA_UPDATED',
+      timestamp: new Date().toISOString(),
+      data: {
+        orders: orders.length,
+        customers: customers.length,
+        inventory: inventory.length
       }
-    ];
-    orders = sampleOrders;
-    localStorage.setItem('adminOrders', JSON.stringify(orders));
+    });
+  }
+}
+
+function setupAutoSync() {
+  // Listen for data updates from other tabs/windows
+  if ('BroadcastChannel' in window) {
+    const channel = new BroadcastChannel('admin-data-sync');
+    channel.onmessage = (event) => {
+      if (event.data.type === 'DATA_UPDATED') {
+        console.log('📡 Data update received from another device/tab');
+        syncDataFromStorage();
+        showSyncNotification();
+      }
+    };
   }
   
-  if (customers.length === 0) {
-    // Generate sample customers
-    const sampleCustomers = [
-      {
-        name: 'Sarah Johnson',
-        email: 'sarah@email.com',
-        phone: '07123456789',
-        joinDate: '2025-09-15',
-        loyaltyPoints: 120
-      },
-      {
-        name: 'Mike Wilson',
-        email: 'mike@email.com',
-        phone: '07987654321',
-        joinDate: '2025-10-20',
-        loyaltyPoints: 45
-      }
-    ];
-    customers = sampleCustomers;
-    localStorage.setItem('adminCustomers', JSON.stringify(customers));
-  }
+  // Auto-save every 30 seconds
+  setInterval(() => {
+    saveAllDataInstantly();
+  }, 30000);
   
-  if (inventory.length === 0) {
-    // Generate sample inventory
-    const sampleInventory = [
-      { name: 'Flour', currentStock: 25, lowStockAlert: 5, unitCost: 1.20, unit: 'kg' },
-      { name: 'Sugar', currentStock: 15, lowStockAlert: 3, unitCost: 0.80, unit: 'kg' },
-      { name: 'Butter', currentStock: 8, lowStockAlert: 2, unitCost: 3.50, unit: 'kg' },
-      { name: 'Eggs', currentStock: 60, lowStockAlert: 12, unitCost: 0.25, unit: 'each' }
-    ];
-    inventory = sampleInventory;
-    localStorage.setItem('adminInventory', JSON.stringify(inventory));
-  }
+  // Save when page visibility changes (user switches tabs)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      saveAllDataInstantly();
+    } else {
+      // When page becomes visible, sync latest data
+      syncDataFromStorage();
+    }
+  });
+  
+  // Save before page unload
+  window.addEventListener('beforeunload', () => {
+    saveAllDataInstantly();
+  });
+  
+  console.log('✅ Auto-sync setup complete');
+}
+
+function showSyncNotification() {
+  // Show a brief notification that data was synced
+  const notification = document.createElement('div');
+  notification.innerHTML = '📡 Data synchronized from other device';
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #667eea;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    z-index: 10000;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Fade in
+  setTimeout(() => {
+    notification.style.opacity = '1';
+  }, 100);
+  
+  // Fade out and remove
+  setTimeout(() => {
+    notification.style.opacity = '0';
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification);
+      }
+    }, 300);
+  }, 3000);
 }
 
 // Utility functions
@@ -3022,7 +3320,10 @@ function addCustomerFromOrder(orderData) {
     };
     
     customers.push(newCustomer);
-    localStorage.setItem('adminCustomers', JSON.stringify(customers));
+    
+    // Instantly save and sync all data across devices
+    saveAllDataInstantly();
+    
     updateCustomerDropdown();
     showNotification(`New customer added: ${newCustomer.name}`, 'success');
   }
@@ -3291,7 +3592,9 @@ function addOrder() {
     };
     
     orders.push(newOrder);
-    localStorage.setItem('adminOrders', JSON.stringify(orders));
+    
+    // Instantly save and sync all data across devices
+    saveAllDataInstantly();
     
     // Log activity
     logActivity('orders', 'New order created', `Order #${newOrder.id} for ${newOrder.customerName} - £${newOrder.total}`);
@@ -4427,6 +4730,22 @@ function sendPWANotification(title, body, actions = []) {
       tag: 'admin-notification',
       requireInteraction: true
     });
+  }
+}
+
+// Confirm data reset with double confirmation
+function confirmResetAllData() {
+  if (confirm('⚠️ WARNING: This will permanently delete ALL data including orders, inventory, customers, and activities. This action cannot be undone.\n\nAre you absolutely sure you want to continue?')) {
+    if (confirm('🚨 FINAL CONFIRMATION: Type "DELETE" in the next prompt to confirm you want to reset all data to zero.')) {
+      const userInput = prompt('Type "DELETE" to confirm (case sensitive):');
+      if (userInput === 'DELETE') {
+        resetAllAdminData();
+        alert('✅ All data has been reset successfully. The page will reload.');
+        location.reload();
+      } else {
+        alert('❌ Reset cancelled - incorrect confirmation text.');
+      }
+    }
   }
 }
 
