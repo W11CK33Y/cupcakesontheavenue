@@ -1,82 +1,32 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delivery & Collection Policy - Cupcakes on the Avenue</title>
+  <link rel="icon" type="image/x-icon" href="pictures/favicon.ico">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-<html lang="en"><html lang="en">
-
-<head><head>
-
-  <meta charset="UTF-8" />  <meta charset="UTF-8" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <title>Delivery & Collection Policy - Cupcakes on the Avenue</title>  <title>Delivery & Collection Policy</title>
-
-  <link rel="icon" type="image/x-icon" href="pictures/favicon.ico">  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
-  <style>  <style>
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }    body { font-family: Inter, Arial, sans-serif; margin: 0; padding: 24px; color: #111; line-height: 1.6; }
-
-    h1 { font-size: 28px; margin-bottom: 12px; }
-
-    body {    h2 { font-size: 20px; margin-top: 24px; }
-
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;    p, li { color: #333; }
-
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);    .note { background: #eef7ff; border: 1px solid #cde3ff; padding: 10px 12px; border-radius: 8px; }
-
-      min-height: 100vh;    a { color: #0b66c3; }
-
-      color: #333;  </style>
-
-      transition: background 1s ease-in-out;</head>
-
-      padding: 40px 20px;<body>
-
-    }  <h1>Delivery & Collection Policy</h1>
-
-
-
-    /* Seasonal Theme Variables */  <h2>Lead time</h2>
-
-    body.spring {  <p>Minimum order lead time is 7 days. For urgent orders, call <a href="tel:07842817789">07842817789</a> and we'll try to help.</p>
-
-      background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%);
-
-    }  <h2>Collection</h2>
-
-  <p>If delivery is at market please be there at the time requested otherwise collection from address provided.</p>
-
-    body.summer {
-
-      background: linear-gradient(135deg, #FFE135 0%, #FFA500 100%);  <h2>Local delivery</h2>
-
-    }  <ul>
-
-    <li>Delivery area and fee are agreed at checkout or via message.</li>
-
-    body.autumn {    <li>We’ll provide a delivery window; if no one is available, we’ll attempt to call. Re‑delivery may incur a fee.</li>
-
-      background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%);  </ul>
-
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      transition: background 1s ease-in-out;
+      padding: 40px 20px;
     }
 
-  <h2>Allergens</h2>
-
-    body.winter {  <p>We handle the 14 major allergens. While care is taken, cross‑contamination risk cannot be entirely eliminated. Please inform us of any allergies when ordering.</p>
-
-      background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%);
-
-    }  <h2>Weather and traffic</h2>
-
-  <p>Severe weather or traffic may affect delivery windows. We’ll keep you updated if delays occur.</p>
+    /* Seasonal Theme Variables */
+    body.spring { background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%); }
+    body.summer { background: linear-gradient(135deg, #FFE135 0%, #FFA500 100%); }
+    body.autumn { background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%); }
+    body.winter { background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%); }
 
     .container {
-
-      max-width: 800px;  <p><a href="index.html">Back to Home</a></p>
-
-      margin: 0 auto;</body>
-
-      padding: 40px 30px;</html>
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 30px;
       background: rgba(255, 255, 255, 0.25);
       backdrop-filter: blur(15px);
       border-radius: 25px;
@@ -129,18 +79,30 @@
       text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
     }
 
-    ul {
-      margin-left: 20px;
-      margin-bottom: 20px;
-    }
-
-    li {
-      margin-bottom: 8px;
-    }
+    ul, ol { margin-left: 20px; margin-bottom: 20px; }
+    li { margin-bottom: 8px; }
 
     .note {
       background: rgba(238, 247, 255, 0.4);
       border: 1px solid rgba(205, 227, 255, 0.5);
+      padding: 20px;
+      border-radius: 15px;
+      margin: 20px 0;
+      backdrop-filter: blur(5px);
+    }
+
+    .important {
+      background: rgba(255, 235, 238, 0.4);
+      border: 1px solid rgba(220, 38, 38, 0.5);
+      padding: 20px;
+      border-radius: 15px;
+      margin: 20px 0;
+      backdrop-filter: blur(5px);
+    }
+
+    .delivery-area {
+      background: rgba(240, 253, 244, 0.4);
+      border: 1px solid rgba(34, 197, 94, 0.5);
       padding: 20px;
       border-radius: 15px;
       margin: 20px 0;
@@ -177,6 +139,51 @@
       box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
       color: white;
     }
+
+    .delivery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .delivery-option {
+      background: rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 20px;
+      border-radius: 15px;
+      backdrop-filter: blur(5px);
+      text-align: center;
+    }
+
+    .delivery-option h3 {
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 10px;
+      }
+      
+      .container {
+        padding: 25px 20px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      h2 {
+        font-size: 1.3rem;
+      }
+
+      .delivery-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -184,30 +191,98 @@
     <h1>🚚 Delivery & Collection Policy</h1>
 
     <h2>⏰ Lead Time</h2>
-    <p>Minimum order lead time is 7 days. For urgent orders, call <a href="tel:07842817789">07842817789</a> and we'll try to help.</p>
-
-    <h2>📦 Collection</h2>
-    <p>If delivery is at market please be there at the time requested otherwise collection from address provided.</p>
-
-    <h2>🚗 Local Delivery</h2>
-    <ul>
-      <li>Delivery area and fee are agreed at checkout or via message.</li>
-      <li>We'll provide a delivery window; if no one is available, we'll attempt to call. Re‑delivery may incur a fee.</li>
-    </ul>
-
-    <h2>⚠️ Allergens</h2>
     <div class="note">
-      <p><strong>Important:</strong> We handle the 14 major allergens. While care is taken, cross‑contamination risk cannot be entirely eliminated. Please inform us of any allergies when ordering.</p>
+      <p><strong>Minimum order lead time is 7 days.</strong> For urgent orders, call <a href="tel:07842817789">07842817789</a> and we'll try to help!</p>
     </div>
 
-    <h2>🌦️ Weather and Traffic</h2>
-    <p>Severe weather or traffic may affect delivery windows. We'll keep you updated if delays occur.</p>
+    <h2>📍 Delivery & Collection Options</h2>
+    <div class="delivery-grid">
+      <div class="delivery-option">
+        <h3>🏪 Market Collection</h3>
+        <p><strong>Highworth Market</strong></p>
+        <p>Every Saturday<br>8am - 2pm</p>
+        <p>Please arrive at your requested time slot</p>
+      </div>
+      
+      <div class="delivery-option">
+        <h3>🏠 Home Collection</h3>
+        <p><strong>From Our Kitchen</strong></p>
+        <p>By appointment only</p>
+        <p>Address provided upon booking</p>
+      </div>
+      
+      <div class="delivery-option">
+        <h3>🚛 Local Delivery</h3>
+        <p><strong>Swindon & Surrounding Areas</strong></p>
+        <p>Small delivery fee applies</p>
+        <p>Same day delivery available</p>
+      </div>
+    </div>
+
+    <h2>📍 Delivery Areas</h2>
+    <div class="delivery-area">
+      <p><strong>We deliver to:</strong></p>
+      <ul>
+        <li>Swindon town center and surrounding areas</li>
+        <li>Highworth and nearby villages</li>
+        <li>Within 10 miles of our kitchen</li>
+        <li>Special arrangements for larger orders outside this area</li>
+      </ul>
+    </div>
+
+    <h2>💰 Delivery Charges</h2>
+    <ul>
+      <li><strong>Market Collection:</strong> FREE</li>
+      <li><strong>Home Collection:</strong> FREE</li>
+      <li><strong>Local Delivery (within 5 miles):</strong> £3.50</li>
+      <li><strong>Extended Delivery (5-10 miles):</strong> £5.00</li>
+      <li><strong>Orders over £50:</strong> FREE local delivery</li>
+    </ul>
+
+    <h2>📅 Delivery Times</h2>
+    <div class="important">
+      <p><strong>Delivery Windows:</strong></p>
+      <ul>
+        <li>Morning: 9am - 12pm</li>
+        <li>Afternoon: 1pm - 5pm</li>
+        <li>Evening: 6pm - 8pm (weekends only)</li>
+      </ul>
+      <p>We'll contact you 30 minutes before delivery to confirm you're available.</p>
+    </div>
+
+    <h2>📞 Contact for Delivery</h2>
+    <p>To arrange delivery or collection:</p>
+    <ol>
+      <li>Call us at <a href="tel:07842817789">07842817789</a></li>
+      <li>Provide your full address and postcode</li>
+      <li>Choose your preferred delivery window</li>
+      <li>We'll confirm availability and delivery fee</li>
+    </ol>
+
+    <h2>💳 Payment Terms</h2>
+    <div class="important">
+      <p><strong>Payment Schedule:</strong></p>
+      <ul>
+        <li><strong>25% deposit</strong> required when placing your order</li>
+        <li><strong>Remaining 75%</strong> must be paid 24 hours before collection/delivery</li>
+        <li>Payment methods: Bank transfer, card payment, or cash</li>
+        <li>Orders will not be prepared without deposit payment</li>
+      </ul>
+    </div>
+
+    <h2>⚠️ Important Notes</h2>
+    <ul>
+      <li>Please be available during your chosen delivery window</li>
+      <li>Someone over 18 must be present to receive the order</li>
+      <li>We'll call if running late or early</li>
+      <li>Final payment must be completed 24 hours before collection/delivery</li>
+      <li>Special dietary requirements must be mentioned when ordering</li>
+    </ul>
 
     <a href="index.html" class="back-btn">← Back to Home</a>
   </div>
 
   <script>
-    // Seasonal Theme System
     function setSeasonalTheme() {
       const now = new Date();
       const month = now.getMonth() + 1;

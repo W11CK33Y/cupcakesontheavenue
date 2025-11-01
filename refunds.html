@@ -1,92 +1,48 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Refunds & Cancellations - Cupcakes on the Avenue</title>
+  <link rel="icon" type="image/x-icon" href="pictures/favicon.ico">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-<html lang="en"><html lang="en">
-
-<head><head>
-
-  <meta charset="UTF-8" />  <meta charset="UTF-8" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <title>Refunds & Cancellations - Cupcakes on the Avenue</title>  <title>Refunds, Returns & Cancellations</title>
-
-  <link rel="icon" type="image/x-icon" href="pictures/favicon.ico">  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
-  <style>  <style>
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }    body { font-family: Inter, Arial, sans-serif; margin: 0; padding: 24px; color: #111; line-height: 1.6; }
-
-    h1 { font-size: 28px; margin-bottom: 12px; }
-
-    body {    h2 { font-size: 20px; margin-top: 24px; }
-
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;    p, li { color: #333; }
-
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);    .note { background: #fffbeb; border: 1px solid #fde68a; padding: 10px 12px; border-radius: 8px; }
-
-      min-height: 100vh;    a { color: #0b66c3; }
-
-      color: #333;  </style>
-
-      transition: background 1s ease-in-out;</head>
-
-      padding: 40px 20px;<body>
-
-    }  <h1>Refunds, Returns & Cancellations</h1>
-
-  <p class="note">Most of our products are made-to-order and perishable. The below outlines how refunds and cancellations work.</p>
-
-    /* Seasonal Theme Variables */
-
-    body.spring { background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%); }  <h2>Change of mind</h2>
-
-    body.summer { background: linear-gradient(135deg, #FFE135 0%, #FFA500 100%); }  <p>As our items are perishable and often custom-made, we cannot accept returns or provide refunds for change of mind once production has begun.</p>
-
-    body.autumn { background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%); }
-
-    body.winter { background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%); }  <h2>Quality issues or damage</h2>
-
-  <ul>
-
-    .container {    <li>Please contact us within 24 hours of collection/delivery with your order reference and clear photos.</li>
-
-      max-width: 800px;    <li>We will investigate and may offer a repair, replacement, partial refund, or full refund depending on the issue.</li>
-
-      margin: 0 auto;  </ul>
-
-      padding: 40px 30px;
-
-      background: rgba(255, 255, 255, 0.25);  <h2>Cancellations</h2>
-
-      backdrop-filter: blur(15px);  <ul>
-
-      border-radius: 25px;    <li>7+ days before your date: full refund.</li>
-
-      box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.08);    <li>Within 7 days: ingredients and labour are allocated; cancellations may be partially or non‑refundable.</li>
-
-      border: 1px solid rgba(255, 255, 255, 0.2);    <li>Custom designs or special orders may require a non‑refundable deposit.</li>
-
-      transition: all 0.3s ease;  </ul>
-
-      position: relative;
-
-      overflow: hidden;  <h2>Order changes</h2>
-
-      color: #2c3e50;  <p>We’ll try to accommodate changes up to 7 days before your date. Within 7 days, changes may not be possible or may incur a fee.</p>
-
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      transition: background 1s ease-in-out;
+      padding: 40px 20px;
     }
 
-  <h2>How to request</h2>
+    /* Seasonal Theme Variables */
+    body.spring { background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%); }
+    body.summer { background: linear-gradient(135deg, #FFE135 0%, #FFA500 100%); }
+    body.autumn { background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%); }
+    body.winter { background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%); }
 
-    .container::before {  <p>Email <a href="mailto:cupcakesontheavenue@gmail.com">cupcakesontheavenue@gmail.com</a> or call <a href="tel:07842817789">07842 817 789</a> with your order reference.</p>
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 30px;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      color: #2c3e50;
+    }
 
+    .container::before {
       content: '';
-
-      position: absolute;  <p><a href="index.html">Back to Home</a></p>
-
-      top: 0;</body>
-
-      left: 0;</html>
+      position: absolute;
+      top: 0;
+      left: 0;
       right: 0;
       height: 4px;
       background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
@@ -123,7 +79,7 @@
       text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
     }
 
-    ul { margin-left: 20px; margin-bottom: 20px; }
+    ul, ol { margin-left: 20px; margin-bottom: 20px; }
     li { margin-bottom: 8px; }
 
     .note {
@@ -174,6 +130,25 @@
       box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
       color: white;
     }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 10px;
+      }
+      
+      .container {
+        padding: 25px 20px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      h2 {
+        font-size: 1.3rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -181,7 +156,7 @@
     <h1>💰 Refunds & Cancellations</h1>
 
     <h2>📞 Contact Information</h2>
-    <p>For all refund and cancellation requests, please contact us at <a href="tel:07842817789">07842817789</a> or email cupcakesontheavenue@gmail.com</p>
+    <p>For all refund and cancellation requests, please contact us at <a href="tel:07842817789">07842817789</a> or email <a href="mailto:cupcakesontheavenue@gmail.com">cupcakesontheavenue@gmail.com</a></p>
 
     <h2>⏰ Cancellation Policy</h2>
     <div class="note">
@@ -214,7 +189,7 @@
 
     <h2>📋 How to Request</h2>
     <p>To request a cancellation or refund:</p>
-    <ol style="margin-left: 20px; margin-bottom: 20px;">
+    <ol>
       <li>Call us at <a href="tel:07842817789">07842817789</a></li>
       <li>Provide your order details and reason for cancellation</li>
       <li>We'll process your request and confirm the refund amount</li>
