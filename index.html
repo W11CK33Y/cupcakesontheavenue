@@ -3107,20 +3107,71 @@ ${items}
 
       console.log('✅ Discord message sent');
 
-      // Send email (non-blocking)
-      fetch(`${BACKEND_BASE}/api/send-email`, {
+      // Check if this is a new customer for welcome email
+      let existingCustomers = JSON.parse(localStorage.getItem('webCustomers') || '[]');
+      const isNewCustomer = !existingCustomers.find(c => c.email.toLowerCase() === email.toLowerCase());
+      
+      if (isNewCustomer) {
+        // Add to customer list
+        existingCustomers.push({
+          name: name,
+          email: email,
+          phone: mobile,
+          joinDate: new Date().toISOString().split('T')[0],
+          source: 'website'
+        });
+        localStorage.setItem('webCustomers', JSON.stringify(existingCustomers));
+        
+        // Send welcome email
+        fetch(`${BACKEND_BASE}/api/send-customer-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            emailType: 'welcome',
+            customerData: { name, email }
+          })
+        }).then(() => console.log('✅ Welcome email sent'))
+          .catch(err => console.warn('⚠️ Welcome email failed:', err));
+      }
+
+      // Send order confirmation email (enhanced version)
+      const orderNumber = 'ORDER-' + Date.now();
+      const orderItems = items.split('\n').map(item => {
+        const match = item.match(/(.+?)\s*x(\d+)\s*-\s*£([\d.]+)/);
+        if (match) {
+          return {
+            name: match[1].trim(),
+            quantity: parseInt(match[2]),
+            price: parseFloat(match[3]).toFixed(2)
+          };
+        }
+        return { name: item.trim(), quantity: 1, price: '0.00' };
+      });
+
+      fetch(`${BACKEND_BASE}/api/send-customer-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email, name, mobile, orderItems: items,
-          total: `£${total.toFixed(2)}`, delivery, date, address,
-          notes: notes || 'None', businessPhone: '07842817789'
+          emailType: 'orderConfirmation',
+          customerData: { name, email },
+          orderData: {
+            orderNumber: orderNumber,
+            items: orderItems,
+            total: `£${total.toFixed(2)}`,
+            deliveryMethod: delivery === 'Market Collection' ? 'Market Collection' : 'Home Delivery',
+            deliveryInfo: delivery === 'Market Collection' ? 
+              `Saturday Market Collection on ${new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}` :
+              `${address} on ${new Date(date).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`,
+            date: new Date(date).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+            address: delivery !== 'Market Collection' ? address : null,
+            notes: notes && notes !== 'None' ? notes : null
+          }
         })
-      }).then(() => console.log('✅ Email sent'))
-        .catch(err => console.warn('⚠️ Email failed:', err));
+      }).then(() => console.log('✅ Order confirmation email sent'))
+        .catch(err => console.warn('⚠️ Order confirmation email failed:', err));
 
       // Redirect to SumUp payment
-      const reference = 'ORDER-' + Date.now();
+      const reference = orderNumber;
       const paymentUrl = `${BACKEND_BASE}/api/checkout?total=${total.toFixed(2)}&reference=${reference}`;
       
       console.log('Redirecting to:', paymentUrl);

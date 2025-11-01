@@ -1143,10 +1143,13 @@ document.addEventListener('DOMContentLoaded', () => {
     shopOrders.push(formData);
     localStorage.setItem('shopOrders', JSON.stringify(shopOrders));
     
-    // Also save customer data for admin system
+    // Check if this is a new customer and save customer data
     let customers = JSON.parse(localStorage.getItem('webCustomers') || '[]');
     const existingCustomer = customers.find(c => c.email === formData.email);
+    let isNewCustomer = false;
+    
     if (!existingCustomer) {
+      isNewCustomer = true;
       customers.push({
         name: formData.name,
         email: formData.email,
@@ -1158,7 +1161,72 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('webCustomers', JSON.stringify(customers));
     }
 
-    // Here you would normally send to your backend
+    // Send welcome email for new customers
+    if (isNewCustomer) {
+      try {
+        const welcomeResponse = await fetch('https://sumup-backend-lemon.vercel.app/api/send-customer-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            emailType: 'welcome',
+            customerData: {
+              name: formData.name,
+              email: formData.email
+            }
+          })
+        });
+        
+        if (welcomeResponse.ok) {
+          console.log('✅ Welcome email sent');
+        } else {
+          console.warn('⚠️ Welcome email failed');
+        }
+      } catch (error) {
+        console.warn('⚠️ Welcome email error:', error);
+      }
+    }
+
+    // Send order confirmation email
+    try {
+      const orderResponse = await fetch('https://sumup-backend-lemon.vercel.app/api/send-customer-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          emailType: 'orderConfirmation',
+          customerData: {
+            name: formData.name,
+            email: formData.email
+          },
+          orderData: {
+            orderNumber: formData.id,
+            items: formData.items.map(item => ({
+              name: item.name,
+              quantity: item.quantity,
+              price: `${(item.price * item.quantity).toFixed(2)}`,
+              customization: item.customization || null
+            })),
+            total: `£${total.toFixed(2)}`,
+            deliveryMethod: deliveryMethod === 'delivery' ? 'Home Delivery' : 'Market Collection',
+            deliveryInfo: deliveryMethod === 'delivery' ? 
+              `${customerAddress} on ${new Date(deliveryDate).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}` :
+              `Saturday Market Collection on ${new Date(deliveryDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+            date: new Date(deliveryDate).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+            address: deliveryMethod === 'delivery' ? customerAddress : null,
+            notes: formData.notes || null
+          }
+        })
+      });
+      
+      if (orderResponse.ok) {
+        console.log('✅ Order confirmation email sent');
+      } else {
+        console.warn('⚠️ Order confirmation email failed');
+      }
+    } catch (error) {
+      console.warn('⚠️ Order confirmation email error:', error);
+    }
+
+    // Here you would normally send to your backend for payment processing
     console.log('Order placed:', formData);
     
     // Clear cart and close modal
@@ -1167,7 +1235,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateStickyCart();
     document.getElementById('checkoutModal').style.display = 'none';
     
-    showToast('🎉 Order placed successfully! You will receive a confirmation email. Admin has been notified.');
+    showToast('🎉 Order placed successfully! Check your email for confirmation. Admin has been notified.');
     
     // Reset form
     document.getElementById('checkoutForm').reset();

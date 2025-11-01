@@ -1558,10 +1558,71 @@ function viewOrder(orderId) {
 function updateOrderStatus(orderId, newStatus) {
   const orderIndex = orders.findIndex(o => o.id === orderId);
   if (orderIndex !== -1) {
-    orders[orderIndex].status = newStatus;
+    const order = orders[orderIndex];
+    const previousStatus = order.status;
+    order.status = newStatus;
+    order.lastUpdated = new Date().toISOString();
+    
     localStorage.setItem('adminOrders', JSON.stringify(orders));
     loadOrdersTable();
     showNotification(`Order ${orderId} status updated to ${newStatus}`, 'success');
+    
+    // Send status update email to customer
+    if (order.customerEmail && previousStatus !== newStatus) {
+      sendOrderStatusEmail(order, newStatus);
+    }
+  }
+}
+
+async function sendOrderStatusEmail(order, newStatus) {
+  try {
+    // Prepare order data for email
+    const orderData = {
+      orderNumber: order.id,
+      status: newStatus,
+      items: order.orderItems ? order.orderItems.split('\n').map(item => {
+        const match = item.match(/(.+?)\s*x(\d+)\s*-\s*£([\d.]+)/);
+        if (match) {
+          return {
+            name: match[1].trim(),
+            quantity: parseInt(match[2]),
+            price: parseFloat(match[3]).toFixed(2)
+          };
+        }
+        return { name: item.trim(), quantity: 1, price: '0.00' };
+      }) : [],
+      total: `£${order.totalPrice || order.total || '0.00'}`,
+      deliveryMethod: order.deliveryMethod || (order.delivery === 'Market Collection' ? 'Market Collection' : 'Home Delivery'),
+      deliveryInfo: order.delivery === 'Market Collection' ? 
+        `Saturday Market Collection on ${new Date(order.date).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}` :
+        `${order.address || 'Home Delivery'} on ${new Date(order.date).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`,
+      date: new Date(order.date).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+      address: order.delivery !== 'Market Collection' ? order.address : null
+    };
+
+    const response = await fetch('https://sumup-backend-lemon.vercel.app/api/send-customer-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        emailType: 'statusUpdate',
+        customerData: {
+          name: order.customerName,
+          email: order.customerEmail
+        },
+        orderData: orderData
+      })
+    });
+    
+    if (response.ok) {
+      console.log(`✅ Status update email sent to ${order.customerEmail}`);
+      showNotification(`Status update email sent to customer`, 'success');
+    } else {
+      console.warn('⚠️ Status update email failed');
+      showNotification(`Email notification failed`, 'warning');
+    }
+  } catch (error) {
+    console.warn('⚠️ Status update email error:', error);
+    showNotification(`Email notification error`, 'warning');
   }
 }
 
@@ -2086,6 +2147,9 @@ function sendAutomaticReminder(order) {
   
   const message = `Hi ${order.customerName}! Your order #${order.id} is scheduled for ${methodText} in 3 days (${order.deliveryDate}). Any last minute changes? Please contact us soon! 🧁`;
   
+  // Send email reminder to customer
+  sendReminderEmail(order);
+  
   // Send push notification to customer
   sendPushToCustomer({
     name: order.customerName,
@@ -2098,7 +2162,7 @@ function sendAutomaticReminder(order) {
     date: new Date().toISOString(),
     customer: order.customerName,
     email: order.customerEmail,
-    method: 'automatic-push',
+    method: 'automatic-email-push',
     message: message,
     status: 'sent',
     sentBy: 'system',
@@ -2110,7 +2174,7 @@ function sendAutomaticReminder(order) {
   localStorage.setItem('communicationHistory', JSON.stringify(commHistory));
   
   // Show admin notification
-  showNotification(`📱 Automatic reminder sent to ${order.customerName} for order #${order.id}`, 'success');
+  showNotification(`� Automatic reminder email and push sent to ${order.customerName} for order #${order.id}`, 'success');
   
   // Send Discord notification to admin
   const webhookUrl = document.getElementById('discordWebhook')?.value;
@@ -2119,11 +2183,57 @@ function sendAutomaticReminder(order) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        content: `🔔 **Automatic Reminder Sent**\n📋 Order: #${order.id}\n👤 Customer: ${order.customerName}\n📅 ${methodText.charAt(0).toUpperCase() + methodText.slice(1)} in 3 days\n💬 Message: "${message}"`,
+        content: `🔔 **Automatic Reminder Sent**\n📋 Order: #${order.id}\n👤 Customer: ${order.customerName}\n📅 ${methodText.charAt(0).toUpperCase() + methodText.slice(1)} in 3 days\n💬 Email & Push notification sent`,
         username: 'Order Reminder Bot',
         avatar_url: 'https://cdn.discordapp.com/emojis/1028516711491154031.webp'
       })
     });
+  }
+}
+
+async function sendReminderEmail(order) {
+  try {
+    // Prepare order data for reminder email
+    const orderData = {
+      orderNumber: order.id,
+      items: order.orderItems ? order.orderItems.split('\n').map(item => {
+        const match = item.match(/(.+?)\s*x(\d+)\s*-\s*£([\d.]+)/);
+        if (match) {
+          return {
+            name: match[1].trim(),
+            quantity: parseInt(match[2]),
+            price: parseFloat(match[3]).toFixed(2)
+          };
+        }
+        return { name: item.trim(), quantity: 1, price: '0.00' };
+      }) : [],
+      total: `£${order.totalPrice || order.total || '0.00'}`,
+      deliveryMethod: order.deliveryMethod || (order.delivery === 'Market Collection' ? 'Market Collection' : 'Home Delivery'),
+      date: new Date(order.deliveryDate).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+      address: order.delivery !== 'Market Collection' ? order.address : null,
+      deliveryTime: order.deliveryTime || null
+    };
+
+    const response = await fetch('https://sumup-backend-lemon.vercel.app/api/send-customer-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        emailType: 'reminder',
+        customerData: {
+          name: order.customerName,
+          email: order.customerEmail
+        },
+        orderData: orderData
+      })
+    });
+    
+    if (response.ok) {
+      console.log(`✅ Reminder email sent to ${order.customerEmail}`);
+    } else {
+      console.warn('⚠️ Reminder email failed');
+    }
+  } catch (error) {
+    console.warn('⚠️ Reminder email error:', error);
   }
 }
 
