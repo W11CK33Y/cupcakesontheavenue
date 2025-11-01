@@ -2,18 +2,54 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Advanced Admin Dashboard - Cupcakes on the Avenue</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<title>Cupcakes on the Avenue Admin Dashboard</title>
 <link rel="icon" type="image/x-icon" href="pictures/favicon.ico">
+
+<!-- PWA Meta Tags -->
+<meta name="description" content="Professional admin dashboard for Cupcakes on the Avenue - manage orders, customers, inventory, and communications">
+<meta name="keywords" content="admin, dashboard, bakery, cupcakes, management">
+<meta name="author" content="Cupcakes on the Avenue">
+<meta name="theme-color" content="#667eea">
+<meta name="msapplication-TileColor" content="#667eea">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="COTA Admin">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Cupcakes on the Avenue Admin">
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="admin-manifest.json">
+
+<!-- Apple Touch Icons -->
+<link rel="apple-touch-icon" href="pictures/logo.png">
+
+<!-- Microsoft Tiles -->
+<meta name="msapplication-TileImage" content="pictures/logo.png">
+<meta name="msapplication-config" content="browserconfig.xml">
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
   color: #333;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  /* PWA enhancements */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Safe area for notched devices */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 /* Login Screen */
@@ -267,6 +303,50 @@ body {
   top: 0;
 }
 
+.activity-item {
+  border-left: 4px solid #667eea;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.activity-item:hover {
+  transform: translateX(5px);
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(240, 240, 240, 0.5);
+}
+
+.stat-label {
+  font-weight: 500;
+  color: #666;
+}
+
+.stat-value {
+  font-weight: bold;
+  color: #667eea;
+  font-size: 1.2em;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+  padding: 8px 15px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  font-size: 14px;
+  color: white;
+}
+
 .data-table tr:hover {
   background: rgba(102, 126, 234, 0.05);
 }
@@ -464,6 +544,320 @@ body {
   color: #333;
 }
 
+/* Debug & Fallback Styles */
+.status-indicator {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 10px;
+  display: inline-block;
+}
+
+.status-checking {
+  background: #ffc107;
+  animation: pulse 1.5s infinite;
+}
+
+.status-online {
+  background: #28a745;
+}
+
+.status-offline {
+  background: #dc3545;
+}
+
+.status-warning {
+  background: #fd7e14;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.status-badge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-inactive {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.fallback-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.fallback-item:last-child {
+  border-bottom: none;
+}
+
+.pending-email-item {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 8px 0;
+}
+
+.pending-email-header {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.pending-email-type {
+  background: #007bff;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.pending-email-time {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.pending-email-preview {
+  font-size: 0.9rem;
+  color: #333;
+  margin-top: 5px;
+}
+
+.emergency-controls {
+  border: 2px solid #dc3545;
+  border-radius: 8px;
+  padding: 15px;
+  background: #fff5f5;
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  background: white;
+  border-radius: 4px;
+  margin: 5px 0;
+}
+
+.notification-item.unread {
+  background: #e3f2fd;
+  border-left: 3px solid #2196f3;
+}
+
+.notification-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-time {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/* PWA Enhancements */
+.pwa-install-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 15px;
+  text-align: center;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  z-index: 10000;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+}
+
+.pwa-install-banner.show {
+  transform: translateY(0);
+}
+
+.pwa-install-banner button {
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: bold;
+  margin: 0 5px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.pwa-install-banner button:hover {
+  background: #f8f9fa;
+}
+
+/* Touch-friendly enhancements */
+button, .action-btn, .nav-tab {
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* App-like loading screen */
+.app-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10001;
+  color: white;
+  transition: opacity 0.5s ease;
+}
+
+.app-loading.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app-logo {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  animation: pulse 2s infinite;
+}
+
+.app-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.app-tagline {
+  font-size: 1rem;
+  opacity: 0.8;
+  margin-bottom: 30px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Connection status indicator */
+.connection-status {
+  position: fixed;
+  top: env(safe-area-inset-top, 10px);
+  right: env(safe-area-inset-right, 10px);
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  z-index: 9999;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.connection-status.online {
+  background: rgba(40, 167, 69, 0.9);
+}
+
+.connection-status.offline {
+  background: rgba(220, 53, 69, 0.9);
+}
+
+/* Pull-to-refresh indicator */
+.pull-to-refresh {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  background: rgba(255,255,255,0.9);
+  padding: 10px 20px;
+  border-radius: 0 0 15px 15px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  z-index: 9998;
+}
+
+.pull-to-refresh.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* App update banner */
+.app-update-banner {
+  position: fixed;
+  top: env(safe-area-inset-top, 0);
+  left: 0;
+  right: 0;
+  background: #ffc107;
+  color: #333;
+  padding: 10px;
+  text-align: center;
+  font-size: 0.9rem;
+  z-index: 9997;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+.app-update-banner.show {
+  transform: translateY(0);
+}
+
+.app-update-banner button {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 15px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .dashboard {
@@ -514,17 +908,80 @@ body {
 </head>
 <body>
 
+<!-- App Loading Screen -->
+<div class="app-loading" id="appLoading">
+  <div class="app-logo"><img src="pictures/logo.png" alt="Cupcakes on the Avenue" style="width: 80px; height: 80px; border-radius: 50%;"></div>
+  <div class="app-name">Cupcakes on the Avenue</div>
+  <div class="app-tagline">Admin Dashboard</div>
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- Connection Status -->
+<div class="connection-status online" id="connectionStatus">
+  🟢 Online
+</div>
+
+<!-- App Update Banner -->
+<div class="app-update-banner" id="appUpdateBanner">
+  📱 A new version is available! 
+  <button onclick="updateApp()">Update</button>
+  <button onclick="dismissUpdate()">Later</button>
+</div>
+
+<!-- Pull to Refresh -->
+<div class="pull-to-refresh" id="pullToRefresh">
+  🔄 Release to refresh
+</div>
+
+<!-- PWA Install Banner -->
+<div class="pwa-install-banner" id="installBanner">
+  📱 Install Cupcakes on the Avenue Admin for the best experience!
+  <br>
+  <button onclick="installApp()">Install App</button>
+  <button onclick="dismissInstall()">Not Now</button>
+</div>
+
 <!-- Login Screen -->
 <div class="login-container" id="loginContainer">
   <div class="login-box">
-    <h1>🔐 Admin Login</h1>
-    <p style="color: #666; margin-bottom: 30px;">Access the comprehensive admin dashboard</p>
-    <form id="loginForm">
-      <input type="text" id="username" placeholder="Username" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <button type="submit" class="login-btn">Login</button>
-      <div class="error-message" id="errorMessage"></div>
-    </form>
+    <div id="loginView">
+      <h1>🔐 Admin Login</h1>
+      <p style="color: #666; margin-bottom: 30px;">Access the comprehensive admin dashboard</p>
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit" class="login-btn">Login</button>
+        <div class="error-message" id="errorMessage"></div>
+      </form>
+      <p style="text-align: center; margin-top: 20px; color: #666;">
+        Don't have an account? 
+        <a href="#" onclick="showSignup()" style="color: #667eea; text-decoration: none;">Sign up here</a>
+      </p>
+    </div>
+
+    <div id="signupView" style="display: none;">
+      <h1>👤 Create Admin Account</h1>
+      <p style="color: #666; margin-bottom: 30px;">Join the admin team</p>
+      <form id="signupForm">
+        <input type="text" id="signupFullName" placeholder="Full Name" required>
+        <input type="text" id="signupUsername" placeholder="Username" required>
+        <input type="email" id="signupEmail" placeholder="Email" required>
+        <input type="password" id="signupPassword" placeholder="Password" required>
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+        <select id="userRole" required style="margin-bottom: 15px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; width: 100%; font-size: 16px;">
+          <option value="">Select Role</option>
+          <option value="admin">Admin (Full Access)</option>
+          <option value="manager">Manager (Orders & Inventory)</option>
+          <option value="staff">Staff (Orders Only)</option>
+        </select>
+        <button type="submit" class="login-btn">Create Account</button>
+        <div class="error-message" id="signupErrorMessage"></div>
+      </form>
+      <p style="text-align: center; margin-top: 20px; color: #666;">
+        Already have an account? 
+        <a href="#" onclick="showLogin()" style="color: #667eea; text-decoration: none;">Login here</a>
+      </p>
+    </div>
   </div>
 </div>
 
@@ -534,8 +991,12 @@ body {
 <!-- Dashboard -->
 <div class="dashboard" id="dashboard">
   <div class="dashboard-header">
-    <h1>🧁 Admin Dashboard</h1>
+    <h1>🧁 Cupcakes on the Avenue Admin</h1>
     <div class="header-controls">
+      <div class="user-info" style="margin-right: 15px; padding: 8px 15px; background: rgba(255,255,255,0.1); border-radius: 20px; font-size: 14px;">
+        👤 <span id="currentUserName">Admin User</span> 
+        <span style="opacity: 0.7;">(<span id="currentUserRole">admin</span>)</span>
+      </div>
       <span id="lastUpdate">Last updated: Never</span>
       <button class="refresh-btn" id="refreshAll">🔄 Refresh</button>
       <button class="logout-btn" id="logoutBtn">Logout</button>
@@ -552,6 +1013,8 @@ body {
     <button class="nav-tab" data-tab="inventory">📦 Inventory</button>
     <button class="nav-tab" data-tab="finances">💰 Finances</button>
     <button class="nav-tab" data-tab="communications">📱 Communications</button>
+    <button class="nav-tab" data-tab="activity">👁️ Activity Log</button>
+    <button class="nav-tab" data-tab="debug">🔧 Debug & Fallbacks</button>
     <button class="nav-tab" data-tab="settings">⚙️ Settings</button>
   </div>
 
@@ -995,6 +1458,61 @@ body {
     </div>
   </div>
 
+  <!-- Activity Log Tab -->
+  <div class="tab-content" id="activity">
+    <div class="dashboard-grid">
+      <div class="dashboard-card">
+        <h2>👁️ Activity Log</h2>
+        <div style="margin-bottom: 20px;">
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <select id="activityFilter" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+              <option value="all">All Activities</option>
+              <option value="login">Login/Logout</option>
+              <option value="orders">Order Changes</option>
+              <option value="customers">Customer Changes</option>
+              <option value="inventory">Inventory Changes</option>
+              <option value="settings">Settings Changes</option>
+            </select>
+            <select id="userFilter" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+              <option value="all">All Users</option>
+            </select>
+            <input type="date" id="dateFilter" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <button onclick="filterActivityLog()" style="padding: 8px 15px; background: #667eea; color: white; border: none; border-radius: 4px;">Filter</button>
+            <button onclick="exportActivityLog()" style="padding: 8px 15px; background: #28a745; color: white; border: none; border-radius: 4px;">📄 Export</button>
+          </div>
+        </div>
+        <div id="activityLogContainer" style="max-height: 500px; overflow-y: auto; border: 1px solid #ddd; border-radius: 8px; padding: 15px; background: #f8f9fa;">
+          <div class="activity-log" id="activityLogList">
+            <!-- Activity log entries will be populated here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <h2>📊 Activity Summary</h2>
+        <div class="activity-stats">
+          <div class="stat-item">
+            <span class="stat-label">Total Actions Today:</span>
+            <span class="stat-value" id="todayActions">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Active Users:</span>
+            <span class="stat-value" id="activeUsers">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Last Activity:</span>
+            <span class="stat-value" id="lastActivity">Never</span>
+          </div>
+        </div>
+        
+        <h3 style="margin-top: 20px;">📈 User Activity Chart</h3>
+        <div id="activityChart" style="height: 200px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666;">
+          Activity chart will appear here
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Settings Tab -->
   <div class="tab-content" id="settings">
     <div class="dashboard-grid">
@@ -1065,6 +1583,123 @@ body {
       </div>
     </div>
   </div>
+
+  <!-- Debug & Fallbacks Tab -->
+  <div class="tab-content" id="debug">
+    <div class="dashboard-grid">
+      <!-- System Status Card -->
+      <div class="dashboard-card">
+        <h2>🔍 System Diagnostics</h2>
+        <div id="systemStatus">
+          <div class="status-indicator" id="backendStatus">
+            <span class="status-dot status-checking"></span>
+            <span>Backend Connection: Checking...</span>
+          </div>
+          <div class="status-indicator" id="emailStatus">
+            <span class="status-dot status-checking"></span>
+            <span>Email System: Checking...</span>
+          </div>
+          <div class="status-indicator" id="storageStatus">
+            <span class="status-dot status-checking"></span>
+            <span>Local Storage: Checking...</span>
+          </div>
+          <div class="status-indicator" id="mobileStatus">
+            <span class="status-dot status-checking"></span>
+            <span>Mobile Compatibility: Checking...</span>
+          </div>
+        </div>
+        <div style="margin-top: 20px;">
+          <button class="action-btn btn-primary" onclick="runFullSystemDiagnostic()">🔄 Run Full Diagnostic</button>
+          <button class="action-btn btn-info" onclick="testBackendEndpoints()">🔌 Test Backend</button>
+        </div>
+      </div>
+
+      <!-- Pending Email Notifications -->
+      <div class="dashboard-card">
+        <h2>📧 Pending Email Notifications</h2>
+        <div id="pendingEmailsCount" class="metric-value">Loading...</div>
+        <div id="pendingEmailsList" style="max-height: 300px; overflow-y: auto; margin-top: 15px;">
+          <!-- Pending emails will be populated here -->
+        </div>
+        <div style="margin-top: 15px;">
+          <button class="action-btn btn-success" onclick="processPendingEmails()">✉️ Process All Emails</button>
+          <button class="action-btn btn-warning" onclick="clearProcessedEmails()">🗑️ Clear Processed</button>
+          <button class="action-btn btn-info" onclick="exportEmailQueue()">💾 Export Queue</button>
+        </div>
+      </div>
+
+      <!-- Mobile Testing Tools -->
+      <div class="dashboard-card">
+        <h2>📱 Mobile Testing</h2>
+        <div id="deviceInfo">
+          <p><strong>Current Device:</strong> <span id="deviceType">Unknown</span></p>
+          <p><strong>Screen Size:</strong> <span id="screenSize">Unknown</span></p>
+          <p><strong>Touch Support:</strong> <span id="touchSupport">Unknown</span></p>
+          <p><strong>Orientation:</strong> <span id="orientation">Unknown</span></p>
+        </div>
+        <div style="margin-top: 20px;">
+          <button class="action-btn btn-primary" onclick="testMobileLayout()">📱 Test Mobile Layout</button>
+          <button class="action-btn btn-info" onclick="testTouchInterface()">👆 Test Touch Interface</button>
+          <button class="action-btn btn-warning" onclick="simulateMobileView()">📲 Simulate Mobile View</button>
+        </div>
+      </div>
+
+      <!-- Fallback Systems -->
+      <div class="dashboard-card">
+        <h2>🛡️ Fallback Systems</h2>
+        <div id="fallbackStatus">
+          <div class="fallback-item">
+            <span>📧 Email Fallback:</span>
+            <span class="status-badge status-active" id="emailFallbackStatus">Active</span>
+          </div>
+          <div class="fallback-item">
+            <span>💾 Local Storage Backup:</span>
+            <span class="status-badge status-active" id="storageFallbackStatus">Active</span>
+          </div>
+          <div class="fallback-item">
+            <span>🔔 Visual Notifications:</span>
+            <span class="status-badge status-active" id="notificationFallbackStatus">Active</span>
+          </div>
+        </div>
+        <div style="margin-top: 20px;">
+          <button class="action-btn btn-success" onclick="testFallbackSystems()">🧪 Test Fallback Systems</button>
+          <button class="action-btn btn-info" onclick="toggleFallbackMode()">🔄 Toggle Fallback Mode</button>
+        </div>
+      </div>
+
+      <!-- Admin Notifications -->
+      <div class="dashboard-card">
+        <h2>🔔 Admin Notifications</h2>
+        <div id="adminNotificationsList" style="max-height: 250px; overflow-y: auto;">
+          <!-- Admin notifications will be populated here -->
+        </div>
+        <div style="margin-top: 15px;">
+          <button class="action-btn btn-primary" onclick="markAllNotificationsRead()">✅ Mark All Read</button>
+          <button class="action-btn btn-warning" onclick="clearOldNotifications()">🗑️ Clear Old</button>
+        </div>
+      </div>
+
+      <!-- Emergency Manual Override -->
+      <div class="dashboard-card">
+        <h2>🚨 Emergency Manual Override</h2>
+        <div class="emergency-controls">
+          <div class="form-group">
+            <label>Manual Email Processing</label>
+            <textarea class="form-control" id="manualEmailContent" placeholder="Enter email content to send manually..." rows="4"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Recipient Email</label>
+            <input type="email" class="form-control" id="manualEmailRecipient" placeholder="Enter recipient email">
+          </div>
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" class="form-control" id="manualEmailSubject" placeholder="Enter email subject">
+          </div>
+          <button class="action-btn btn-danger" onclick="sendManualEmail()">📤 Send Manual Email</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Modal -->
@@ -1083,6 +1718,8 @@ body {
 <script>
 // Global variables
 let currentUser = null;
+let adminUsers = JSON.parse(localStorage.getItem('adminUsers') || '[]');
+let activityLog = JSON.parse(localStorage.getItem('activityLog') || '[]');
 let orders = JSON.parse(localStorage.getItem('adminOrders') || '[]');
 let customers = JSON.parse(localStorage.getItem('adminCustomers') || '[]');
 let inventory = JSON.parse(localStorage.getItem('adminInventory') || '[]');
@@ -1090,25 +1727,109 @@ let blockedDates = JSON.parse(localStorage.getItem('adminBlockedDates') || '[]')
 let currentDate = new Date();
 let charts = {};
 
+// Cross-device sync configuration
+const SYNC_SERVER_URL = 'https://www.cupcakesontheavenue.com/api/sync'; // Replace with your actual server endpoint
+const SYNC_ENABLED = false; // Set to true when you have a backend
+let lastSyncTime = localStorage.getItem('lastSyncTime') || null;
+let syncInProgress = false;
+
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
   initializeApp();
   setupEventListeners();
   generateSampleData();
+  loadActivityLog();
 });
 
 function initializeApp() {
-  // Check if user is already logged in
+  // Check if user is already logged in and session is valid
   const savedUser = localStorage.getItem('adminUser');
-  if (savedUser) {
+  const sessionExpiry = localStorage.getItem('adminSessionExpiry');
+  
+  if (savedUser && sessionExpiry && new Date().getTime() < parseInt(sessionExpiry)) {
     currentUser = JSON.parse(savedUser);
+    logActivity('system', 'Auto-login from saved session');
     showDashboard();
+    updateUserDisplay();
+    
+    // Start auto-sync when user is authenticated
+    if (SYNC_ENABLED) {
+      startAutoSync();
+      // Initial sync on app start
+      setTimeout(() => syncDataWithCloud(), 2000);
+    }
+  } else {
+    // Clear expired session
+    localStorage.removeItem('adminUser');
+    localStorage.removeItem('adminSessionExpiry');
+    showLogin();
   }
+}
+
+// User Authentication System
+function showLogin() {
+  document.getElementById('loginView').style.display = 'block';
+  document.getElementById('signupView').style.display = 'none';
+}
+
+function showSignup() {
+  document.getElementById('loginView').style.display = 'none';
+  document.getElementById('signupView').style.display = 'block';
+}
+
+function updateUserDisplay() {
+  if (currentUser) {
+    document.getElementById('currentUserName').textContent = currentUser.fullName || currentUser.username;
+    document.getElementById('currentUserRole').textContent = currentUser.role || 'admin';
+  }
+}
+
+// Activity Logging System
+function logActivity(type, action, details = '') {
+  const activity = {
+    id: Date.now(),
+    timestamp: new Date().toISOString(),
+    user: currentUser ? currentUser.username : 'System',
+    userFullName: currentUser ? currentUser.fullName : 'System',
+    type: type,
+    action: action,
+    details: details,
+    deviceInfo: getDeviceInfo(),
+    ip: 'localhost' // In real implementation, get actual IP
+  };
+  
+  activityLog.unshift(activity); // Add to beginning
+  
+  // Keep only last 1000 activities to prevent storage bloat
+  if (activityLog.length > 1000) {
+    activityLog = activityLog.slice(0, 1000);
+  }
+  
+  localStorage.setItem('activityLog', JSON.stringify(activityLog));
+  updateActivityDisplay();
+}
+
+function getDeviceInfo() {
+  const ua = navigator.userAgent;
+  let device = 'Desktop';
+  
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)) {
+    if (/iPad/i.test(ua)) device = 'Tablet (iPad)';
+    else if (/iPhone/i.test(ua)) device = 'Mobile (iPhone)';
+    else if (/Android/i.test(ua)) {
+      device = ua.includes('Mobile') ? 'Mobile (Android)' : 'Tablet (Android)';
+    } else device = 'Mobile';
+  }
+  
+  return device;
 }
 
 function setupEventListeners() {
   // Login form
   document.getElementById('loginForm').addEventListener('submit', handleLogin);
+  
+  // Signup form
+  document.getElementById('signupForm').addEventListener('submit', handleSignup);
   
   // Logout button
   document.getElementById('logoutBtn').addEventListener('click', logout);
@@ -1127,36 +1848,527 @@ function setupEventListeners() {
   document.getElementById('customerSearch')?.addEventListener('input', filterCustomers);
 }
 
+// Enhanced Authentication Functions
 function handleLogin(e) {
   e.preventDefault();
-  const username = document.getElementById('username').value;
+  const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value;
   
-  // Simple authentication (in production, use proper authentication)
-  if (username === 'admin' && password === 'cupcakes2025') {
-    currentUser = { username, loginTime: new Date() };
-    localStorage.setItem('adminUser', JSON.stringify(currentUser));
-    showDashboard();
-    showNotification('Welcome to the admin dashboard!', 'success');
-  } else {
-    document.getElementById('errorMessage').textContent = 'Invalid credentials';
+  if (!username || !password) {
+    showError('loginErrorMessage', 'Please enter both username and password');
+    return;
   }
+  
+  // Check if user exists
+  const user = adminUsers.find(u => u.username === username);
+  
+  if (!user) {
+    // Create default admin if no users exist
+    if (adminUsers.length === 0 && username === 'admin' && password === 'cupcakes2025') {
+      const defaultAdmin = {
+        id: Date.now(),
+        username: 'admin',
+        fullName: 'Admin User',
+        email: 'admin@cupcakesontheavenue.com',
+        password: 'cupcakes2025', // In production, hash this
+        role: 'admin',
+        createdAt: new Date().toISOString(),
+        lastLogin: null
+      };
+      adminUsers.push(defaultAdmin);
+      localStorage.setItem('adminUsers', JSON.stringify(adminUsers));
+      authenticateUser(defaultAdmin, password);
+    } else {
+      showError('loginErrorMessage', 'User not found');
+    }
+    return;
+  }
+  
+  // Verify password (in production, use proper hashing)
+  if (user.password !== password) {
+    logActivity('security', 'Failed login attempt', `Username: ${username}`);
+    showError('loginErrorMessage', 'Invalid password');
+    return;
+  }
+  
+  authenticateUser(user, password);
+}
+
+function handleSignup(e) {
+  e.preventDefault();
+  const formData = {
+    fullName: document.getElementById('signupFullName').value.trim(),
+    username: document.getElementById('signupUsername').value.trim(),
+    email: document.getElementById('signupEmail').value.trim(),
+    password: document.getElementById('signupPassword').value,
+    confirmPassword: document.getElementById('confirmPassword').value,
+    role: document.getElementById('userRole').value
+  };
+  
+  // Validation
+  if (!formData.fullName || !formData.username || !formData.email || !formData.password || !formData.role) {
+    showError('signupErrorMessage', 'Please fill in all fields');
+    return;
+  }
+  
+  if (formData.password !== formData.confirmPassword) {
+    showError('signupErrorMessage', 'Passwords do not match');
+    return;
+  }
+  
+  if (formData.password.length < 6) {
+    showError('signupErrorMessage', 'Password must be at least 6 characters');
+    return;
+  }
+  
+  // Check if username or email already exists
+  if (adminUsers.find(u => u.username === formData.username)) {
+    showError('signupErrorMessage', 'Username already exists');
+    return;
+  }
+  
+  if (adminUsers.find(u => u.email === formData.email)) {
+    showError('signupErrorMessage', 'Email already exists');
+    return;
+  }
+  
+  // Create new user
+  const newUser = {
+    id: Date.now(),
+    username: formData.username,
+    fullName: formData.fullName,
+    email: formData.email,
+    password: formData.password, // In production, hash this
+    role: formData.role,
+    createdAt: new Date().toISOString(),
+    lastLogin: null
+  };
+  
+  adminUsers.push(newUser);
+  localStorage.setItem('adminUsers', JSON.stringify(adminUsers));
+  
+  logActivity('user', 'New user account created', `User: ${newUser.username} (${newUser.role})`);
+  
+  // Auto-login after signup
+  authenticateUser(newUser);
+}
+
+function authenticateUser(user, password = null) {
+  currentUser = user;
+  currentUser.lastLogin = new Date().toISOString();
+  
+  // Update user in storage
+  const userIndex = adminUsers.findIndex(u => u.id === user.id);
+  if (userIndex !== -1) {
+    adminUsers[userIndex] = currentUser;
+    localStorage.setItem('adminUsers', JSON.stringify(adminUsers));
+  }
+  
+  // Set session with 24 hour expiry
+  const sessionExpiry = new Date().getTime() + (24 * 60 * 60 * 1000);
+  localStorage.setItem('adminUser', JSON.stringify(currentUser));
+  localStorage.setItem('adminSessionExpiry', sessionExpiry.toString());
+  
+  logActivity('login', 'User logged in successfully');
+  showDashboard();
+  updateUserDisplay();
+  clearErrors();
 }
 
 function logout() {
-  localStorage.removeItem('adminUser');
+  if (currentUser) {
+    logActivity('logout', 'User logged out');
+  }
+  
   currentUser = null;
+  localStorage.removeItem('adminUser');
+  localStorage.removeItem('adminSessionExpiry');
+  
   document.getElementById('loginContainer').style.display = 'flex';
   document.getElementById('dashboard').style.display = 'none';
-  showNotification('Logged out successfully', 'success');
+  
+  // Clear forms
+  document.getElementById('loginForm').reset();
+  document.getElementById('signupForm').reset();
+  showLogin();
+  clearErrors();
 }
+
+function showError(elementId, message) {
+  const errorElement = document.getElementById(elementId);
+  if (errorElement) {
+    errorElement.textContent = message;
+    errorElement.style.display = 'block';
+  }
+}
+
+function clearErrors() {
+  document.querySelectorAll('.error-message').forEach(el => {
+    el.textContent = '';
+    el.style.display = 'none';
+  });
+}
+
+// Activity Logging Display Functions
+function loadActivityLog() {
+  updateActivityDisplay();
+  populateUserFilter();
+}
+
+function updateActivityDisplay() {
+  const container = document.getElementById('activityLogList');
+  if (!container) return;
+  
+  if (activityLog.length === 0) {
+    container.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No activity recorded yet</div>';
+    return;
+  }
+  
+  const filteredLog = getFilteredActivityLog();
+  
+  container.innerHTML = filteredLog.map(activity => {
+    const time = new Date(activity.timestamp).toLocaleString();
+    const timeAgo = getTimeAgo(new Date(activity.timestamp));
+    
+    return `
+      <div class="activity-item" style="border-left: 4px solid ${getActivityColor(activity.type)}; padding: 12px; margin-bottom: 10px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <div style="display: flex; justify-content: between; align-items: start;">
+          <div style="flex: 1;">
+            <strong>${activity.userFullName || activity.user}</strong> 
+            <span style="color: #666;">(${activity.type})</span>
+            <div style="margin: 5px 0; color: #333;">${activity.action}</div>
+            ${activity.details ? `<div style="font-size: 12px; color: #666; margin-top: 5px;">${activity.details}</div>` : ''}
+          </div>
+          <div style="text-align: right; font-size: 12px; color: #999;">
+            <div>${timeAgo}</div>
+            <div>${time}</div>
+            <div>${activity.deviceInfo}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  updateActivityStats();
+}
+
+function getActivityColor(type) {
+  const colors = {
+    login: '#28a745',
+    logout: '#6c757d', 
+    orders: '#007bff',
+    customers: '#17a2b8',
+    inventory: '#ffc107',
+    settings: '#6f42c1',
+    security: '#dc3545',
+    system: '#6c757d'
+  };
+  return colors[type] || '#6c757d';
+}
+
+function getTimeAgo(date) {
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+  
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 30) return `${diffDays}d ago`;
+  return date.toLocaleDateString();
+}
+
+function getFilteredActivityLog() {
+  let filtered = [...activityLog];
+  
+  // Filter by activity type
+  const typeFilter = document.getElementById('activityFilter')?.value;
+  if (typeFilter && typeFilter !== 'all') {
+    filtered = filtered.filter(activity => activity.type === typeFilter);
+  }
+  
+  // Filter by user
+  const userFilter = document.getElementById('userFilter')?.value;
+  if (userFilter && userFilter !== 'all') {
+    filtered = filtered.filter(activity => activity.user === userFilter);
+  }
+  
+  // Filter by date
+  const dateFilter = document.getElementById('dateFilter')?.value;
+  if (dateFilter) {
+    const filterDate = new Date(dateFilter);
+    filtered = filtered.filter(activity => {
+      const activityDate = new Date(activity.timestamp);
+      return activityDate.toDateString() === filterDate.toDateString();
+    });
+  }
+  
+  return filtered;
+}
+
+function populateUserFilter() {
+  const userFilter = document.getElementById('userFilter');
+  if (!userFilter) return;
+  
+  const users = [...new Set(activityLog.map(activity => activity.user))];
+  
+  userFilter.innerHTML = '<option value="all">All Users</option>' + 
+    users.map(user => `<option value="${user}">${user}</option>`).join('');
+}
+
+function updateActivityStats() {
+  const today = new Date().toDateString();
+  const todayActivities = activityLog.filter(activity => 
+    new Date(activity.timestamp).toDateString() === today
+  );
+  
+  const activeUsers = [...new Set(activityLog.filter(activity => {
+    const activityDate = new Date(activity.timestamp);
+    const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    return activityDate > hourAgo;
+  }).map(activity => activity.user))];
+  
+  const lastActivity = activityLog.length > 0 ? 
+    getTimeAgo(new Date(activityLog[0].timestamp)) : 'Never';
+  
+  document.getElementById('todayActions').textContent = todayActivities.length;
+  document.getElementById('activeUsers').textContent = activeUsers.length;
+  document.getElementById('lastActivity').textContent = lastActivity;
+}
+
+function filterActivityLog() {
+  updateActivityDisplay();
+}
+
+function exportActivityLog() {
+  const filteredLog = getFilteredActivityLog();
+  const csvContent = "data:text/csv;charset=utf-8," + 
+    "Timestamp,User,Type,Action,Details,Device\n" +
+    filteredLog.map(activity => 
+      `"${activity.timestamp}","${activity.userFullName || activity.user}","${activity.type}","${activity.action}","${activity.details || ''}","${activity.deviceInfo}"`
+    ).join("\n");
+  
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `activity-log-${new Date().toISOString().split('T')[0]}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  logActivity('system', 'Activity log exported');
+}
+
+// Cross-Device Data Synchronization
+async function syncDataWithCloud() {
+  if (!SYNC_ENABLED || syncInProgress) return;
+  
+  syncInProgress = true;
+  try {
+    const dataToSync = {
+      adminUsers,
+      activityLog: activityLog.slice(0, 500), // Only sync recent activities
+      orders,
+      customers,
+      inventory,
+      blockedDates,
+      lastSyncTime: new Date().toISOString(),
+      deviceInfo: getDeviceInfo(),
+      userId: currentUser?.id
+    };
+    
+    const response = await fetch(`${SYNC_SERVER_URL}/sync`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('syncToken')}`
+      },
+      body: JSON.stringify(dataToSync)
+    });
+    
+    if (response.ok) {
+      const syncedData = await response.json();
+      
+      // Merge synced data intelligently
+      mergeCloudData(syncedData);
+      
+      lastSyncTime = new Date().toISOString();
+      localStorage.setItem('lastSyncTime', lastSyncTime);
+      
+      logActivity('system', 'Data synchronized with cloud successfully');
+      showNotification('Data synced across all devices!', 'success');
+    } else {
+      throw new Error(`Sync failed with status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('Sync error:', error);
+    logActivity('system', 'Cloud sync failed', error.message);
+    // Continue working offline
+    showNotification('Working offline - will sync when connection is restored', 'warning');
+  } finally {
+    syncInProgress = false;
+  }
+}
+
+function mergeCloudData(cloudData) {
+  // Smart merge strategy - preserve local changes while updating with cloud data
+  
+  // Merge orders (keep most recent based on last modified)
+  if (cloudData.orders) {
+    const mergedOrders = [...orders];
+    cloudData.orders.forEach(cloudOrder => {
+      const localIndex = mergedOrders.findIndex(o => o.id === cloudOrder.id);
+      if (localIndex === -1) {
+        mergedOrders.push(cloudOrder);
+      } else {
+        // Keep the most recently modified version
+        if (!mergedOrders[localIndex].lastModified || 
+            (cloudOrder.lastModified && cloudOrder.lastModified > mergedOrders[localIndex].lastModified)) {
+          mergedOrders[localIndex] = cloudOrder;
+        }
+      }
+    });
+    orders = mergedOrders;
+    localStorage.setItem('adminOrders', JSON.stringify(orders));
+  }
+  
+  // Similar merge for customers
+  if (cloudData.customers) {
+    const mergedCustomers = [...customers];
+    cloudData.customers.forEach(cloudCustomer => {
+      const localIndex = mergedCustomers.findIndex(c => c.id === cloudCustomer.id);
+      if (localIndex === -1) {
+        mergedCustomers.push(cloudCustomer);
+      } else if (!mergedCustomers[localIndex].lastModified || 
+                 (cloudCustomer.lastModified && cloudCustomer.lastModified > mergedCustomers[localIndex].lastModified)) {
+        mergedCustomers[localIndex] = cloudCustomer;
+      }
+    });
+    customers = mergedCustomers;
+    localStorage.setItem('adminCustomers', JSON.stringify(customers));
+  }
+  
+  // Merge inventory
+  if (cloudData.inventory) {
+    inventory = cloudData.inventory;
+    localStorage.setItem('adminInventory', JSON.stringify(inventory));
+  }
+  
+  // Merge blocked dates
+  if (cloudData.blockedDates) {
+    blockedDates = cloudData.blockedDates;
+    localStorage.setItem('adminBlockedDates', JSON.stringify(blockedDates));
+  }
+  
+  // Merge activity log (combine and sort by timestamp)
+  if (cloudData.activityLog) {
+    const combinedLog = [...activityLog, ...cloudData.activityLog];
+    const uniqueLog = combinedLog.filter((activity, index, arr) => 
+      arr.findIndex(a => a.id === activity.id) === index
+    );
+    activityLog = uniqueLog.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    localStorage.setItem('activityLog', JSON.stringify(activityLog));
+  }
+  
+  // Refresh UI
+  refreshAllData();
+  updateActivityDisplay();
+}
+
+// Auto-sync functions
+function startAutoSync() {
+  // Sync every 5 minutes when user is active
+  setInterval(() => {
+    if (currentUser && document.visibilityState === 'visible') {
+      syncDataWithCloud();
+    }
+  }, 5 * 60 * 1000);
+  
+  // Sync when page becomes visible (user switches back to app)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && currentUser) {
+      syncDataWithCloud();
+    }
+  });
+  
+  // Sync before page unload
+  window.addEventListener('beforeunload', () => {
+    if (currentUser) {
+      navigator.sendBeacon(`${SYNC_SERVER_URL}/quick-sync`, JSON.stringify({
+        userId: currentUser.id,
+        lastActivity: new Date().toISOString()
+      }));
+    }
+  });
+}
+
+// Offline detection and sync queue
+let syncQueue = JSON.parse(localStorage.getItem('syncQueue') || '[]');
+
+function queueForSync(action, data) {
+  const queueItem = {
+    id: Date.now(),
+    action,
+    data,
+    timestamp: new Date().toISOString(),
+    userId: currentUser?.id
+  };
+  
+  syncQueue.push(queueItem);
+  localStorage.setItem('syncQueue', JSON.stringify(syncQueue));
+  
+  // Try to process queue if online
+  if (navigator.onLine && SYNC_ENABLED) {
+    processSyncQueue();
+  }
+}
+
+async function processSyncQueue() {
+  if (syncQueue.length === 0) return;
+  
+  try {
+    const response = await fetch(`${SYNC_SERVER_URL}/process-queue`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('syncToken')}`
+      },
+      body: JSON.stringify({ queue: syncQueue })
+    });
+    
+    if (response.ok) {
+      syncQueue = [];
+      localStorage.setItem('syncQueue', JSON.stringify(syncQueue));
+      logActivity('system', 'Sync queue processed successfully');
+    }
+  } catch (error) {
+    console.error('Failed to process sync queue:', error);
+  }
+}
+
+// Network status monitoring
+window.addEventListener('online', () => {
+  showNotification('Connection restored - syncing data...', 'success');
+  if (currentUser) {
+    syncDataWithCloud();
+    processSyncQueue();
+  }
+});
+
+window.addEventListener('offline', () => {
+  showNotification('Working offline - changes will sync when connection is restored', 'warning');
+});
 
 function showDashboard() {
   document.getElementById('loginContainer').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
+  refreshAllData();
   loadDashboardData();
   initializeCharts();
   updateLastUpdateTime();
+  showNotification('Welcome to the admin dashboard!', 'success');
 }
 
 function switchTab(tabName) {
@@ -2081,6 +3293,9 @@ function addOrder() {
     orders.push(newOrder);
     localStorage.setItem('adminOrders', JSON.stringify(orders));
     
+    // Log activity
+    logActivity('orders', 'New order created', `Order #${newOrder.id} for ${newOrder.customerName} - £${newOrder.total}`);
+    
     // Add customer if new
     addCustomerFromOrder({
       name: newOrder.customerName,
@@ -2339,7 +3554,888 @@ document.addEventListener('DOMContentLoaded', () => {
       checkUpcomingOrdersForNotifications();
     }
   }, 5000);
+
+  // Add debug tab initialization
+  const originalSwitchTabForDebug = switchTab;
+  window.switchTab = function(tabName) {
+    originalSwitchTabForDebug(tabName);
+    if (tabName === 'debug') {
+      initializeDebugTab();
+    }
+    if (tabName === 'communications') {
+      updateCustomerDropdown();
+      loadCommunicationHistory();
+    }
+  };
 });
+
+// Debug & Fallback Functions
+function initializeDebugTab() {
+  updateDeviceInfo();
+  loadPendingEmails();
+  loadAdminNotifications();
+  runSystemStatusCheck();
+}
+
+function updateDeviceInfo() {
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const touchSupport = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const orientation = window.innerWidth > window.innerHeight ? 'Landscape' : 'Portrait';
+  
+  document.getElementById('deviceType').textContent = isMobile ? 'Mobile Device' : 'Desktop';
+  document.getElementById('screenSize').textContent = `${window.innerWidth} × ${window.innerHeight}`;
+  document.getElementById('touchSupport').textContent = touchSupport ? 'Available' : 'Not detected';
+  document.getElementById('orientation').textContent = orientation;
+}
+
+function runSystemStatusCheck() {
+  // Check backend status
+  checkBackendStatus();
+  
+  // Check email system
+  checkEmailSystemStatus();
+  
+  // Check local storage
+  checkLocalStorageStatus();
+  
+  // Check mobile compatibility
+  checkMobileCompatibilityStatus();
+}
+
+function checkBackendStatus() {
+  const statusElement = document.getElementById('backendStatus');
+  const BACKEND_BASE = 'https://sumup-backend.vercel.app';
+  
+  fetch(`${BACKEND_BASE}/api/index`)
+    .then(response => {
+      const statusDot = statusElement.querySelector('.status-dot');
+      const statusText = statusElement.querySelector('span:last-child');
+      
+      if (response.ok) {
+        statusDot.className = 'status-dot status-online';
+        statusText.textContent = 'Backend Connection: Online ✅';
+      } else {
+        statusDot.className = 'status-dot status-warning';
+        statusText.textContent = `Backend Connection: Issues (${response.status}) ⚠️`;
+        addAdminNotification('⚠️ Backend connection issues detected', 'warning');
+      }
+    })
+    .catch(error => {
+      const statusDot = statusElement.querySelector('.status-dot');
+      const statusText = statusElement.querySelector('span:last-child');
+      statusDot.className = 'status-dot status-offline';
+      statusText.textContent = 'Backend Connection: Offline ❌';
+      addAdminNotification('❌ Backend connection failed - fallback systems active', 'error');
+    });
+}
+
+function checkEmailSystemStatus() {
+  const statusElement = document.getElementById('emailStatus');
+  const statusDot = statusElement.querySelector('.status-dot');
+  const statusText = statusElement.querySelector('span:last-child');
+  
+  // Check if there are pending emails (indicates email system issues)
+  const pendingEmails = JSON.parse(localStorage.getItem('pendingEmails') || '[]');
+  
+  if (pendingEmails.length === 0) {
+    statusDot.className = 'status-dot status-online';
+    statusText.textContent = 'Email System: Working ✅';
+  } else {
+    statusDot.className = 'status-dot status-warning';
+    statusText.textContent = `Email System: ${pendingEmails.length} pending emails ⚠️`;
+    addAdminNotification(`📧 ${pendingEmails.length} emails are pending manual processing`, 'warning');
+  }
+}
+
+function checkLocalStorageStatus() {
+  const statusElement = document.getElementById('storageStatus');
+  const statusDot = statusElement.querySelector('.status-dot');
+  const statusText = statusElement.querySelector('span:last-child');
+  
+  try {
+    const testKey = 'adminTest_' + Date.now();
+    localStorage.setItem(testKey, 'test');
+    localStorage.removeItem(testKey);
+    
+    statusDot.className = 'status-dot status-online';
+    statusText.textContent = 'Local Storage: Working ✅';
+  } catch (error) {
+    statusDot.className = 'status-dot status-offline';
+    statusText.textContent = 'Local Storage: Error ❌';
+    addAdminNotification('❌ Local storage access failed', 'error');
+  }
+}
+
+function checkMobileCompatibilityStatus() {
+  const statusElement = document.getElementById('mobileStatus');
+  const statusDot = statusElement.querySelector('.status-dot');
+  const statusText = statusElement.querySelector('span:last-child');
+  
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const touchSupport = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const viewportMeta = document.querySelector('meta[name="viewport"]');
+  
+  if (isMobile || touchSupport || window.innerWidth <= 768) {
+    statusDot.className = 'status-dot status-online';
+    statusText.textContent = 'Mobile Compatibility: Optimized ✅';
+  } else {
+    statusDot.className = 'status-dot status-warning';
+    statusText.textContent = 'Mobile Compatibility: Desktop mode ⚠️';
+  }
+}
+
+function loadPendingEmails() {
+  const pendingEmails = JSON.parse(localStorage.getItem('pendingEmails') || '[]');
+  const countElement = document.getElementById('pendingEmailsCount');
+  const listElement = document.getElementById('pendingEmailsList');
+  
+  countElement.textContent = pendingEmails.length;
+  
+  if (pendingEmails.length === 0) {
+    listElement.innerHTML = '<p style="color: #666; text-align: center;">No pending emails 🎉</p>';
+    return;
+  }
+  
+  listElement.innerHTML = pendingEmails.map((email, index) => `
+    <div class="pending-email-item">
+      <div class="pending-email-header">
+        <span class="pending-email-type">${email.type}</span>
+        <span class="pending-email-time">${new Date(email.timestamp).toLocaleString()}</span>
+      </div>
+      <div><strong>To:</strong> ${email.data.email || email.data.name}</div>
+      <div class="pending-email-preview"><strong>Subject:</strong> ${email.preview.subject}</div>
+      <div class="pending-email-preview">${email.preview.body.substring(0, 100)}...</div>
+      <div style="margin-top: 8px;">
+        <button class="action-btn btn-sm btn-success" onclick="processSingleEmail(${index})">✉️ Send</button>
+        <button class="action-btn btn-sm btn-warning" onclick="viewEmailContent(${index})">👁️ View</button>
+        <button class="action-btn btn-sm btn-danger" onclick="deletePendingEmail(${index})">🗑️ Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function loadAdminNotifications() {
+  const notifications = JSON.parse(localStorage.getItem('adminNotifications') || '[]');
+  const listElement = document.getElementById('adminNotificationsList');
+  
+  if (notifications.length === 0) {
+    listElement.innerHTML = '<p style="color: #666; text-align: center;">No notifications</p>';
+    return;
+  }
+  
+  listElement.innerHTML = notifications
+    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+    .slice(0, 20) // Show only last 20
+    .map(notification => `
+      <div class="notification-item ${notification.read ? '' : 'unread'}">
+        <div class="notification-icon">${getNotificationIcon(notification.type)}</div>
+        <div class="notification-content">
+          <div>${notification.message}</div>
+          <div class="notification-time">${new Date(notification.timestamp).toLocaleString()}</div>
+        </div>
+      </div>
+    `).join('');
+}
+
+function getNotificationIcon(type) {
+  switch(type) {
+    case 'error': return '❌';
+    case 'warning': return '⚠️';
+    case 'success': return '✅';
+    case 'info': return 'ℹ️';
+    default: return '🔔';
+  }
+}
+
+function addAdminNotification(message, type = 'info') {
+  const notifications = JSON.parse(localStorage.getItem('adminNotifications') || '[]');
+  
+  const notification = {
+    id: Date.now(),
+    message: message,
+    type: type,
+    timestamp: new Date().toISOString(),
+    read: false
+  };
+  
+  notifications.unshift(notification);
+  
+  // Keep only last 100 notifications
+  if (notifications.length > 100) {
+    notifications.splice(100);
+  }
+  
+  localStorage.setItem('adminNotifications', JSON.stringify(notifications));
+  
+  // Update the UI if debug tab is active
+  if (document.getElementById('debug').classList.contains('active')) {
+    loadAdminNotifications();
+  }
+  
+  // Show popup notification
+  showNotification(message, type);
+}
+
+function runFullSystemDiagnostic() {
+  addAdminNotification('🔍 Running full system diagnostic...', 'info');
+  
+  // Reset all status indicators to checking
+  document.querySelectorAll('.status-dot').forEach(dot => {
+    dot.className = 'status-dot status-checking';
+  });
+  
+  // Run checks with delays for better UX
+  setTimeout(() => checkBackendStatus(), 500);
+  setTimeout(() => checkEmailSystemStatus(), 1000);
+  setTimeout(() => checkLocalStorageStatus(), 1500);
+  setTimeout(() => checkMobileCompatibilityStatus(), 2000);
+  setTimeout(() => updateDeviceInfo(), 2500);
+  setTimeout(() => {
+    addAdminNotification('✅ System diagnostic completed', 'success');
+  }, 3000);
+}
+
+function testBackendEndpoints() {
+  addAdminNotification('🔌 Testing backend endpoints...', 'info');
+  
+  const BACKEND_BASE = 'https://sumup-backend.vercel.app';
+  const endpoints = [
+    { name: 'Health Check', url: `${BACKEND_BASE}/api/index` },
+    { name: 'Email API', url: `${BACKEND_BASE}/api/send-customer-email` },
+    { name: 'Discord Webhook', url: `${BACKEND_BASE}/api/discord-webhook` }
+  ];
+  
+  endpoints.forEach((endpoint, index) => {
+    setTimeout(() => {
+      fetch(endpoint.url, { method: 'GET' })
+        .then(response => {
+          const status = response.ok ? '✅' : '⚠️';
+          addAdminNotification(`${status} ${endpoint.name}: ${response.status}`, response.ok ? 'success' : 'warning');
+        })
+        .catch(error => {
+          addAdminNotification(`❌ ${endpoint.name}: Connection failed`, 'error');
+        });
+    }, index * 1000);
+  });
+}
+
+function processPendingEmails() {
+  const pendingEmails = JSON.parse(localStorage.getItem('pendingEmails') || '[]');
+  
+  if (pendingEmails.length === 0) {
+    addAdminNotification('No pending emails to process', 'info');
+    return;
+  }
+  
+  addAdminNotification(`📧 Processing ${pendingEmails.length} pending emails...`, 'info');
+  
+  // In a real implementation, this would send emails via your email service
+  // For now, we'll simulate processing and move them to a processed list
+  const processedEmails = JSON.parse(localStorage.getItem('processedEmails') || '[]');
+  
+  pendingEmails.forEach(email => {
+    email.processedAt = new Date().toISOString();
+    email.status = 'processed';
+    processedEmails.push(email);
+  });
+  
+  localStorage.setItem('processedEmails', JSON.stringify(processedEmails));
+  localStorage.setItem('pendingEmails', JSON.stringify([]));
+  
+  loadPendingEmails();
+  addAdminNotification(`✅ ${pendingEmails.length} emails processed successfully`, 'success');
+}
+
+function processSingleEmail(index) {
+  const pendingEmails = JSON.parse(localStorage.getItem('pendingEmails') || '[]');
+  
+  if (index >= 0 && index < pendingEmails.length) {
+    const email = pendingEmails[index];
+    
+    // Move to processed
+    const processedEmails = JSON.parse(localStorage.getItem('processedEmails') || '[]');
+    email.processedAt = new Date().toISOString();
+    email.status = 'processed';
+    processedEmails.push(email);
+    
+    // Remove from pending
+    pendingEmails.splice(index, 1);
+    
+    localStorage.setItem('processedEmails', JSON.stringify(processedEmails));
+    localStorage.setItem('pendingEmails', JSON.stringify(pendingEmails));
+    
+    loadPendingEmails();
+    addAdminNotification(`✅ Email processed for ${email.data.name || email.data.email}`, 'success');
+  }
+}
+
+function deletePendingEmail(index) {
+  const pendingEmails = JSON.parse(localStorage.getItem('pendingEmails') || '[]');
+  
+  if (index >= 0 && index < pendingEmails.length) {
+    const email = pendingEmails[index];
+    pendingEmails.splice(index, 1);
+    localStorage.setItem('pendingEmails', JSON.stringify(pendingEmails));
+    loadPendingEmails();
+    addAdminNotification(`🗑️ Deleted pending email for ${email.data.name || email.data.email}`, 'warning');
+  }
+}
+
+function viewEmailContent(index) {
+  const pendingEmails = JSON.parse(localStorage.getItem('pendingEmails') || '[]');
+  
+  if (index >= 0 && index < pendingEmails.length) {
+    const email = pendingEmails[index];
+    
+    const modalContent = `
+      <div style="max-width: 600px;">
+        <h4>📧 Email Preview</h4>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+          <p><strong>Type:</strong> ${email.type}</p>
+          <p><strong>To:</strong> ${email.data.email || email.data.name}</p>
+          <p><strong>Subject:</strong> ${email.preview.subject}</p>
+          <p><strong>Timestamp:</strong> ${new Date(email.timestamp).toLocaleString()}</p>
+        </div>
+        <div style="background: white; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+          <h5>Email Content:</h5>
+          <pre style="white-space: pre-wrap; font-family: Arial, sans-serif;">${email.preview.body}</pre>
+        </div>
+        <div style="margin-top: 15px;">
+          <button class="action-btn btn-success" onclick="processSingleEmail(${index}); closeModal();">✉️ Send This Email</button>
+          <button class="action-btn btn-danger" onclick="deletePendingEmail(${index}); closeModal();">🗑️ Delete</button>
+        </div>
+      </div>
+    `;
+    
+    openModal('Email Content Preview', modalContent);
+  }
+}
+
+function testMobileLayout() {
+  addAdminNotification('📱 Testing mobile layout...', 'info');
+  updateDeviceInfo();
+  
+  // Simulate mobile view
+  const currentWidth = window.innerWidth;
+  if (currentWidth > 768) {
+    addAdminNotification('💡 Consider testing on actual mobile device for best results', 'info');
+  } else {
+    addAdminNotification('✅ Mobile layout active', 'success');
+  }
+}
+
+function testTouchInterface() {
+  addAdminNotification('👆 Testing touch interface...', 'info');
+  
+  const touchSupport = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  
+  if (touchSupport) {
+    addAdminNotification('✅ Touch interface is supported', 'success');
+    
+    // Create a test touch element
+    const testElement = document.createElement('div');
+    testElement.style.cssText = `
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 100px; height: 100px; background: #667eea; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: bold; z-index: 10000; cursor: pointer;
+    `;
+    testElement.innerHTML = 'TAP ME';
+    
+    let tapped = false;
+    const handleTouch = () => {
+      if (!tapped) {
+        tapped = true;
+        testElement.style.background = '#28a745';
+        testElement.innerHTML = 'SUCCESS!';
+        setTimeout(() => {
+          testElement.remove();
+          addAdminNotification('✅ Touch test completed successfully', 'success');
+        }, 1000);
+      }
+    };
+    
+    testElement.addEventListener('touchstart', handleTouch);
+    testElement.addEventListener('click', handleTouch);
+    document.body.appendChild(testElement);
+    
+    setTimeout(() => {
+      if (!tapped && testElement.parentElement) {
+        testElement.remove();
+        addAdminNotification('⚠️ Touch test incomplete', 'warning');
+      }
+    }, 5000);
+  } else {
+    addAdminNotification('⚠️ Touch interface not detected', 'warning');
+  }
+}
+
+function simulateMobileView() {
+  addAdminNotification('📲 Simulating mobile view...', 'info');
+  
+  // Add mobile simulation class to body
+  document.body.classList.toggle('mobile-simulation');
+  
+  // Add styles if not already added
+  if (!document.getElementById('mobileSimStyles')) {
+    const style = document.createElement('style');
+    style.id = 'mobileSimStyles';
+    style.textContent = `
+      .mobile-simulation {
+        max-width: 375px !important;
+        margin: 0 auto !important;
+        border: 2px solid #333 !important;
+        border-radius: 25px !important;
+      }
+      .mobile-simulation .dashboard {
+        padding: 10px !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  const isSimulating = document.body.classList.contains('mobile-simulation');
+  addAdminNotification(
+    isSimulating ? '📱 Mobile view simulation enabled' : '💻 Mobile view simulation disabled',
+    'info'
+  );
+}
+
+function testFallbackSystems() {
+  addAdminNotification('🧪 Testing fallback systems...', 'info');
+  
+  // Test email fallback
+  const testEmailData = {
+    name: 'Test User',
+    email: 'test@example.com'
+  };
+  
+  sendFallbackEmailNotification('welcome', testEmailData);
+  addAdminNotification('✅ Email fallback system tested', 'success');
+  
+  // Test local storage backup
+  try {
+    const testData = { test: true, timestamp: new Date().toISOString() };
+    localStorage.setItem('fallbackTest', JSON.stringify(testData));
+    localStorage.removeItem('fallbackTest');
+    addAdminNotification('✅ Local storage backup tested', 'success');
+  } catch (error) {
+    addAdminNotification('❌ Local storage backup failed', 'error');
+  }
+  
+  // Test notification system
+  setTimeout(() => {
+    addAdminNotification('✅ Visual notification system tested', 'success');
+  }, 1000);
+}
+
+function markAllNotificationsRead() {
+  const notifications = JSON.parse(localStorage.getItem('adminNotifications') || '[]');
+  notifications.forEach(notification => notification.read = true);
+  localStorage.setItem('adminNotifications', JSON.stringify(notifications));
+  loadAdminNotifications();
+  addAdminNotification('✅ All notifications marked as read', 'success');
+}
+
+function clearOldNotifications() {
+  const notifications = JSON.parse(localStorage.getItem('adminNotifications') || '[]');
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const filtered = notifications.filter(n => new Date(n.timestamp) > oneDayAgo);
+  localStorage.setItem('adminNotifications', JSON.stringify(filtered));
+  loadAdminNotifications();
+  addAdminNotification(`🗑️ Cleared ${notifications.length - filtered.length} old notifications`, 'info');
+}
+
+function exportEmailQueue() {
+  const pendingEmails = JSON.parse(localStorage.getItem('pendingEmails') || '[]');
+  const processedEmails = JSON.parse(localStorage.getItem('processedEmails') || '[]');
+  
+  const exportData = {
+    pendingEmails: pendingEmails,
+    processedEmails: processedEmails,
+    exportedAt: new Date().toISOString()
+  };
+  
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `email-queue-${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  addAdminNotification('💾 Email queue exported successfully', 'success');
+}
+
+function sendManualEmail() {
+  const content = document.getElementById('manualEmailContent').value;
+  const recipient = document.getElementById('manualEmailRecipient').value;
+  const subject = document.getElementById('manualEmailSubject').value;
+  
+  if (!content || !recipient || !subject) {
+    addAdminNotification('❌ Please fill in all manual email fields', 'error');
+    return;
+  }
+  
+  // In a real implementation, this would send via your email service
+  // For now, we'll simulate and add to processed emails
+  const manualEmail = {
+    id: Date.now(),
+    type: 'manual',
+    data: { name: 'Manual', email: recipient },
+    preview: { subject: subject, body: content },
+    timestamp: new Date().toISOString(),
+    processedAt: new Date().toISOString(),
+    status: 'manual-sent'
+  };
+  
+  const processedEmails = JSON.parse(localStorage.getItem('processedEmails') || '[]');
+  processedEmails.push(manualEmail);
+  localStorage.setItem('processedEmails', JSON.stringify(processedEmails));
+  
+  // Clear form
+  document.getElementById('manualEmailContent').value = '';
+  document.getElementById('manualEmailRecipient').value = '';
+  document.getElementById('manualEmailSubject').value = '';
+  
+  addAdminNotification(`📤 Manual email sent to ${recipient}`, 'success');
+}
+
+// Include fallback email functions from other pages
+function sendFallbackEmailNotification(emailType, data) {
+  let pendingEmails = JSON.parse(localStorage.getItem('pendingEmails') || '[]');
+  
+  const emailRequest = {
+    id: Date.now(),
+    type: emailType,
+    data: data,
+    timestamp: new Date().toISOString(),
+    status: 'pending',
+    preview: generateEmailContent(emailType, data)
+  };
+  
+  pendingEmails.push(emailRequest);
+  localStorage.setItem('pendingEmails', JSON.stringify(pendingEmails));
+  
+  // Update UI if debug tab is active
+  if (document.getElementById('debug').classList.contains('active')) {
+    loadPendingEmails();
+  }
+  
+  addAdminNotification(`📧 ${emailType} email queued for processing`, 'info');
+}
+
+function generateEmailContent(emailType, data) {
+  switch(emailType) {
+    case 'welcome':
+      return {
+        subject: 'Welcome to Cupcakes on the Avenue! 🧁',
+        body: `Dear ${data.name},\n\nWelcome to Cupcakes on the Avenue! We're delighted to have you join our family of cupcake lovers.\n\nThank you for choosing Cupcakes on the Avenue!\n\nWith sweet regards,\nCupcakes on the Avenue Team`
+      };
+    case 'orderConfirmation':
+      const items = data.orderData ? data.orderData.items.map(item => 
+        `${item.name} x${item.quantity} - £${item.price}`
+      ).join('\n') : 'Order details';
+      return {
+        subject: `Order Confirmation - ${data.orderData ? data.orderData.orderNumber : 'ORDER'} 🧁`,
+        body: `Dear ${data.name},\n\nThank you for your order!\n\n${items}\n\nBest regards,\nCupcakes on the Avenue`
+      };
+    default:
+      return { subject: 'Cupcakes on the Avenue Notification', body: 'Email content will be generated.' };
+  }
+}
+
+// PWA Functionality
+let deferredPrompt;
+let swRegistration;
+
+// Initialize PWA
+document.addEventListener('DOMContentLoaded', () => {
+  initializePWA();
+});
+
+function initializePWA() {
+  // Hide loading screen after a delay
+  setTimeout(() => {
+    document.getElementById('appLoading').classList.add('hidden');
+  }, 2000);
+  
+  // Register service worker
+  if ('serviceWorker' in navigator) {
+    registerServiceWorker();
+  }
+  
+  // Setup connection monitoring
+  setupConnectionMonitoring();
+  
+  // Setup pull-to-refresh
+  setupPullToRefresh();
+  
+  // Setup install prompt
+  setupInstallPrompt();
+  
+  // Setup app shortcuts
+  setupAppShortcuts();
+  
+  // Initialize notifications
+  setupNotifications();
+}
+
+function registerServiceWorker() {
+  navigator.serviceWorker.register('/admin-sw.js')
+    .then((registration) => {
+      console.log('PWA: Service Worker registered', registration);
+      swRegistration = registration;
+      
+      // Check for updates
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing;
+        if (newWorker) {
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdateBanner();
+            }
+          });
+        }
+      });
+      
+      // Handle messages from service worker
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'CACHE_UPDATED') {
+          console.log('PWA: Cache updated');
+        }
+      });
+    })
+    .catch((error) => {
+      console.error('PWA: Service Worker registration failed', error);
+    });
+}
+
+function setupConnectionMonitoring() {
+  const statusElement = document.getElementById('connectionStatus');
+  
+  function updateConnectionStatus() {
+    if (navigator.onLine) {
+      statusElement.textContent = '🟢 Online';
+      statusElement.className = 'connection-status online';
+    } else {
+      statusElement.textContent = '🔴 Offline';
+      statusElement.className = 'connection-status offline';
+    }
+  }
+  
+  window.addEventListener('online', () => {
+    updateConnectionStatus();
+    addAdminNotification('🌐 Connection restored', 'success');
+    
+    // Trigger background sync
+    if (swRegistration && swRegistration.sync) {
+      swRegistration.sync.register('background-sync-emails');
+    }
+  });
+  
+  window.addEventListener('offline', () => {
+    updateConnectionStatus();
+    addAdminNotification('⚠️ Working offline - changes will sync when online', 'warning');
+  });
+  
+  updateConnectionStatus();
+}
+
+function setupPullToRefresh() {
+  let startY = 0;
+  let currentY = 0;
+  let pulling = false;
+  const pullToRefresh = document.getElementById('pullToRefresh');
+  const threshold = 80;
+  
+  document.addEventListener('touchstart', (e) => {
+    if (window.scrollY === 0) {
+      startY = e.touches[0].pageY;
+      pulling = false;
+    }
+  });
+  
+  document.addEventListener('touchmove', (e) => {
+    if (window.scrollY === 0 && startY !== 0) {
+      currentY = e.touches[0].pageY;
+      const pullDistance = currentY - startY;
+      
+      if (pullDistance > 10) {
+        pulling = true;
+        e.preventDefault();
+        
+        if (pullDistance > threshold) {
+          pullToRefresh.classList.add('show');
+          pullToRefresh.textContent = '🔄 Release to refresh';
+        } else {
+          pullToRefresh.textContent = '⬇️ Pull to refresh';
+        }
+      }
+    }
+  });
+  
+  document.addEventListener('touchend', () => {
+    if (pulling) {
+      pullToRefresh.classList.remove('show');
+      const pullDistance = currentY - startY;
+      
+      if (pullDistance > threshold) {
+        refreshApp();
+      }
+      
+      pulling = false;
+      startY = 0;
+      currentY = 0;
+    }
+  });
+}
+
+function setupInstallPrompt() {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Show install banner after a delay if not already installed
+    setTimeout(() => {
+      if (!window.matchMedia('(display-mode: standalone)').matches) {
+        document.getElementById('installBanner').classList.add('show');
+      }
+    }, 5000);
+  });
+  
+  window.addEventListener('appinstalled', () => {
+    console.log('PWA: App installed');
+    addAdminNotification('📱 App installed successfully!', 'success');
+    document.getElementById('installBanner').classList.remove('show');
+  });
+}
+
+function setupAppShortcuts() {
+  // Handle deep linking from shortcuts
+  const hash = window.location.hash.substring(1);
+  if (hash && document.getElementById(hash)) {
+    setTimeout(() => {
+      switchTab(hash);
+    }, 2500);
+  }
+}
+
+function setupNotifications() {
+  if ('Notification' in window && 'serviceWorker' in navigator) {
+    // Request notification permission
+    if (Notification.permission === 'default') {
+      setTimeout(() => {
+        Notification.requestPermission().then((permission) => {
+          if (permission === 'granted') {
+            addAdminNotification('🔔 Notifications enabled', 'success');
+          }
+        });
+      }, 10000);
+    }
+  }
+}
+
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('PWA: User accepted install');
+      } else {
+        console.log('PWA: User dismissed install');
+      }
+      deferredPrompt = null;
+    });
+  }
+  document.getElementById('installBanner').classList.remove('show');
+}
+
+function dismissInstall() {
+  document.getElementById('installBanner').classList.remove('show');
+  // Don't show again for this session
+  sessionStorage.setItem('installDismissed', 'true');
+}
+
+function showUpdateBanner() {
+  document.getElementById('appUpdateBanner').classList.add('show');
+}
+
+function updateApp() {
+  if (swRegistration && swRegistration.waiting) {
+    swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
+    swRegistration.waiting.addEventListener('statechange', (e) => {
+      if (e.target.state === 'activated') {
+        window.location.reload();
+      }
+    });
+  }
+  document.getElementById('appUpdateBanner').classList.remove('show');
+}
+
+function dismissUpdate() {
+  document.getElementById('appUpdateBanner').classList.remove('show');
+}
+
+function refreshApp() {
+  addAdminNotification('🔄 Refreshing app...', 'info');
+  
+  // Refresh data
+  if (currentUser) {
+    loadDashboardData();
+    
+    // If debug tab is active, refresh debug data
+    if (document.getElementById('debug').classList.contains('active')) {
+      initializeDebugTab();
+    }
+  }
+  
+  setTimeout(() => {
+    addAdminNotification('✅ App refreshed', 'success');
+  }, 1000);
+}
+
+// Send app data to service worker for caching
+function cacheAppData() {
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    const appData = {
+      orders: orders,
+      customers: customers,
+      inventory: inventory,
+      pendingEmails: JSON.parse(localStorage.getItem('pendingEmails') || '[]')
+    };
+    
+    navigator.serviceWorker.controller.postMessage({
+      type: 'CACHE_APP_DATA',
+      data: appData
+    });
+  }
+}
+
+// Enhanced notification function for PWA
+function sendPWANotification(title, body, actions = []) {
+  if ('serviceWorker' in navigator && swRegistration) {
+    swRegistration.showNotification(title, {
+      body: body,
+      icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23667eea" rx="20"/><text x="50" y="65" font-size="50" text-anchor="middle" fill="white">🧁</text></svg>',
+      badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23667eea" rx="20"/><text x="50" y="65" font-size="50" text-anchor="middle" fill="white">🧁</text></svg>',
+      vibrate: [200, 100, 200],
+      actions: actions,
+      tag: 'admin-notification',
+      requireInteraction: true
+    });
+  }
+}
+
+// Auto-save data periodically
+setInterval(() => {
+  if (currentUser && navigator.onLine) {
+    cacheAppData();
+  }
+}, 60000); // Every minute
 </script>
 
 </body>

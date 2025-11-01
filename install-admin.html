@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install Cupcakes on the Avenue Admin App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .installer-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .app-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .app-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .app-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .features {
+            text-align: left;
+            margin: 30px 0;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .features h3 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 0.95rem;
+        }
+
+        .feature-icon {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .install-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin: 20px 0 10px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .install-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .install-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .install-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .install-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .install-button:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
+        /* Attention-grabbing animation for install button */
+        @keyframes pulse-install {
+            0% { box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); }
+            50% { box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6); }
+            100% { box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); }
+        }
+
+        .install-button.ready {
+            animation: pulse-install 2s infinite;
+        }
+
+        .install-button.ready::after {
+            content: ' 👆';
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-5px); }
+            60% { transform: translateY(-3px); }
+        }
+
+        .manual-instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+            display: none;
+        }
+
+        .manual-instructions h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .manual-instructions ol {
+            padding-left: 20px;
+        }
+
+        .manual-instructions li {
+            margin: 8px 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .qr-code {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .status-message {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        @media (max-width: 480px) {
+            .installer-container {
+                padding: 30px 20px;
+            }
+            
+            .app-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="installer-container">
+        <div class="app-icon"><img src="pictures/logo.png" alt="Cupcakes on the Avenue" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;"></div>
+        <h1 class="app-title">Cupcakes on the Avenue Admin</h1>
+        <p class="app-subtitle">Professional admin dashboard for managing your bakery business</p>
+
+        <div class="features">
+            <h3>✨ App Features</h3>
+            <div class="feature">
+                <span class="feature-icon">📊</span>
+                <span>Complete dashboard with real-time analytics</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📋</span>
+                <span>Order management and tracking</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">👥</span>
+                <span>Customer database and communications</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📱</span>
+                <span>Works offline - sync when online</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🔧</span>
+                <span>Debug tools and fallback systems</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📧</span>
+                <span>Email automation and manual override</span>
+            </div>
+        </div>
+
+        <div id="statusMessage" class="status-message" style="display: none;"></div>
+
+        <button id="installButton" class="install-button" onclick="installApp()">
+            📱 Install Admin App
+        </button>
+
+        <button id="fallbackButton" class="install-button" onclick="openAdminDirectly()" style="display: none; background: #28a745; margin-top: 10px;">
+            🚀 Open Admin Panel Directly
+        </button>
+
+        <button id="testButton" class="install-button" onclick="testInstallation()" style="background: #fd7e14; margin-top: 10px; font-size: 0.9rem; padding: 10px 20px;">
+            🧪 Test Installation Features
+        </button>
+
+        <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">
+            This will install the app on your device for easy access
+        </p>
+
+        <div class="manual-instructions" id="manualInstructions">
+            <h4>📱 Manual Installation Instructions</h4>
+            
+            <div id="iosInstructions" style="display: none;">
+                <strong>For iPhone/iPad:</strong>
+                <ol>
+                    <li>Open this page in Safari</li>
+                    <li>Tap the share button (📤)</li>
+                    <li>Scroll down and tap "Add to Home Screen"</li>
+                    <li>Tap "Add" to confirm</li>
+                </ol>
+            </div>
+
+            <div id="androidInstructions" style="display: none;">
+                <strong>For Android:</strong>
+                <ol>
+                    <li>Open this page in Chrome</li>
+                    <li>Tap the menu (⋮) in the top right</li>
+                    <li>Tap "Add to Home screen"</li>
+                    <li>Tap "Add" to confirm</li>
+                </ol>
+            </div>
+
+            <div id="desktopInstructions" style="display: none;">
+                <strong>For Desktop:</strong>
+                <ol>
+                    <li>Look for the install icon (📱) in your browser's address bar</li>
+                    <li>Click it and follow the prompts</li>
+                    <li>Or use the browser menu: Settings → Install App</li>
+                </ol>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; font-size: 0.85rem; color: #666;">
+            <p>🔒 Secure • 🚀 Fast • 📱 Mobile-Optimized</p>
+            <p style="margin-top: 5px;">Powered by Progressive Web App technology</p>
+        </div>
+    </div>
+
+    <script>
+        let deferredPrompt;
+        let installed = false;
+
+        // Check if already installed
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            showStatus('App is already installed! 🎉', 'success');
+            document.getElementById('installButton').textContent = '✅ Already Installed';
+            document.getElementById('installButton').disabled = true;
+        }
+
+        // Listen for install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('Install prompt available');
+            e.preventDefault();
+            deferredPrompt = e;
+            showStatus('✅ Ready to install! Click the install button below.', 'success');
+            
+            // Enable and highlight install button
+            const installBtn = document.getElementById('installButton');
+            installBtn.disabled = false;
+            installBtn.textContent = '📱 Install Admin App Now!';
+            installBtn.classList.add('ready');
+            
+            // Hide test button since real installation is available
+            document.getElementById('testButton').style.display = 'none';
+        });
+
+        // Listen for install completion
+        window.addEventListener('appinstalled', () => {
+            console.log('App installed successfully');
+            showStatus('🎉 App installed successfully! Redirecting...', 'success');
+            document.getElementById('installButton').textContent = '✅ Installed Successfully';
+            document.getElementById('installButton').disabled = true;
+            document.getElementById('fallbackButton').style.display = 'none';
+            installed = true;
+            
+            // Redirect to admin panel after a delay
+            setTimeout(() => {
+                window.location.href = '/admin.html';
+            }, 2000);
+        });
+
+        function installApp() {
+            // Update button state immediately
+            const installBtn = document.getElementById('installButton');
+            installBtn.classList.remove('ready');
+            installBtn.textContent = '🔄 Installing...';
+            installBtn.disabled = true;
+            
+            if (deferredPrompt) {
+                // Use the native install prompt
+                showStatus('Opening installation dialog...', 'info');
+                deferredPrompt.prompt();
+                
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        showStatus('Installing app... Please wait.', 'info');
+                        // Keep button disabled and wait for appinstalled event
+                    } else {
+                        showStatus('Installation cancelled. You can install manually below.', 'warning');
+                        installBtn.textContent = '📱 Try Again';
+                        installBtn.disabled = false;
+                        showManualInstructions();
+                    }
+                    deferredPrompt = null;
+                }).catch((error) => {
+                    console.error('Install prompt error:', error);
+                    showStatus('Installation prompt failed. Please try manual installation.', 'warning');
+                    installBtn.textContent = '📱 Install Manually';
+                    installBtn.disabled = false;
+                    showManualInstructions();
+                });
+            } else {
+                // No native prompt available - try alternative methods
+                showStatus('Setting up manual installation...', 'info');
+                
+                // Check if we can try to trigger installation another way
+                if (window.navigator.standalone === false) {
+                    // iOS Safari - show specific instructions
+                    showStatus('For iOS: Use Safari and follow the instructions below', 'info');
+                    showManualInstructions();
+                } else if (navigator.userAgent.includes('Chrome') && !navigator.userAgent.includes('Edg')) {
+                    // Chrome but no prompt - might be already installed or not meeting criteria
+                    showStatus('Chrome detected. Please try the manual installation method below.', 'info');
+                    showManualInstructions();
+                } else {
+                    // Other browsers
+                    showStatus('Manual installation required for your browser. See instructions below.', 'info');
+                    showManualInstructions();
+                }
+                
+                installBtn.textContent = '📱 See Instructions Below';
+                installBtn.disabled = false;
+            }
+        }
+
+        function openAdminDirectly() {
+            showStatus('Opening admin panel...', 'info');
+            window.open('/admin.html', '_blank');
+        }
+
+        function testInstallation() {
+            const testBtn = document.getElementById('testButton');
+            testBtn.textContent = '🔍 Running tests...';
+            testBtn.disabled = true;
+            
+            let testResults = [];
+            
+            // Test 1: Check if PWA criteria are met
+            testResults.push(`🌐 HTTPS: ${location.protocol === 'https:' || location.hostname === 'localhost' ? '✅' : '❌'}`);
+            
+            // Test 2: Check service worker support
+            testResults.push(`⚙️ Service Worker: ${'serviceWorker' in navigator ? '✅' : '❌'}`);
+            
+            // Test 3: Check manifest
+            const manifestLink = document.querySelector('link[rel="manifest"]');
+            testResults.push(`📄 Manifest: ${manifestLink ? '✅' : '❌'}`);
+            
+            // Test 4: Check install prompt availability
+            testResults.push(`📱 Install Prompt: ${deferredPrompt ? '✅ Available' : '❌ Not available yet'}`);
+            
+            // Test 5: Check if already installed
+            const isInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            testResults.push(`📲 Already Installed: ${isInstalled ? '✅ Yes' : '❌ No'}`);
+            
+            // Test 6: Check browser compatibility
+            const isChrome = navigator.userAgent.includes('Chrome') && !navigator.userAgent.includes('Edg');
+            const isSafari = navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome');
+            const isEdge = navigator.userAgent.includes('Edg');
+            const isFirefox = navigator.userAgent.includes('Firefox');
+            
+            let browserSupport = '❓ Unknown';
+            if (isChrome) browserSupport = '✅ Chrome (Full support)';
+            else if (isSafari) browserSupport = '⚠️ Safari (Add to Home Screen)';
+            else if (isEdge) browserSupport = '✅ Edge (Full support)';
+            else if (isFirefox) browserSupport = '⚠️ Firefox (Limited support)';
+            
+            testResults.push(`🌍 Browser: ${browserSupport}`);
+            
+            setTimeout(() => {
+                showStatus('🧪 Test Results:\n' + testResults.join('\n'), 'info');
+                testBtn.textContent = '✅ Tests Complete';
+                testBtn.disabled = false;
+                
+                // Show recommendations based on test results
+                if (!deferredPrompt && !isInstalled) {
+                    setTimeout(() => {
+                        showStatus('💡 Recommendation: Try manual installation method below', 'warning');
+                        showManualInstructions();
+                    }, 2000);
+                }
+            }, 1500);
+        }
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status-message status-${type}`;
+            statusEl.style.display = 'block';
+        }
+
+        function showManualInstructions() {
+            const instructionsEl = document.getElementById('manualInstructions');
+            const fallbackBtn = document.getElementById('fallbackButton');
+            
+            instructionsEl.style.display = 'block';
+            fallbackBtn.style.display = 'block';
+            
+            // Detect device type and show appropriate instructions
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+            const isDesktop = !isIOS && !isAndroid;
+            
+            if (isIOS) {
+                document.getElementById('iosInstructions').style.display = 'block';
+                showStatus('💡 iOS detected: Use Safari for best installation experience', 'info');
+            } else if (isAndroid) {
+                document.getElementById('androidInstructions').style.display = 'block';
+                showStatus('💡 Android detected: Use Chrome for best installation experience', 'info');
+            } else {
+                document.getElementById('desktopInstructions').style.display = 'block';
+                showStatus('💡 Desktop detected: Installation available in most modern browsers', 'info');
+            }
+        }
+
+        // Auto-redirect if accessed directly and already installed
+        setTimeout(() => {
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                window.location.href = '/admin.html';
+            }
+        }, 3000);
+
+        // Show device-specific hints and improve initial state
+        window.addEventListener('load', () => {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+            const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches;
+            const installBtn = document.getElementById('installButton');
+            
+            console.log('Page loaded. Standalone mode:', isInStandaloneMode, 'Has prompt:', !!deferredPrompt);
+            
+            if (!isInStandaloneMode) {
+                // Not installed yet
+                if (!deferredPrompt) {
+                    // No install prompt available yet
+                    installBtn.textContent = '⏳ Preparing installation...';
+                    installBtn.disabled = true;
+                    
+                    // Wait a bit for the prompt to potentially arrive
+                    setTimeout(() => {
+                        if (!deferredPrompt) {
+                            // Still no prompt - show manual instructions
+                            installBtn.textContent = '📱 Install App (Manual)';
+                            installBtn.disabled = false;
+                            
+                            if (isIOS && !window.navigator.standalone) {
+                                showStatus('💡 iOS detected: For best experience, use Safari and "Add to Home Screen"', 'info');
+                                setTimeout(showManualInstructions, 1000);
+                            } else if (isAndroid) {
+                                showStatus('💡 Android detected: Use Chrome for automatic installation', 'info');
+                            } else {
+                                showStatus('💡 Click the install button below to get started', 'info');
+                            }
+                        }
+                    }, 3000);
+                } else {
+                    showStatus('✅ Ready to install! Click the button below.', 'info');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

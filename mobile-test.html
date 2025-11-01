@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Mobile Dashboard Test - Charlotte's Cakes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%);
+            min-height: 100vh;
+            padding: 10px;
+            color: #333;
+        }
+
+        .mobile-container {
+            max-width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: #8B4513;
+            margin-bottom: 5px;
+        }
+
+        .status-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .status-good { border-left-color: #28a745; }
+        .status-warning { border-left-color: #ffc107; }
+        .status-error { border-left-color: #dc3545; }
+
+        .test-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin: 8px 0;
+            touch-action: manipulation;
+        }
+
+        .test-button:hover, .test-button:active {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .quick-link {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            color: #495057;
+            border: 2px solid #e9ecef;
+            font-weight: 500;
+        }
+
+        .quick-link:hover {
+            border-color: #667eea;
+            background: #e3f2fd;
+        }
+
+        .debug-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 480px) {
+            .mobile-container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .test-button {
+                padding: 14px 20px;
+                font-size: 18px;
+            }
+            
+            .quick-links {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <div class="header">
+            <h1>📱 Mobile Dashboard Test</h1>
+            <p>Testing mobile accessibility and functionality</p>
+        </div>
+
+        <div id="deviceInfo" class="status-card">
+            <h3>📊 Device Information</h3>
+            <div id="deviceDetails">Loading device information...</div>
+        </div>
+
+        <div id="connectivityStatus" class="status-card">
+            <h3>🌐 Connectivity Status</h3>
+            <div id="connectivityDetails">Testing connection...</div>
+        </div>
+
+        <div class="quick-links">
+            <a href="./index.html" class="quick-link">🏠 Main Site</a>
+            <a href="./shop.html" class="quick-link">🛒 Shop</a>
+            <a href="./debug.html" class="quick-link">🔧 Debug Tool</a>
+        </div>
+
+        <button class="test-button" onclick="testTouchResponsiveness()">
+            🤏 Test Touch Responsiveness
+        </button>
+
+        <button class="test-button" onclick="testLocalStorage()">
+            💾 Test Local Storage
+        </button>
+
+        <button class="test-button" onclick="runMobileCompatibilityTest()">
+            ✅ Run Full Mobile Test
+        </button>
+
+        <div id="testResults" class="debug-info">
+            <strong>Test Results:</strong><br>
+            Click buttons above to run tests...
+        </div>
+    </div>
+
+    <script>
+        // Initialize device information
+        function updateDeviceInfo() {
+            const info = {
+                viewport: `${window.innerWidth} × ${window.innerHeight}`,
+                devicePixelRatio: window.devicePixelRatio || 1,
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                touchSupport: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+                orientation: window.innerWidth > window.innerHeight ? 'Landscape' : 'Portrait',
+                onlineStatus: navigator.onLine ? 'Online' : 'Offline'
+            };
+
+            const deviceCard = document.getElementById('deviceInfo');
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile || info.touchSupport) {
+                deviceCard.className = 'status-card status-good';
+            } else {
+                deviceCard.className = 'status-card status-warning';
+            }
+
+            document.getElementById('deviceDetails').innerHTML = `
+                <strong>Screen:</strong> ${info.viewport} (${info.orientation})<br>
+                <strong>Touch:</strong> ${info.touchSupport ? '✅ Supported' : '❌ Not detected'}<br>
+                <strong>Mobile UA:</strong> ${isMobile ? '✅ Detected' : '❌ Desktop'}<br>
+                <strong>Pixel Ratio:</strong> ${info.devicePixelRatio}x<br>
+                <strong>Platform:</strong> ${info.platform}
+            `;
+        }
+
+        // Test connectivity
+        function testConnectivity() {
+            const startTime = Date.now();
+            const BACKEND_BASE = 'https://sumup-backend.vercel.app';
+            
+            fetch(`${BACKEND_BASE}/api/index`)
+                .then(response => {
+                    const latency = Date.now() - startTime;
+                    const statusCard = document.getElementById('connectivityStatus');
+                    
+                    if (response.ok) {
+                        statusCard.className = 'status-card status-good';
+                        document.getElementById('connectivityDetails').innerHTML = `
+                            <strong>Backend:</strong> ✅ Connected (${latency}ms)<br>
+                            <strong>Status:</strong> ${response.status} ${response.statusText}<br>
+                            <strong>Network:</strong> ${navigator.onLine ? 'Online' : 'Offline'}
+                        `;
+                    } else {
+                        statusCard.className = 'status-card status-warning';
+                        document.getElementById('connectivityDetails').innerHTML = `
+                            <strong>Backend:</strong> ⚠️ Issues detected<br>
+                            <strong>Status:</strong> ${response.status} ${response.statusText}<br>
+                            <strong>Fallback:</strong> Available
+                        `;
+                    }
+                })
+                .catch(error => {
+                    const statusCard = document.getElementById('connectivityStatus');
+                    statusCard.className = 'status-card status-error';
+                    document.getElementById('connectivityDetails').innerHTML = `
+                        <strong>Backend:</strong> ❌ Connection failed<br>
+                        <strong>Error:</strong> ${error.message}<br>
+                        <strong>Fallback:</strong> Will be used automatically
+                    `;
+                });
+        }
+
+        // Test functions
+        function testTouchResponsiveness() {
+            logResult('🤏 Testing touch responsiveness...');
+            
+            let touchCount = 0;
+            const testElement = document.createElement('div');
+            testElement.style.cssText = `
+                position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                width: 150px; height: 150px; background: #667eea; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                color: white; font-weight: bold; z-index: 10000;
+                touch-action: manipulation; cursor: pointer;
+            `;
+            testElement.innerHTML = 'Tap me!<br>3 times';
+            
+            const handleTouch = () => {
+                touchCount++;
+                testElement.innerHTML = `Taps: ${touchCount}<br>${3 - touchCount} left`;
+                testElement.style.background = ['#28a745', '#ffc107', '#dc3545'][touchCount - 1] || '#667eea';
+                
+                if (touchCount >= 3) {
+                    setTimeout(() => {
+                        testElement.remove();
+                        logResult('✅ Touch responsiveness test completed successfully!');
+                    }, 500);
+                }
+            };
+            
+            testElement.addEventListener('touchstart', handleTouch);
+            testElement.addEventListener('click', handleTouch);
+            document.body.appendChild(testElement);
+            
+            setTimeout(() => {
+                if (testElement.parentElement && touchCount < 3) {
+                    testElement.remove();
+                    logResult('⚠️ Touch test incomplete - try using finger touches');
+                }
+            }, 10000);
+        }
+
+        function testLocalStorage() {
+            logResult('💾 Testing local storage...');
+            
+            try {
+                const testKey = 'mobileTest_' + Date.now();
+                const testData = { test: true, timestamp: new Date().toISOString() };
+                
+                localStorage.setItem(testKey, JSON.stringify(testData));
+                const retrieved = JSON.parse(localStorage.getItem(testKey));
+                localStorage.removeItem(testKey);
+                
+                if (retrieved && retrieved.test) {
+                    logResult('✅ Local storage is working correctly');
+                    
+                    // Check existing data
+                    const customers = JSON.parse(localStorage.getItem('webCustomers') || '[]');
+                    const emails = JSON.parse(localStorage.getItem('pendingEmails') || '[]');
+                    logResult(`📊 Found ${customers.length} customers, ${emails.length} pending emails`);
+                } else {
+                    logResult('❌ Local storage test failed');
+                }
+            } catch (error) {
+                logResult(`❌ Local storage error: ${error.message}`);
+            }
+        }
+
+        function runMobileCompatibilityTest() {
+            logResult('🔄 Running full mobile compatibility test...');
+            
+            const tests = [
+                () => logResult('📱 Device Type: ' + (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop')),
+                () => logResult('👆 Touch Support: ' + ('ontouchstart' in window ? 'Available' : 'Not detected')),
+                () => logResult('📐 Viewport: ' + window.innerWidth + 'x' + window.innerHeight),
+                () => logResult('🔄 Orientation: ' + (window.innerWidth > window.innerHeight ? 'Landscape' : 'Portrait')),
+                () => logResult('💾 Storage: ' + (typeof Storage !== 'undefined' ? 'Available' : 'Not available')),
+                () => logResult('🌐 Network: ' + (navigator.onLine ? 'Connected' : 'Offline'))
+            ];
+            
+            tests.forEach((test, index) => {
+                setTimeout(test, index * 200);
+            });
+            
+            setTimeout(() => {
+                logResult('✅ Mobile compatibility test completed!');
+                
+                // Provide recommendations
+                const viewport = window.innerWidth;
+                if (viewport <= 480) {
+                    logResult('💡 Recommendation: Optimized for mobile phones');
+                } else if (viewport <= 768) {
+                    logResult('💡 Recommendation: Optimized for tablets');
+                } else {
+                    logResult('💡 Recommendation: Consider testing on actual mobile device');
+                }
+            }, tests.length * 200 + 500);
+        }
+
+        function logResult(message) {
+            const resultsElement = document.getElementById('testResults');
+            const timestamp = new Date().toLocaleTimeString();
+            resultsElement.innerHTML += `<br>[${timestamp}] ${message}`;
+            resultsElement.scrollTop = resultsElement.scrollHeight;
+        }
+
+        // Initialize on load
+        window.addEventListener('load', function() {
+            updateDeviceInfo();
+            testConnectivity();
+            logResult('📱 Mobile test page loaded successfully');
+            
+            // Update device info on resize/orientation change
+            window.addEventListener('resize', updateDeviceInfo);
+            window.addEventListener('orientationchange', function() {
+                setTimeout(updateDeviceInfo, 100);
+            });
+        });
+
+        // Handle network status changes
+        window.addEventListener('online', function() {
+            logResult('🌐 Network connection restored');
+            testConnectivity();
+        });
+
+        window.addEventListener('offline', function() {
+            logResult('⚠️ Network connection lost - fallback systems will activate');
+        });
+    </script>
+</body>
+</html>

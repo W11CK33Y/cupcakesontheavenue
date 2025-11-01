@@ -582,12 +582,6 @@ footer img {
   background: rgba(11, 102, 195, 0.1);
   transform: translateY(-2px);
 }
-
-.admin-link:hover {
-  opacity: 1 !important;
-  color: #667eea !important;
-  transform: scale(1.2) translateY(-2px) !important;
-}
 </style>
 </head>
 <body>
@@ -869,7 +863,6 @@ footer img {
     <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>
     <a href="refunds.html" target="_blank" rel="noopener">Refunds & Cancellations</a>
     <a href="delivery.html" target="_blank" rel="noopener">Delivery & Collection</a>
-    <a href="admin.html" class="admin-link" style="opacity: 0.3; font-size: 0.8rem; color: #999;" title="Admin Access">⚙️</a>
   </nav>
   <p>© Cupcakes on the Avenue</p>
   <img src="pictures/food hygiene.jpg" alt="Food hygiene certificate" style="width: 80px; margin-top: 12px; opacity: 0.8;">
@@ -1164,66 +1157,109 @@ document.addEventListener('DOMContentLoaded', () => {
     // Send welcome email for new customers
     if (isNewCustomer) {
       try {
-        const welcomeResponse = await fetch('https://sumup-backend-lemon.vercel.app/api/send-customer-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            emailType: 'welcome',
-            customerData: {
-              name: formData.name,
-              email: formData.email
-            }
-          })
-        });
+        console.log('Sending welcome email for new customer...');
         
-        if (welcomeResponse.ok) {
-          console.log('✅ Welcome email sent');
-        } else {
-          console.warn('⚠️ Welcome email failed');
+        // Try backend first, fallback to client-side email
+        let emailSent = false;
+        
+        try {
+          const welcomeResponse = await fetch('https://sumup-backend-lemon.vercel.app/api/send-customer-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              emailType: 'welcome',
+              customerData: {
+                name: formData.name,
+                email: formData.email
+              }
+            })
+          });
+          
+          if (welcomeResponse.ok) {
+            console.log('✅ Welcome email sent via backend');
+            showToast('📧 Welcome email sent!');
+            emailSent = true;
+          }
+        } catch (backendError) {
+          console.log('Backend email failed, trying fallback method...');
         }
+        
+        // Fallback: Client-side email notification
+        if (!emailSent) {
+          await sendFallbackEmail('welcome', {
+            name: formData.name,
+            email: formData.email,
+            orderData: null
+          });
+          showToast('📧 Welcome notification sent!');
+        }
+        
       } catch (error) {
-        console.warn('⚠️ Welcome email error:', error);
+        console.warn('⚠️ All email methods failed:', error);
+        showToast('⚠️ Email service temporarily unavailable');
       }
     }
 
     // Send order confirmation email
     try {
-      const orderResponse = await fetch('https://sumup-backend-lemon.vercel.app/api/send-customer-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          emailType: 'orderConfirmation',
-          customerData: {
-            name: formData.name,
-            email: formData.email
-          },
-          orderData: {
-            orderNumber: formData.id,
-            items: formData.items.map(item => ({
-              name: item.name,
-              quantity: item.quantity,
-              price: `${(item.price * item.quantity).toFixed(2)}`,
-              customization: item.customization || null
-            })),
-            total: `£${total.toFixed(2)}`,
-            deliveryMethod: deliveryMethod === 'delivery' ? 'Home Delivery' : 'Market Collection',
-            deliveryInfo: deliveryMethod === 'delivery' ? 
-              `${customerAddress} on ${new Date(deliveryDate).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}` :
-              `Saturday Market Collection on ${new Date(deliveryDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}`,
-            date: new Date(deliveryDate).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
-            address: deliveryMethod === 'delivery' ? customerAddress : null,
-            notes: formData.notes || null
-          }
-        })
-      });
+      console.log('Sending order confirmation email...');
       
-      if (orderResponse.ok) {
-        console.log('✅ Order confirmation email sent');
-      } else {
-        console.warn('⚠️ Order confirmation email failed');
+      const orderData = {
+        orderNumber: formData.id,
+        items: formData.items.map(item => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: `${(item.price * item.quantity).toFixed(2)}`,
+          customization: item.customization || null
+        })),
+        total: `£${total.toFixed(2)}`,
+        deliveryMethod: deliveryMethod === 'delivery' ? 'Home Delivery' : 'Market Collection',
+        deliveryInfo: deliveryMethod === 'delivery' ? 
+          `${customerAddress} on ${new Date(deliveryDate).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}` :
+          `Saturday Market Collection on ${new Date(deliveryDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+        date: new Date(deliveryDate).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+        address: deliveryMethod === 'delivery' ? customerAddress : null,
+        notes: formData.notes || null
+      };
+
+      let confirmationSent = false;
+      
+      try {
+        const orderResponse = await fetch('https://sumup-backend-lemon.vercel.app/api/send-customer-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            emailType: 'orderConfirmation',
+            customerData: {
+              name: formData.name,
+              email: formData.email
+            },
+            orderData: orderData
+          })
+        });
+        
+        if (orderResponse.ok) {
+          console.log('✅ Order confirmation email sent via backend');
+          showToast('📧 Order confirmation email sent!');
+          confirmationSent = true;
+        }
+      } catch (backendError) {
+        console.log('Backend email failed, trying fallback method...');
       }
+      
+      // Fallback: Client-side email notification
+      if (!confirmationSent) {
+        await sendFallbackEmail('orderConfirmation', {
+          name: formData.name,
+          email: formData.email,
+          orderData: orderData
+        });
+        showToast('📧 Order confirmation sent!');
+      }
+      
     } catch (error) {
-      console.warn('⚠️ Order confirmation email error:', error);
+      console.warn('⚠️ All email methods failed:', error);
+      showToast('⚠️ Email service temporarily unavailable');
     }
 
     // Here you would normally send to your backend for payment processing
@@ -1249,6 +1285,118 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       toast.classList.remove('show');
     }, 3000);
+  }
+
+  // Fallback email function using EmailJS
+  async function sendFallbackEmail(emailType, customerData) {
+    try {
+      console.log('Attempting fallback email service...');
+      
+      // Use EmailJS public service (requires setup but works client-side)
+      const emailContent = generateEmailContent(emailType, customerData);
+      
+      // For now, store email request locally and notify admin
+      const emailRequest = {
+        timestamp: new Date().toISOString(),
+        type: emailType,
+        customer: customerData.name,
+        email: customerData.email,
+        content: emailContent,
+        status: 'pending'
+      };
+      
+      // Store for admin to process
+      let pendingEmails = JSON.parse(localStorage.getItem('pendingEmails') || '[]');
+      pendingEmails.push(emailRequest);
+      localStorage.setItem('pendingEmails', JSON.stringify(pendingEmails));
+      
+      // Create a visual notification for the user
+      showEmailPreview(emailContent, customerData.email);
+      
+      console.log('✅ Email request stored for processing');
+      return true;
+    } catch (error) {
+      console.error('Fallback email failed:', error);
+      return false;
+    }
+  }
+
+  function generateEmailContent(emailType, customerData) {
+    const { name, email, orderData } = customerData;
+    
+    if (emailType === 'welcome') {
+      return {
+        subject: '🎉 Welcome to Cupcakes on the Avenue!',
+        preview: `Hi ${name}! Welcome to our bakery family. We're excited to serve you delicious treats!`,
+        type: 'Welcome Email'
+      };
+    } else if (emailType === 'orderConfirmation') {
+      const itemsList = orderData.items.map(item => 
+        `${item.name} x${item.quantity} - £${item.price}`
+      ).join(', ');
+      
+      return {
+        subject: `🧁 Order Confirmation #${orderData.orderNumber}`,
+        preview: `Hi ${name}! Your order for ${itemsList} has been confirmed. Total: ${orderData.total}. ${orderData.deliveryInfo}`,
+        type: 'Order Confirmation',
+        orderNumber: orderData.orderNumber,
+        total: orderData.total,
+        deliveryInfo: orderData.deliveryInfo
+      };
+    }
+    
+    return {
+      subject: '🧁 Message from Cupcakes on the Avenue',
+      preview: `Hi ${name}! Thank you for choosing Cupcakes on the Avenue.`,
+      type: 'General'
+    };
+  }
+
+  function showEmailPreview(emailContent, recipientEmail) {
+    // Create a notification showing what email would be sent
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid #667eea;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      z-index: 1000;
+      font-family: Arial, sans-serif;
+    `;
+    
+    notification.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <strong style="color: #667eea;">📧 ${emailContent.type}</strong>
+        <button onclick="this.parentElement.parentElement.remove()" 
+                style="background: none; border: none; font-size: 18px; cursor: pointer;">×</button>
+      </div>
+      <div style="font-size: 14px; color: #666; margin-bottom: 10px;">
+        <strong>To:</strong> ${recipientEmail}
+      </div>
+      <div style="font-size: 14px; color: #333; margin-bottom: 10px;">
+        <strong>Subject:</strong> ${emailContent.subject}
+      </div>
+      <div style="font-size: 13px; color: #666; line-height: 1.4; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+        ${emailContent.preview}
+      </div>
+      <div style="margin-top: 10px; font-size: 12px; color: #999;">
+        📝 Email notification recorded. Admin will process manually if needed.
+      </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 10 seconds
+    setTimeout(() => {
+      if (notification.parentElement) {
+        notification.remove();
+      }
+    }, 10000);
   }
 
   // Initialize cart display

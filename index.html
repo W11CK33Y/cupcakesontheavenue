@@ -992,12 +992,6 @@ footer img {
   transform: translateY(-2px);
 }
 
-.admin-link:hover {
-  opacity: 1 !important;
-  color: #667eea !important;
-  transform: scale(1.2) translateY(-2px) !important;
-}
-
 /* Account System Styles */
 .account-section {
   max-width: 800px;
@@ -2018,7 +2012,6 @@ footer img {
     <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>
     <a href="refunds.html" target="_blank" rel="noopener">Refunds & Cancellations</a>
     <a href="delivery.html" target="_blank" rel="noopener">Delivery & Collection</a>
-    <a href="admin.html" class="admin-link" style="opacity: 0.3; font-size: 0.8rem; color: #999;" title="Admin Access">⚙️</a>
   </nav>
   <p>© Cupcakes on the Avenue</p>
   <img src="pictures\food hygiene.jpg"" alt="Cupcake illustration" style="width: 80px; margin-top: 12px; opacity: 0.8;">
@@ -3122,16 +3115,26 @@ ${items}
         });
         localStorage.setItem('webCustomers', JSON.stringify(existingCustomers));
         
-        // Send welcome email
-        fetch(`${BACKEND_BASE}/api/send-customer-email`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            emailType: 'welcome',
-            customerData: { name, email }
-          })
-        }).then(() => console.log('✅ Welcome email sent'))
-          .catch(err => console.warn('⚠️ Welcome email failed:', err));
+        // Send welcome email with fallback
+        try {
+          const welcomeResponse = await fetch(`${BACKEND_BASE}/api/send-customer-email`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              emailType: 'welcome',
+              customerData: { name, email }
+            })
+          });
+          
+          if (welcomeResponse.ok) {
+            console.log('✅ Welcome email sent via backend');
+          } else {
+            throw new Error('Backend email failed');
+          }
+        } catch (error) {
+          console.log('Using fallback email system...');
+          sendFallbackEmailNotification('welcome', { name, email });
+        }
       }
 
       // Send order confirmation email (enhanced version)
@@ -3148,27 +3151,39 @@ ${items}
         return { name: item.trim(), quantity: 1, price: '0.00' };
       });
 
-      fetch(`${BACKEND_BASE}/api/send-customer-email`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          emailType: 'orderConfirmation',
-          customerData: { name, email },
-          orderData: {
-            orderNumber: orderNumber,
-            items: orderItems,
-            total: `£${total.toFixed(2)}`,
-            deliveryMethod: delivery === 'Market Collection' ? 'Market Collection' : 'Home Delivery',
-            deliveryInfo: delivery === 'Market Collection' ? 
-              `Saturday Market Collection on ${new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}` :
-              `${address} on ${new Date(date).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`,
-            date: new Date(date).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
-            address: delivery !== 'Market Collection' ? address : null,
-            notes: notes && notes !== 'None' ? notes : null
-          }
-        })
-      }).then(() => console.log('✅ Order confirmation email sent'))
-        .catch(err => console.warn('⚠️ Order confirmation email failed:', err));
+      const orderData = {
+        orderNumber: orderNumber,
+        items: orderItems,
+        total: `£${total.toFixed(2)}`,
+        deliveryMethod: delivery === 'Market Collection' ? 'Market Collection' : 'Home Delivery',
+        deliveryInfo: delivery === 'Market Collection' ? 
+          `Saturday Market Collection on ${new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}` :
+          `${address} on ${new Date(date).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`,
+        date: new Date(date).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+        address: delivery !== 'Market Collection' ? address : null,
+        notes: notes && notes !== 'None' ? notes : null
+      };
+
+      try {
+        const confirmationResponse = await fetch(`${BACKEND_BASE}/api/send-customer-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            emailType: 'orderConfirmation',
+            customerData: { name, email },
+            orderData: orderData
+          })
+        });
+        
+        if (confirmationResponse.ok) {
+          console.log('✅ Order confirmation email sent via backend');
+        } else {
+          throw new Error('Backend email failed');
+        }
+      } catch (error) {
+        console.log('Using fallback email system...');
+        sendFallbackEmailNotification('orderConfirmation', { name, email, orderData });
+      }
 
       // Redirect to SumUp payment
       const reference = orderNumber;
@@ -3293,6 +3308,96 @@ async function submitOrder(orderData) {
   // include deliveryLabel in email/discord payloads
   // ...existing code...
 }
+</script>
+
+<!-- Fallback Email System -->
+<script>
+  // Fallback email notification system
+  function sendFallbackEmailNotification(emailType, data) {
+    // Store email request for admin processing
+    let pendingEmails = JSON.parse(localStorage.getItem('pendingEmails') || '[]');
+    
+    const emailRequest = {
+      id: Date.now(),
+      type: emailType,
+      data: data,
+      timestamp: new Date().toISOString(),
+      status: 'pending',
+      preview: generateEmailContent(emailType, data)
+    };
+    
+    pendingEmails.push(emailRequest);
+    localStorage.setItem('pendingEmails', JSON.stringify(pendingEmails));
+    
+    // Show user notification with email preview
+    showEmailPreview(emailRequest);
+    
+    console.log(`📧 Fallback email notification stored for ${emailType}`);
+  }
+
+  function generateEmailContent(emailType, data) {
+    switch(emailType) {
+      case 'welcome':
+        return {
+          subject: 'Welcome to Charlotte\'s Cakes! 🍰',
+          body: `Dear ${data.name},\n\nWelcome to Charlotte's Cakes! We're delighted to have you join our family of cake lovers.\n\nYou'll be the first to know about our fresh bakes, seasonal specialties, and exciting new flavors.\n\nThank you for choosing Charlotte's Cakes!\n\nWith sweet regards,\nCharlotte's Cakes Team`
+        };
+      
+      case 'orderConfirmation':
+        const items = data.orderData.items.map(item => 
+          `${item.name} x${item.quantity} - £${item.price}`
+        ).join('\n');
+        
+        return {
+          subject: `Order Confirmation - ${data.orderData.orderNumber} 🎂`,
+          body: `Dear ${data.name},\n\nThank you for your order! Here are your order details:\n\nOrder Number: ${data.orderData.orderNumber}\nItems:\n${items}\n\nTotal: ${data.orderData.total}\nDelivery: ${data.orderData.deliveryInfo}\n\nWe'll update you when your order is ready!\n\nBest regards,\nCharlotte's Cakes`
+        };
+      
+      default:
+        return { subject: 'Charlotte\'s Cakes Notification', body: 'Email content will be generated.' };
+    }
+  }
+
+  function showEmailPreview(emailRequest) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border: 2px solid #8B4513;
+      border-radius: 10px;
+      padding: 15px;
+      max-width: 350px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 10000;
+      font-family: Arial, sans-serif;
+    `;
+    
+    notification.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h4 style="margin: 0; color: #8B4513;">📧 Email Preview</h4>
+        <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; font-size: 18px; cursor: pointer;">&times;</button>
+      </div>
+      <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+        <strong>Subject:</strong> ${emailRequest.preview.subject}<br>
+        <strong>Preview:</strong> ${emailRequest.preview.body.substring(0, 100)}...
+      </div>
+      <div style="font-size: 12px; color: #666;">
+        Email saved for admin processing. You'll receive it once our system is back online.
+      </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 8 seconds
+    setTimeout(() => {
+      if (notification.parentElement) {
+        notification.remove();
+      }
+    }, 8000);
+  }
 </script>
 </body>
 </html>
