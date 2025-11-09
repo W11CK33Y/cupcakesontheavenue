@@ -1,172 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Order Successful - Cupcakes on the Avenue</title>
-  <link rel="icon" type="image/x-icon" href="pictures/favicon.ico">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      color: #333;
-      transition: background 1s ease-in-out;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    /* Seasonal Theme Variables */
-    body.spring { background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%); }
-    body.summer { background: linear-gradient(135deg, #FFE135 0%, #FFA500 100%); }
-    body.autumn { background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%); }
-    body.winter { background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%); }
-
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 40px 20px;
-      background: rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(15px);
-      border-radius: 25px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.08);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      color: #2c3e50;
-      text-align: center;
-    }
-
-    .container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #28a745, #20c997, #28a745);
-      background-size: 200% 100%;
-      animation: gradientShift 3s ease-in-out infinite;
-    }
-
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    .icon {
-      font-size: 4rem;
-      margin-bottom: 20px;
-      opacity: 0.8;
-      animation: bounce 2s infinite;
-    }
-
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-10px); }
-      60% { transform: translateY(-5px); }
-    }
-
-    h1 {
-      color: #28a745;
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
-      font-weight: 700;
-    }
-
-    p {
-      color: #2c3e50;
-      margin-bottom: 30px;
-      font-size: 1.1rem;
-      line-height: 1.6;
-      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
-    }
-
-    .highlight {
-      background: rgba(40, 167, 69, 0.1);
-      border: 1px solid rgba(40, 167, 69, 0.3);
-      padding: 20px;
-      border-radius: 15px;
-      margin: 20px 0;
-      backdrop-filter: blur(5px);
-    }
-
-    .btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 15px 30px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      display: inline-block;
-      margin: 10px;
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-    }
-
-    .btn.success {
-      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-    }
-
-    .btn.success:hover {
-      box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Success - Cupcakes on the Avenue</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            color: #333;
+        }
+        
+        .success-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 500px;
+            margin: 20px;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .order-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 10px;
+            margin: 10px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="icon">🎉</div>
-    <h1>Order Successful!</h1>
-    
-    <div class="highlight">
-      <p><strong>Thank you for your order!</strong></p>
-      <p>We've received your order and will begin preparing your delicious treats.</p>
+    <div class="success-container">
+        <div class="success-icon">🎉</div>
+        <h1>Payment Successful!</h1>
+        <p>Thank you for your order! Your payment has been processed successfully.</p>
+        
+        <div class="order-details" id="orderDetails">
+            <h3>📧 What happens next?</h3>
+            <ul style="text-align: left; margin: 15px 0;">
+                <li>✅ Payment receipt sent to your email</li>
+                <li>🧁 Order confirmation via Discord</li>
+                <li>👩‍🍳 We'll start preparing your delicious treats</li>
+                <li>📱 Updates sent to your phone/email</li>
+            </ul>
+        </div>
+        
+        <p><strong>Check your email for the payment receipt!</strong></p>
+        
+        <div>
+            <a href="/" class="btn">Back to Home</a>
+            <a href="shop.html" class="btn">Order More</a>
+        </div>
     </div>
-    
-    <p>You'll receive a confirmation email shortly with your order details.</p>
-    <p>We'll contact you if we need any additional information.</p>
-    
-    <div style="margin-top: 30px;">
-      <a href="index.html" class="btn">Return Home</a>
-      <a href="shop.html" class="btn success">Continue Shopping</a>
-    </div>
-  </div>
 
-  <script>
-    function setSeasonalTheme() {
-      const now = new Date();
-      const month = now.getMonth() + 1;
-      const day = now.getDate();
-      
-      document.body.classList.remove('spring', 'summer', 'autumn', 'winter');
-      
-      if ((month === 3 && day >= 20) || month === 4 || month === 5 || (month === 6 && day < 21)) {
-        document.body.classList.add('spring');
-      } else if ((month === 6 && day >= 21) || month === 7 || month === 8 || (month === 9 && day < 22)) {
-        document.body.classList.add('summer');
-      } else if ((month === 9 && day >= 22) || month === 10 || month === 11 || (month === 12 && day < 21)) {
-        document.body.classList.add('autumn');
-      } else {
-        document.body.classList.add('winter');
-      }
-    }
-    
-    setSeasonalTheme();
-  </script>
+    <script>
+        // Get session ID from URL and fetch order details if needed
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+        
+        if (sessionId) {
+            console.log('Payment session:', sessionId);
+            // You could fetch additional order details here if needed
+        }
+
+        // Track successful purchase
+        if (typeof gtag === 'function') {
+            gtag('event', 'purchase_complete', {
+                event_category: 'ecommerce',
+                event_label: 'stripe_checkout'
+            });
+        }
+    </script>
 </body>
 </html>
