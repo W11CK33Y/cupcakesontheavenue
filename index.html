@@ -2019,20 +2019,159 @@ footer img {
 
 <script src="https://js.stripe.com/v3"></script>
 <script>
-const BACKEND_BASE = 'https://sumup-backend-dxpqggyui-jack-wicks-projects.vercel.app'; // updated
-let stripe;
-const WEBHOOK_URL = 'PASTE_YOUR_DISCORD_WEBHOOK_URL_HERE';
+const BACKEND_BASE = 'https://sumup-backend-dxpqggyui-jack-wicks-projects.vercel.app';
+const WEBHOOK_URL = 'https://discord.com/api/webhooks/1426192909044023297/Ilgqgr8p7buI95ai-zssfphPLzQlNBBZf6PY31BhVuptPd-ZyccSq5kAQJPoBkUt4PHK'; // Add your real webhook URL here
 
-// Load publishable key
+let stripe;
+let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+let blockedDates = JSON.parse(localStorage.getItem('blockedDates') || '[]');
+
+// Load Stripe publishable key
 fetch(`${BACKEND_BASE}/api/public-config`)
   .then(r => r.json())
-  .then(cfg => { stripe = Stripe(cfg.publishableKey); })
-  .catch(e => console.error('Stripe init failed:', e));
+  .then(cfg => { 
+    stripe = Stripe(cfg.publishableKey);
+    console.log('✅ Stripe initialized');
+  })
+  .catch(e => console.error('❌ Stripe init failed:', e));
 
-// REMOVE (or ignore) any old initiatePayment / SumUp code blocks.
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  updateCart();
+  initializeCalendar();
+  initializeEventListeners();
+  applySeason();
+  startCountdown();
+  updateStickyCart();
+  loadRecentlyViewed();
+});
 
-// ...existing code...
+function initializeEventListeners() {
+  // Add to cart buttons
+  document.querySelectorAll('.add-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const selectEl = document.querySelector(`.product-select[data-id="${this.dataset.id}"]`);
+      const [variant, price] = selectEl.value.split('|');
+      const productName = this.dataset.name;
+      const fullName = `${productName} (${variant})`;
+      
+      addToCart(fullName, parseFloat(price));
+      trackAddToCart(fullName, parseFloat(price));
+    });
+  });
 
+  // Calendar
+  document.getElementById('deliveryDate').addEventListener('click', openCalendar);
+  document.getElementById('closeCalendar').addEventListener('click', closeCalendar);
+  document.getElementById('calendarOverlay').addEventListener('click', closeCalendar);
+  document.getElementById('prevMonth').addEventListener('click', () => changeMonth(-1));
+  document.getElementById('nextMonth').addEventListener('click', () => changeMonth(1));
+
+  // Lead time warning
+  document.getElementById('leadTimeNo').addEventListener('change', function() {
+    document.getElementById('leadTimeWarning').style.display = this.checked ? 'block' : 'none';
+  });
+
+  document.getElementById('leadTimeYes').addEventListener('change', function() {
+    document.getElementById('leadTimeWarning').style.display = 'none';
+  });
+
+  // Market toggle
+  document.getElementById('marketToggle').addEventListener('click', function() {
+    const bakes = document.getElementById('marketBakes');
+    bakes.classList.toggle('show');
+    this.textContent = bakes.classList.contains('show') ? 'Hide Market Bakes' : 'See This Week\'s Bakes';
+  });
+
+  // Special request form
+  document.getElementById('specialForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('srName').value;
+    const email = document.getElementById('srEmail').value;
+    const message = document.getElementById('srMessage').value;
+    
+    showToast('✅ Request sent! We\'ll get back to you soon.');
+    this.reset();
+  });
+}
+
+function addToCart(name, price) {
+  const existing = cart.find(i => i.name === name);
+  if (existing) {
+    existing.quantity++;
+  } else {
+    cart.push({ name, price, quantity: 1 });
+  }
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCart();
+  updateStickyCart();
+  showToast(`✅ ${name} added to cart!`);
+}
+
+function updateCart() {
+  const contents = document.getElementById('cartContents');
+  const total = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+  
+  document.getElementById('itemCount').textContent = `${cart.length} items`;
+  document.getElementById('cartTotal').textContent = `£${total.toFixed(2)}`;
+  
+  if (cart.length === 0) {
+    contents.innerHTML = '<p style="text-align: center; color: #999; padding: 30px;">Your cart is empty</p>';
+    document.getElementById('order').style.display = 'none';
+  } else {
+    document.getElementById('order').style.display = 'block';
+    contents.innerHTML = `<ul>${cart.map((item, idx) => `
+      <li>
+        <div>
+          <strong>${item.name}</strong><br>
+          <span style="color: #666;">£${item.price.toFixed(2)} × ${item.quantity} = £${(item.price * item.quantity).toFixed(2)}</span>
+        </div>
+        <div class="cart-controls">
+          <button class="cart-btn" onclick="changeQuantity(${idx}, -1)">-</button>
+          <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
+          <button class="cart-btn" onclick="changeQuantity(${idx}, 1)">+</button>
+          <button class="cart-btn" onclick="removeFromCart(${idx})" style="color: #dc3545; border-color: #dc3545;">×</button>
+        </div>
+      </li>
+    `).join('')}</ul>`;
+  }
+}
+
+function changeQuantity(index, delta) {
+  cart[index].quantity += delta;
+  if (cart[index].quantity <= 0) {
+    cart.splice(index, 1);
+  }
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCart();
+  updateStickyCart();
+}
+
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCart();
+  updateStickyCart();
+}
+
+function updateStickyCart() {
+  const stickyCart = document.getElementById('stickyCart');
+  const total = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+  const itemCount = cart.reduce((sum, i) => sum + i.quantity, 0);
+  
+  document.getElementById('stickyCartCount').textContent = `${itemCount} item${itemCount !== 1 ? 's' : ''}`;
+  document.getElementById('stickyCartTotal').textContent = `£${total.toFixed(2)}`;
+  
+  if (itemCount > 0) {
+    stickyCart.classList.add('show');
+  } else {
+    stickyCart.classList.remove('show');
+  }
+}
+
+// COMPLETE PLACE ORDER HANDLER
 document.getElementById('placeOrderBtn').addEventListener('click', async () => {
   const name = document.getElementById('customerName').value.trim();
   const email = document.getElementById('customerEmail').value.trim();
@@ -2044,39 +2183,68 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
   const privacy = document.getElementById('privacyCheck').checked;
   const terms = document.getElementById('termsCheck').checked;
 
-  if (!name || !email || !mobile || !address || !delivery || !date) return showToast('⚠️ Missing required fields');
-  if (!/^[0-9]{11}$/.test(mobile)) return showToast('⚠️ Invalid mobile');
-  if (!privacy || !terms) return showToast('⚠️ Accept policies');
-  if (cart.length === 0) return showToast('⚠️ Cart empty');
-  if (!stripe) return showToast('⚠️ Payment not ready, try again in 2s');
+  // Validation
+  if (!name || !email || !mobile || !address || !delivery || !date) {
+    showToast('⚠️ Please fill all required fields');
+    return;
+  }
+
+  if (!/^[0-9]{11}$/.test(mobile)) {
+    showToast('⚠️ Please enter a valid 11-digit UK mobile number');
+    return;
+  }
+
+  if (!privacy || !terms) {
+    showToast('⚠️ Please accept Privacy Policy and Terms');
+    return;
+  }
+
+  if (cart.length === 0) {
+    showToast('⚠️ Your cart is empty');
+    return;
+  }
+
+  if (!stripe) {
+    showToast('⚠️ Payment system not ready. Please wait 2 seconds and try again.');
+    return;
+  }
 
   const orderBtn = document.getElementById('placeOrderBtn');
   orderBtn.disabled = true;
-  orderBtn.textContent = 'Processing...';
+  orderBtn.textContent = 'Processing Order...';
 
-  // Prepare order data
+  // Calculate total and create order number
   const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
   const orderNumber = 'ORDER-' + Date.now();
-  const deliveryLabel = (delivery === 'collect') ? 'Collect'
-    : (delivery === 'collect_market') ? 'Market Collection'
-    : (delivery === 'delivery') ? 'Home Delivery' : delivery;
+  
+  // Get delivery label
+  const deliveryLabel = delivery === 'collect' ? 'Collect' 
+    : delivery === 'collect_market' ? 'Market Collection'
+    : delivery === 'delivery' ? 'Home Delivery' : delivery;
+
+  // Create cart snapshot
   const cartSnapshot = cart.map(i => ({ name: i.name, quantity: i.quantity, price: i.price }));
 
+  // Discord message
   const discordPayload = {
-    content: `🧁 NEW ORDER\n${orderNumber}\nCustomer: ${name}\nEmail: ${email}\nMobile: ${mobile}\nAddress: ${address}\nDelivery: ${deliveryLabel}\nDate: ${date}\nItems:\n${cartSnapshot.map(i=>`${i.name} x${i.quantity} £${(i.price*i.quantity).toFixed(2)}`).join('\n')}\nTOTAL £${total.toFixed(2)}\nNotes: ${notes || 'None'}`
+    content: `🧁 **NEW ORDER**\n\n**Order Number:** ${orderNumber}\n**Customer:** ${name}\n**Email:** ${email}\n**Mobile:** ${mobile}\n**Address:** ${address}\n**Delivery:** ${deliveryLabel}\n**Date:** ${date}\n\n**Items:**\n${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantity).toFixed(2)}`).join('\n')}\n\n**TOTAL: £${total.toFixed(2)}**\n**Notes:** ${notes || 'None'}`
   };
 
   try {
-    // Discord (non-blocking)
-    if (WEBHOOK_URL.startsWith('https://discord.com/api/webhooks/')) {
+    console.log('🚀 Step 1: Sending to Discord...');
+    
+    // Send to Discord (non-blocking)
+    if (WEBHOOK_URL && WEBHOOK_URL.startsWith('https://discord.com/api/webhooks/')) {
       fetch(WEBHOOK_URL, {
         method: 'POST',
-        headers: { 'Content-Type':'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(discordPayload)
-      }).catch(e => console.warn('Discord send failed:', e));
+      }).catch(e => console.warn('⚠️ Discord send failed:', e));
     }
 
-    // Persist order locally
+    console.log('✅ Discord notification sent');
+
+    // Save order locally
     const orders = JSON.parse(localStorage.getItem('shopOrders') || '[]');
     orders.push({
       id: orderNumber,
@@ -2093,8 +2261,9 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
       notes: notes || ''
     });
     localStorage.setItem('shopOrders', JSON.stringify(orders));
+    console.log('✅ Order saved locally');
 
-    // Customer DB
+    // Save customer
     const customers = JSON.parse(localStorage.getItem('webCustomers') || '[]');
     if (!customers.find(c => c.email.toLowerCase() === email.toLowerCase())) {
       customers.push({
@@ -2107,57 +2276,202 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
       localStorage.setItem('webCustomers', JSON.stringify(customers));
     }
 
-    if (typeof trackPurchase === 'function') trackPurchase(total, cart);
-    if (typeof addLoyaltyPoints === 'function') addLoyaltyPoints(total);
-    if (typeof addToOrderHistory === 'function') addToOrderHistory({
-      id: orderNumber, items: cartSnapshot, total, date: new Date().toISOString()
-    });
+    // Track analytics
+    if (typeof trackPurchase === 'function') {
+      trackPurchase(total, cart);
+    }
 
-    orderBtn.textContent = 'Creating Payment...';
+    orderBtn.textContent = 'Creating Payment Session...';
+    console.log('🚀 Step 2: Creating Stripe session...');
 
-    // Stripe session (with timeout)
+    // Create Stripe session
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
+    const timeout = setTimeout(() => controller.abort(), 15000);
 
     const sessionRes = await fetch(`${BACKEND_BASE}/api/create-checkout-session`, {
       method: 'POST',
-      headers: { 'Content-Type':'application/json' },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         reference: orderNumber,
         customer: { name, email },
         items: cartSnapshot
       }),
       signal: controller.signal
-    }).catch(err => { throw new Error('Network / CORS error creating session'); });
+    });
 
     clearTimeout(timeout);
 
+    console.log('Stripe response status:', sessionRes.status);
+
     if (!sessionRes.ok) {
-      const t = await sessionRes.text();
-      throw new Error(`Stripe session failed ${sessionRes.status}: ${t}`);
+      const errorText = await sessionRes.text();
+      console.error('Stripe error:', errorText);
+      throw new Error(`Payment session failed (${sessionRes.status})`);
     }
 
     const { sessionId } = await sessionRes.json();
-    if (!sessionId) throw new Error('Invalid session response');
+    if (!sessionId) {
+      throw new Error('Invalid payment session response');
+    }
 
-    orderBtn.textContent = 'Redirecting...';
+    console.log('✅ Stripe session created:', sessionId);
+    orderBtn.textContent = 'Redirecting to Payment...';
 
-    // Clear cart then redirect
+    // Clear cart before redirect
     cart = [];
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCart();
+    updateStickyCart();
 
+    console.log('🔄 Redirecting to Stripe Checkout...');
+
+    // Redirect to Stripe
     const { error } = await stripe.redirectToCheckout({ sessionId });
-    if (error) throw error;
+    if (error) {
+      throw new Error(error.message);
+    }
 
   } catch (e) {
-    console.error(e);
-    showToast(e.message || '⚠️ Order failed');
+    console.error('❌ Order failed:', e);
+    
+    let errorMessage = '⚠️ ';
+    if (e.name === 'AbortError') {
+      errorMessage += 'Request timed out. Please check your connection and try again.';
+    } else if (e.message.includes('Network')) {
+      errorMessage += 'Network error. Please check your connection.';
+    } else {
+      errorMessage += e.message || 'Order failed. Please try again or contact us.';
+    }
+    
+    showToast(errorMessage);
     orderBtn.disabled = false;
     orderBtn.textContent = 'Place Order & Pay';
   }
 });
-// ...existing code...
+
+// Calendar functions
+function openCalendar() {
+  document.getElementById('calendarOverlay').style.display = 'block';
+  document.getElementById('calendarPopup').style.display = 'block';
+  renderCalendar();
+}
+
+function closeCalendar() {
+  document.getElementById('calendarOverlay').style.display = 'none';
+  document.getElementById('calendarPopup').style.display = 'none';
+}
+
+function changeMonth(delta) {
+  currentMonth += delta;
+  if (currentMonth > 11) {
+    currentMonth = 0;
+    currentYear++;
+  } else if (currentMonth < 0) {
+    currentMonth = 11;
+    currentYear--;
+  }
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  document.getElementById('monthYear').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+  
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  
+  let html = '<table><thead><tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr></thead><tbody><tr>';
+  
+  const today = new Date();
+  const minDate = new Date(today);
+  minDate.setDate(today.getDate() + 7);
+  
+  for (let i = 0; i < firstDay; i++) {
+    html += '<td></td>';
+  }
+  
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(currentYear, currentMonth, day);
+    const dateStr = date.toISOString().split('T')[0];
+    const dayOfWeek = date.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    const isBlocked = blockedDates.includes(dateStr);
+    const isTooSoon = date < minDate;
+    const disabled = isBlocked || isTooSoon;
+    
+    let className = '';
+    if (disabled) className = 'disabled';
+    else if (isWeekend) className = 'weekend';
+    
+    html += `<td class="${className}" ${!disabled ? `onclick="selectDate('${dateStr}')"` : ''}>${day}</td>`;
+    
+    if ((firstDay + day) % 7 === 0) {
+      html += '</tr><tr>';
+    }
+  }
+  
+  html += '</tr></tbody></table>';
+  document.getElementById('calendar').innerHTML = html;
+}
+
+function selectDate(dateStr) {
+  document.getElementById('deliveryDate').value = dateStr;
+  closeCalendar();
+}
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+// Seasonal theme
+function applySeason() {
+  const month = new Date().getMonth();
+  let season = '';
+  
+  if (month >= 2 && month <= 4) season = 'spring';
+  else if (month >= 5 && month <= 7) season = 'summer';
+  else if (month >= 8 && month <= 10) season = 'autumn';
+  else season = 'winter';
+  
+  document.body.className = season;
+}
+
+// Countdown timer
+function startCountdown() {
+  const endDate = new Date('2024-11-01T00:00:00');
+  
+  setInterval(() => {
+    const now = new Date();
+    const diff = endDate - now;
+    
+    if (diff <= 0) {
+      document.getElementById('countdownBanner').style.display = 'none';
+      return;
+    }
+    
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+    document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+    document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+  }, 1000);
+}
+
+function loadRecentlyViewed() {
+  // Placeholder for recently viewed items
+}
+
+// Make functions globally accessible
+window.changeQuantity = changeQuantity;
+window.removeFromCart = removeFromCart;
+window.selectDate = selectDate;
 </script>
 
 <!-- Fallback Email System -->
