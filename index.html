@@ -2019,7 +2019,8 @@ footer img {
 
 <script src="https://js.stripe.com/v3"></script>
 <script>
-const BACKEND_BASE = 'https://sumup-backend.vercel.app'; // Use the working backend
+// ✅ CORRECTED: Use consistent working backend URL
+const BACKEND_BASE = 'https://sumup-backend.vercel.app'; // Working backend
 const WEBHOOK_URL = 'https://discord.com/api/webhooks/1426192909044023297/Ilgqgr8p7buI95ai-zssfphPLzQlNBBZf6PY31BhVuptPd-ZyccSq5kAQJPoBkUt4PHK';
 
 let stripe;
@@ -2027,15 +2028,6 @@ let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 let blockedDates = JSON.parse(localStorage.getItem('blockedDates') || '[]');
-
-// Load Stripe publishable key
-fetch(`${BACKEND_BASE}/api/public-config`)
-  .then(r => r.json())
-  .then(cfg => { 
-    stripe = Stripe(cfg.publishableKey);
-    console.log('✅ Stripe initialized');
-  })
-  .catch(e => console.error('❌ Stripe init failed:', e));
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -2173,12 +2165,12 @@ function updateStickyCart() {
 
 // Reliable checkout function
 function handleCheckout(total, reference) {
-    const checkoutUrl = `https://sumup-backend.vercel.app/api/checkout?total=${total}&reference=${reference}`;
+    const checkoutUrl = `${BACKEND_BASE}/api/checkout?total=${total}&reference=${reference}`;
     console.log('🔄 Redirecting to checkout:', checkoutUrl);
     window.location.href = checkoutUrl;
 }
 
-// UPDATED PLACE ORDER HANDLER - Simplified and Reliable
+// SIMPLIFIED PLACE ORDER HANDLER - No CORS issues
 document.getElementById('placeOrderBtn').addEventListener('click', async () => {
   const name = document.getElementById('customerName').value.trim();
   const email = document.getElementById('customerEmail').value.trim();
@@ -2247,7 +2239,7 @@ ${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantit
   try {
     console.log('🚀 Step 1: Sending to Discord...');
     
-    // Send to Discord (with timeout, non-blocking)
+    // ✅ Send to Discord (non-blocking, with timeout)
     try {
       const discordController = new AbortController();
       const discordTimeout = setTimeout(() => discordController.abort(), 5000);
@@ -2271,7 +2263,7 @@ ${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantit
       console.warn('⚠️ Discord error (continuing anyway):', discordError.message);
     }
 
-    // Save order locally
+    // ✅ Save order locally
     const orders = JSON.parse(localStorage.getItem('shopOrders') || '[]');
     orders.push({
       id: orderNumber,
@@ -2290,9 +2282,11 @@ ${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantit
     localStorage.setItem('shopOrders', JSON.stringify(orders));
     console.log('✅ Order saved locally');
 
-    // Save customer data
+    // ✅ Save customer data
     const customers = JSON.parse(localStorage.getItem('webCustomers') || '[]');
-    if (!customers.find(c => c.email.toLowerCase() === email.toLowerCase())) {
+    const existingCustomer = customers.find(c => c.email.toLowerCase() === email.toLowerCase());
+    
+    if (!existingCustomer) {
       customers.push({
         name, email, phone: mobile,
         joinDate: new Date().toISOString().split('T')[0],
@@ -2301,32 +2295,57 @@ ${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantit
         totalSpent: total
       });
       localStorage.setItem('webCustomers', JSON.stringify(customers));
-      console.log('✅ Customer data saved');
+      console.log('✅ New customer added');
+      
+      // ✅ Store welcome email for fallback processing
+      sendFallbackEmailNotification('welcome', { name, email });
+    } else {
+      // Update existing customer
+      existingCustomer.totalOrders = (existingCustomer.totalOrders || 0) + 1;
+      existingCustomer.totalSpent = (existingCustomer.totalSpent || 0) + total;
+      localStorage.setItem('webCustomers', JSON.stringify(customers));
+      console.log('✅ Customer data updated');
     }
 
-    // Track analytics
+    // ✅ Store order confirmation email for fallback processing
+    const orderData = {
+      orderNumber,
+      items: cartSnapshot.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price.toFixed(2)
+      })),
+      total: `£${total.toFixed(2)}`,
+      deliveryMethod: deliveryLabel,
+      deliveryInfo: delivery === 'collect_market' ? 
+        `Saturday Market Collection on ${new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}` :
+        `${address} on ${new Date(date).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`,
+      date: new Date(date).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+      address: delivery !== 'collect_market' ? address : null,
+      notes: notes && notes !== 'None' ? notes : null
+    };
+    
+    sendFallbackEmailNotification('orderConfirmation', { name, email, orderData });
+
+    // ✅ Track analytics
     if (typeof trackPurchase === 'function') {
       trackPurchase(total, cartSnapshot);
     }
-    
-    if (typeof addLoyaltyPoints === 'function') {
-      addLoyaltyPoints(total);
-    }
 
-    // Clear cart BEFORE redirect
+    // ✅ Clear cart BEFORE redirect
     cart = [];
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCart();
     updateStickyCart();
 
-    // Redirect to payment using the WORKING backend
+    // ✅ Redirect to payment using working backend
     console.log('🚀 Step 2: Redirecting to payment...');
     orderBtn.textContent = 'Redirecting to Payment...';
     
-    // Use the working checkout URL
+    // Use the working checkout URL with delay for user feedback
     setTimeout(() => {
       handleCheckout(total.toFixed(2), orderNumber);
-    }, 1000);
+    }, 1500);
 
   } catch (error) {
     console.error('❌ Order processing failed:', error);
@@ -2337,7 +2356,7 @@ ${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantit
     updateCart();
     updateStickyCart();
     
-    showToast('⚠️ Order failed. Please try again or contact us.');
+    showToast('⚠️ Order failed. Please try again or contact us at 07842817789');
     orderBtn.disabled = false;
     orderBtn.textContent = 'Place Order & Pay';
   }
@@ -2466,13 +2485,14 @@ function loadRecentlyViewed() {
 window.changeQuantity = changeQuantity;
 window.removeFromCart = removeFromCart;
 window.selectDate = selectDate;
-window.handleCheckout = handleCheckout; // Make handleCheckout globally accessible
+window.handleCheckout = handleCheckout;
 </script>
 
-<!-- Fallback Email System -->
+<!-- ✅ ENHANCED Fallback Email System -->
 <script>
-  // Fallback email notification system
   function sendFallbackEmailNotification(emailType, data) {
+    console.log(`📧 Storing ${emailType} email for fallback processing...`);
+    
     // Store email request for admin processing
     let pendingEmails = JSON.parse(localStorage.getItem('pendingEmails') || '[]');
     
@@ -2488,18 +2508,20 @@ window.handleCheckout = handleCheckout; // Make handleCheckout globally accessib
     pendingEmails.push(emailRequest);
     localStorage.setItem('pendingEmails', JSON.stringify(pendingEmails));
     
-    // Show user notification with email preview
-    showEmailPreview(emailRequest);
+    console.log('✅ Email request stored for processing');
     
-    console.log(`📧 Fallback email notification stored for ${emailType}`);
+    // Show user notification
+    if (emailType === 'orderConfirmation') {
+      showToast('📧 Order confirmation will be sent via email backup system');
+    }
   }
 
   function generateEmailContent(emailType, data) {
     switch(emailType) {
       case 'welcome':
         return {
-          subject: 'Welcome to Charlotte\'s Cakes! 🍰',
-          body: `Dear ${data.name},\n\nWelcome to Charlotte's Cakes! We're delighted to have you join our family of cake lovers.\n\nYou'll be the first to know about our fresh bakes, seasonal specialties, and exciting new flavors.\n\nThank you for choosing Charlotte's Cakes!\n\nWith sweet regards,\nCharlotte's Cakes Team`
+          subject: 'Welcome to Cupcakes on the Avenue! 🧁',
+          body: `Dear ${data.name},\n\nWelcome to Cupcakes on the Avenue! We're delighted to have you join our family of cake lovers.\n\nYou'll be the first to know about our fresh bakes, seasonal specialties, and exciting new flavors.\n\nThank you for choosing Cupcakes on the Avenue!\n\nWith sweet regards,\nCupcakes on the Avenue Team`
         };
       
       case 'orderConfirmation':
@@ -2508,53 +2530,12 @@ window.handleCheckout = handleCheckout; // Make handleCheckout globally accessib
         ).join('\n');
         
         return {
-          subject: `Order Confirmation - ${data.orderData.orderNumber} 🎂`,
-          body: `Dear ${data.name},\n\nThank you for your order! Here are your order details:\n\nOrder Number: ${data.orderData.orderNumber}\nItems:\n${items}\n\nTotal: ${data.orderData.total}\nDelivery: ${data.orderData.deliveryInfo}\n\nWe'll update you when your order is ready!\n\nBest regards,\nCharlotte's Cakes`
+          subject: `Order Confirmation - ${data.orderData.orderNumber} 🧁`,
+          body: `Dear ${data.name},\n\nThank you for your order! Here are your order details:\n\nOrder Number: ${data.orderData.orderNumber}\n\nItems:\n${items}\n\nTotal: ${data.orderData.total}\nDelivery: ${data.orderData.deliveryInfo}\n\nWe'll update you when your order is ready!\n\nBest regards,\nCupcakes on the Avenue\nPhone: 07842817789`
         };
       
       default:
-        return { subject: 'Charlotte\'s Cakes Notification', body: 'Email content will be generated.' };
+        return { subject: 'Cupcakes on the Avenue Notification', body: 'Email content will be generated.' };
     }
-  }
-
-  function showEmailPreview(emailRequest) {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: white;
-      border: 2px solid #8B4513;
-      border-radius: 10px;
-      padding: 15px;
-      max-width: 350px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 10000;
-      font-family: Arial, sans-serif;
-    `;
-    
-    notification.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h4 style="margin: 0; color: #8B4513;">📧 Email Preview</h4>
-        <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; font-size: 18px; cursor: pointer;">&times;</button>
-      </div>
-      <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-        <strong>Subject:</strong> ${emailRequest.preview.subject}<br>
-        <strong>Preview:</strong> ${emailRequest.preview.body.substring(0, 100)}...
-      </div>
-      <div style="font-size: 12px; color: #666;">
-        Email saved for admin processing. You'll receive it once our system is back online.
-      </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Auto-remove after 8 seconds
-    setTimeout(() => {
-      if (notification.parentElement) {
-        notification.remove();
-      }
-    }, 8000);
   }
 </script>
