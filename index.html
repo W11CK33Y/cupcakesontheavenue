@@ -2019,7 +2019,7 @@ footer img {
 
 <script src="https://js.stripe.com/v3"></script>
 <script>
-const BACKEND_BASE = 'https://sumup-backend-dxpqggyui-jack-wicks-projects.vercel.app';
+const BACKEND_BASE = 'https://sumup-backend.vercel.app'; // Use the working backend
 const WEBHOOK_URL = 'https://discord.com/api/webhooks/1426192909044023297/Ilgqgr8p7buI95ai-zssfphPLzQlNBBZf6PY31BhVuptPd-ZyccSq5kAQJPoBkUt4PHK';
 
 let stripe;
@@ -2171,13 +2171,14 @@ function updateStickyCart() {
   }
 }
 
-// Add the new checkout function
+// Reliable checkout function
 function handleCheckout(total, reference) {
     const checkoutUrl = `https://sumup-backend.vercel.app/api/checkout?total=${total}&reference=${reference}`;
+    console.log('🔄 Redirecting to checkout:', checkoutUrl);
     window.location.href = checkoutUrl;
 }
 
-// UPDATED PLACE ORDER HANDLER with fallback checkout option
+// UPDATED PLACE ORDER HANDLER - Simplified and Reliable
 document.getElementById('placeOrderBtn').addEventListener('click', async () => {
   const name = document.getElementById('customerName').value.trim();
   const email = document.getElementById('customerEmail').value.trim();
@@ -2223,27 +2224,52 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
     : delivery === 'collect_market' ? 'Market Collection'
     : delivery === 'delivery' ? 'Home Delivery' : delivery;
 
-  // Create cart snapshot
-  const cartSnapshot = cart.map(i => ({ name: i.name, quantity: i.quantity, price: i.price }));
+  // Create cart snapshot BEFORE clearing
+  const cartSnapshot = [...cart];
 
   // Discord message
-  const discordPayload = {
-    content: `🧁 **NEW ORDER**\n\n**Order Number:** ${orderNumber}\n**Customer:** ${name}\n**Email:** ${email}\n**Mobile:** ${mobile}\n**Address:** ${address}\n**Delivery:** ${deliveryLabel}\n**Date:** ${date}\n\n**Items:**\n${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantity).toFixed(2)}`).join('\n')}\n\n**TOTAL: £${total.toFixed(2)}**\n**Notes:** ${notes || 'None'}`
-  };
+  const discordMessage = `🧁 **NEW ORDER**
+
+**Order Number:** ${orderNumber}
+**Customer:** ${name}
+**Email:** ${email}
+**Mobile:** ${mobile}
+**Address:** ${address}
+**Delivery:** ${deliveryLabel}
+**Date:** ${date}
+
+**Items:**
+${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantity).toFixed(2)}`).join('\n')}
+
+**TOTAL: £${total.toFixed(2)}**
+**Notes:** ${notes || 'None'}`;
 
   try {
     console.log('🚀 Step 1: Sending to Discord...');
     
-    // Send to Discord (non-blocking)
-    if (WEBHOOK_URL && WEBHOOK_URL.startsWith('https://discord.com/api/webhooks/')) {
-      fetch(WEBHOOK_URL, {
+    // Send to Discord (with timeout, non-blocking)
+    try {
+      const discordController = new AbortController();
+      const discordTimeout = setTimeout(() => discordController.abort(), 5000);
+      
+      const discordResponse = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(discordPayload)
-      }).catch(e => console.warn('⚠️ Discord send failed:', e));
+        body: JSON.stringify({ content: discordMessage }),
+        signal: discordController.signal
+      });
+      
+      clearTimeout(discordTimeout);
+      
+      if (discordResponse.ok) {
+        console.log('✅ Discord notification sent successfully');
+        showToast('✅ Order sent to Discord!');
+      } else {
+        console.warn('⚠️ Discord notification failed:', discordResponse.status);
+      }
+    } catch (discordError) {
+      console.warn('⚠️ Discord error (continuing anyway):', discordError.message);
     }
-
-    console.log('✅ Discord notification sent');
 
     // Save order locally
     const orders = JSON.parse(localStorage.getItem('shopOrders') || '[]');
@@ -2252,7 +2278,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
       customerName: name,
       customerEmail: email,
       customerMobile: mobile,
-      items: cartSnapshot,
+      items: cartSnapshot.map(i => ({ name: i.name, quantity: i.quantity, price: i.price })),
       total,
       status: 'pending',
       deliveryMethod: deliveryLabel,
@@ -2264,7 +2290,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
     localStorage.setItem('shopOrders', JSON.stringify(orders));
     console.log('✅ Order saved locally');
 
-    // Save customer
+    // Save customer data
     const customers = JSON.parse(localStorage.getItem('webCustomers') || '[]');
     if (!customers.find(c => c.email.toLowerCase() === email.toLowerCase())) {
       customers.push({
@@ -2275,82 +2301,43 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
         totalSpent: total
       });
       localStorage.setItem('webCustomers', JSON.stringify(customers));
+      console.log('✅ Customer data saved');
     }
 
     // Track analytics
     if (typeof trackPurchase === 'function') {
-      trackPurchase(total, cart);
+      trackPurchase(total, cartSnapshot);
+    }
+    
+    if (typeof addLoyaltyPoints === 'function') {
+      addLoyaltyPoints(total);
     }
 
-    orderBtn.textContent = 'Creating Payment Session...';
-    console.log('🚀 Step 2: Creating payment session...');
-
-    // Clear cart before redirect
+    // Clear cart BEFORE redirect
     cart = [];
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCart();
     updateStickyCart();
 
-    // Try Stripe first, fallback to direct checkout
-    if (stripe) {
-      try {
-        // Create Stripe session
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 10000);
-
-        const sessionRes = await fetch(`${BACKEND_BASE}/api/create-checkout-session`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            reference: orderNumber,
-            customer: { name, email },
-            items: cartSnapshot
-          }),
-          signal: controller.signal
-        });
-
-        clearTimeout(timeout);
-
-        if (sessionRes.ok) {
-          const { sessionId } = await sessionRes.json();
-          if (sessionId) {
-            console.log('✅ Stripe session created, redirecting...');
-            orderBtn.textContent = 'Redirecting to Payment...';
-            
-            const { error } = await stripe.redirectToCheckout({ sessionId });
-            if (!error) {
-              return; // Success - redirect happened
-            }
-            console.warn('Stripe redirect failed:', error);
-          }
-        }
-        console.warn('Stripe session creation failed, using fallback checkout');
-      } catch (e) {
-        console.warn('Stripe error, using fallback checkout:', e);
-      }
-    }
-
-    // Fallback to direct checkout
-    console.log('🔄 Using fallback checkout method...');
+    // Redirect to payment using the WORKING backend
+    console.log('🚀 Step 2: Redirecting to payment...');
     orderBtn.textContent = 'Redirecting to Payment...';
     
+    // Use the working checkout URL
     setTimeout(() => {
       handleCheckout(total.toFixed(2), orderNumber);
     }, 1000);
 
-  } catch (e) {
-    console.error('❌ Order failed:', e);
+  } catch (error) {
+    console.error('❌ Order processing failed:', error);
     
-    let errorMessage = '⚠️ ';
-    if (e.name === 'AbortError') {
-      errorMessage += 'Request timed out. Please check your connection and try again.';
-    } else if (e.message.includes('Network')) {
-      errorMessage += 'Network error. Please check your connection.';
-    } else {
-      errorMessage += e.message || 'Order failed. Please try again or contact us.';
-    }
+    // Restore cart on failure
+    cart = cartSnapshot;
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCart();
+    updateStickyCart();
     
-    showToast(errorMessage);
+    showToast('⚠️ Order failed. Please try again or contact us.');
     orderBtn.disabled = false;
     orderBtn.textContent = 'Place Order & Pay';
   }
