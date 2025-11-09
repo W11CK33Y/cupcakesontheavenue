@@ -2020,7 +2020,7 @@ footer img {
 <script src="https://js.stripe.com/v3"></script>
 <script>
 const BACKEND_BASE = 'https://sumup-backend-dxpqggyui-jack-wicks-projects.vercel.app';
-const WEBHOOK_URL = 'https://discord.com/api/webhooks/1426192909044023297/Ilgqgr8p7buI95ai-zssfphPLzQlNBBZf6PY31BhVuptPd-ZyccSq5kAQJPoBkUt4PHK'; // Add your real webhook URL here
+const WEBHOOK_URL = 'https://discord.com/api/webhooks/1426192909044023297/Ilgqgr8p7buI95ai-zssfphPLzQlNBBZf6PY31BhVuptPd-ZyccSq5kAQJPoBkUt4PHK';
 
 let stripe;
 let cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -2171,7 +2171,13 @@ function updateStickyCart() {
   }
 }
 
-// COMPLETE PLACE ORDER HANDLER
+// Add the new checkout function
+function handleCheckout(total, reference) {
+    const checkoutUrl = `https://sumup-backend.vercel.app/api/checkout?total=${total}&reference=${reference}`;
+    window.location.href = checkoutUrl;
+}
+
+// UPDATED PLACE ORDER HANDLER with fallback checkout option
 document.getElementById('placeOrderBtn').addEventListener('click', async () => {
   const name = document.getElementById('customerName').value.trim();
   const email = document.getElementById('customerEmail').value.trim();
@@ -2201,11 +2207,6 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
 
   if (cart.length === 0) {
     showToast('⚠️ Your cart is empty');
-    return;
-  }
-
-  if (!stripe) {
-    showToast('⚠️ Payment system not ready. Please wait 2 seconds and try again.');
     return;
   }
 
@@ -2282,40 +2283,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
     }
 
     orderBtn.textContent = 'Creating Payment Session...';
-    console.log('🚀 Step 2: Creating Stripe session...');
-
-    // Create Stripe session
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
-
-    const sessionRes = await fetch(`${BACKEND_BASE}/api/create-checkout-session`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        reference: orderNumber,
-        customer: { name, email },
-        items: cartSnapshot
-      }),
-      signal: controller.signal
-    });
-
-    clearTimeout(timeout);
-
-    console.log('Stripe response status:', sessionRes.status);
-
-    if (!sessionRes.ok) {
-      const errorText = await sessionRes.text();
-      console.error('Stripe error:', errorText);
-      throw new Error(`Payment session failed (${sessionRes.status})`);
-    }
-
-    const { sessionId } = await sessionRes.json();
-    if (!sessionId) {
-      throw new Error('Invalid payment session response');
-    }
-
-    console.log('✅ Stripe session created:', sessionId);
-    orderBtn.textContent = 'Redirecting to Payment...';
+    console.log('🚀 Step 2: Creating payment session...');
 
     // Clear cart before redirect
     cart = [];
@@ -2323,13 +2291,52 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
     updateCart();
     updateStickyCart();
 
-    console.log('🔄 Redirecting to Stripe Checkout...');
+    // Try Stripe first, fallback to direct checkout
+    if (stripe) {
+      try {
+        // Create Stripe session
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
 
-    // Redirect to Stripe
-    const { error } = await stripe.redirectToCheckout({ sessionId });
-    if (error) {
-      throw new Error(error.message);
+        const sessionRes = await fetch(`${BACKEND_BASE}/api/create-checkout-session`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            reference: orderNumber,
+            customer: { name, email },
+            items: cartSnapshot
+          }),
+          signal: controller.signal
+        });
+
+        clearTimeout(timeout);
+
+        if (sessionRes.ok) {
+          const { sessionId } = await sessionRes.json();
+          if (sessionId) {
+            console.log('✅ Stripe session created, redirecting...');
+            orderBtn.textContent = 'Redirecting to Payment...';
+            
+            const { error } = await stripe.redirectToCheckout({ sessionId });
+            if (!error) {
+              return; // Success - redirect happened
+            }
+            console.warn('Stripe redirect failed:', error);
+          }
+        }
+        console.warn('Stripe session creation failed, using fallback checkout');
+      } catch (e) {
+        console.warn('Stripe error, using fallback checkout:', e);
+      }
     }
+
+    // Fallback to direct checkout
+    console.log('🔄 Using fallback checkout method...');
+    orderBtn.textContent = 'Redirecting to Payment...';
+    
+    setTimeout(() => {
+      handleCheckout(total.toFixed(2), orderNumber);
+    }, 1000);
 
   } catch (e) {
     console.error('❌ Order failed:', e);
@@ -2472,6 +2479,7 @@ function loadRecentlyViewed() {
 window.changeQuantity = changeQuantity;
 window.removeFromCart = removeFromCart;
 window.selectDate = selectDate;
+window.handleCheckout = handleCheckout; // Make handleCheckout globally accessible
 </script>
 
 <!-- Fallback Email System -->
