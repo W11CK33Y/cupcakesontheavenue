@@ -571,6 +571,12 @@ body.winter .product-tile:hover {
   box-shadow: 0 20px 40px rgba(0,0,0,0.15), 0 10px 20px rgba(0,0,0,0.1);
 }
 
+@keyframes cartHighlight {
+  0% { box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.08); }
+  50% { box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3), 0 10px 25px rgba(102, 126, 234, 0.2); }
+  100% { box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.08); }
+}
+
 .cart-header {
   display: flex;
   justify-content: space-between;
@@ -1528,7 +1534,8 @@ footer img {
       <div class="cart-total" id="stickyCartTotal">£0.00</div>
     </div>
   </div>
-  <div>
+  <div style="display: flex; gap: 10px; align-items: center;">
+    <button onclick="scrollToCart()" class="mini-checkout-btn" style="background: #667eea; border: none; cursor: pointer;">View Cart</button>
     <a href="shop.html" class="mini-checkout-btn">Go to Shop</a>
   </div>
 </div>
@@ -1544,7 +1551,61 @@ footer img {
   </nav>
 </header>
 
+<!-- Cart Section - Shows when items are added -->
+<div id="order" class="cart-section" style="display: none;">
+  <div class="cart-header">
+    <h2>🛒 Your Cart</h2>
+    <span id="itemCount">0 items</span>
+  </div>
 
+  <div class="cart-items" id="cartContents">
+    <p style="text-align: center; color: #999; padding: 30px;">Your cart is empty</p>
+  </div>
+
+  <div class="cart-total">
+    <span>Total:</span>
+    <span id="cartTotal">£0.00</span>
+  </div>
+
+  <div class="customer-form">
+    <h3 style="color: #667eea; margin: 25px 0 15px;">Customer Details</h3>
+    <input type="text" id="customerName" placeholder="Full Name *" required>
+    <input type="email" id="customerEmail" placeholder="Email Address *" required>
+    <input type="tel" id="customerMobile" placeholder="Mobile Number *" required pattern="[0-9]{11}" title="Please enter an 11-digit UK mobile number">
+    <input type="text" id="customerAddress" placeholder="Delivery Address *" required>
+    <textarea id="customerNotes" rows="3" placeholder="Special Requests / Toppings (optional)"></textarea>
+
+    <label for="deliveryMethod">Delivery method *</label>
+    <select id="deliveryMethod" name="deliveryMethod" required>
+      <option value="" disabled selected>Select delivery method</option>
+      <option value="collect">Collect</option>
+      <option value="collect_market">Collect from market</option>
+      <option value="delivery">Delivery</option>
+    </select>
+
+    <label for="deliveryDate">Delivery/Collection date *</label>
+    <input type="date" id="deliveryDate" required>
+
+    <div class="delivery-info">
+      <h4>📅 Calendar</h4>
+      <p style="font-size: 0.9rem; color: #666; margin: 10px 0;">Select your preferred delivery or collection date. Click on the date field above to open the calendar.</p>
+    </div>
+
+    <div style="display: flex; align-items: center; margin: 20px 0;">
+      <input type="checkbox" id="privacyCheck" required>
+      <label for="privacyCheck" style="margin-left: 10px; font-size: 0.9rem;">I agree to the <a href="privacy.html" target="_blank" style="color: #667eea;">Privacy Policy</a> *</label>
+    </div>
+
+    <div style="display: flex; align-items: center; margin: 20px 0;">
+      <input type="checkbox" id="termsCheck" required>
+      <label for="termsCheck" style="margin-left: 10px; font-size: 0.9rem;">I agree to the <a href="terms.html" target="_blank" style="color: #667eea;">Terms & Conditions</a> *</label>
+    </div>
+
+    <button id="placeOrderBtn" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 1.2rem; font-weight: bold; cursor: pointer; margin-top: 20px;">
+      Place Order & Pay
+    </button>
+  </div>
+</div>
 
 <div class="hero">
   <img src="pictures/logo.png" alt="Cupcakes on the Avenue">
@@ -1656,79 +1717,6 @@ footer img {
   <a href="shop.html" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 40px; border-radius: 30px; text-decoration: none; font-size: 1.2rem; font-weight: bold; display: inline-block; transition: transform 0.3s; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);">
     Visit Our Shop →
   </a>
-</section>
-
-<div id="order" class="cart-section" style="display: none;">
-  <div class="cart-header">
-    <h2>🛒 Your Cart</h2>
-    <span id="itemCount">0 items</span>
-  </div>
-
-  <div class="cart-items" id="cartContents">
-    <p style="text-align: center; color: #999; padding: 30px;">Your cart is empty</p>
-  </div>
-
-  <div class="cart-total">
-    <span>Total:</span>
-    <span id="cartTotal">£0.00</span>
-  </div>
-
-  <div class="customer-form">
-    <h3 style="color: #667eea; margin: 25px 0 15px;">Customer Details</h3>
-    <input type="text" id="customerName" placeholder="Full Name *" required>
-    <input type="email" id="customerEmail" placeholder="Email Address *" required>
-    <input type="tel" id="customerMobile" placeholder="Mobile Number *" required pattern="[0-9]{11}" title="Please enter an 11-digit UK mobile number">
-    <input type="text" id="customerAddress" placeholder="Delivery Address *" required>
-    <textarea id="customerNotes" rows="3" placeholder="Special Requests / Toppings (optional)"></textarea>
-
-    <label for="deliveryMethod">Delivery method *</label>
-    <select id="deliveryMethod" name="deliveryMethod" required>
-      <option value="" disabled selected>Select delivery method</option>
-      <option value="collect">Collect</option>
-      <option value="collect_market">Collect from market</option>
-      <option value="delivery">Delivery</option>
-    </select>
-
-    <input type="text" id="deliveryDate" placeholder="Click to select delivery date (min 7 days) *" readonly style="cursor: pointer;">
-
-    <div class="leadtime-group">
-      <p>Is your delivery date at least one week from today?</p>
-      <label><input type="radio" name="leadTime" id="leadTimeYes" checked> Yes</label>
-      <label><input type="radio" name="leadTime" id="leadTimeNo"> No</label>
-      <p id="leadTimeWarning" class="leadtime-note" style="display:none;">
-        Please call <a href="tel:07842817789">07842817789</a> to discuss if we can make it earlier.
-      </p>
-    </div>
-
-    <div class="checkbox-group">
-      <label>
-        <input type="checkbox" id="privacyCheck" required>
-        I agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> *
-      </label>
-      <label>
-        <input type="checkbox" id="termsCheck" required>
-        I agree to the <a href="terms.html" target="_blank" rel="noopener">Terms & Conditions</a> *
-      </label>
-    </div>
-
-    <button class="order-btn" id="placeOrderBtn">Place Order & Pay</button>
-    
-    <!-- Recommended Products Section -->
-    <div class="recommendations-section" id="recommendedProducts" style="display: none;">
-      <h3>🛍️ Customers who bought this also bought</h3>
-      <div class="recommendations-grid" id="recommendationsGrid">
-        <!-- Recommendations will be populated here -->
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Recently Viewed Items Section -->
-<section id="recently-viewed" style="display: none;">
-  <h2>👀 Recently Viewed</h2>
-  <div class="products-grid" id="recentlyViewedGrid">
-    <!-- Recently viewed items will be populated here -->
-  </div>
 </section>
 
 <!-- Move Market Section here, after cart -->
@@ -2061,6 +2049,18 @@ function updateStickyCart() {
     stickyCart.classList.add('show');
   } else {
     stickyCart.classList.remove('show');
+  }
+}
+
+function scrollToCart() {
+  const cartSection = document.getElementById('order');
+  if (cartSection) {
+    cartSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Add a highlight animation
+    cartSection.style.animation = 'cartHighlight 1s ease-in-out';
+    setTimeout(() => {
+      cartSection.style.animation = '';
+    }, 1000);
   }
 }
 
