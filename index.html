@@ -992,110 +992,10 @@ footer img {
   transform: translateY(-2px);
 }
 
-/* Account System Styles */
-.account-section {
-  max-width: 800px;
-  margin: 40px auto;
-  background: white;
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  display: none;
-}
 
-.account-tabs {
-  display: flex;
-  gap: 0;
-  margin-bottom: 30px;
-  border: 2px solid #667eea;
-  border-radius: 10px;
-  overflow: hidden;
-}
 
-.account-tab {
-  flex: 1;
-  padding: 15px;
-  background: white;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s;
-}
 
-.account-tab.active {
-  background: #667eea;
-  color: white;
-}
 
-.account-content {
-  display: none;
-}
-
-.account-content.active {
-  display: block;
-}
-
-.auth-form input {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 1rem;
-}
-
-.auth-form button {
-  width: 100%;
-  padding: 15px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.guest-checkout {
-  text-align: center;
-  margin: 20px 0;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 10px;
-}
-
-.guest-btn {
-  background: #28a745;
-  color: white;
-  padding: 12px 30px;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.order-history {
-  margin-top: 20px;
-}
-
-.order-item {
-  background: #f8f9fa;
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 10px;
-  border-left: 4px solid #667eea;
-}
-
-.loyalty-points {
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  margin: 20px 0;
-  color: #333;
-}
 
 /* Wishlist Heart Icon */
 .wishlist-heart {
@@ -1503,13 +1403,7 @@ footer img {
     transform: scale(1.05);
   }
   
-  /* Account section mobile adjustments */
-  .account-section {
-    margin: 15px 10px;
-    max-width: calc(100% - 20px);
-    z-index: 1000;
-    position: relative;
-  }
+
   
   /* Mobile sections */
   section {
@@ -1647,71 +1541,10 @@ footer img {
     <a href="#festive" aria-label="View festive bakes">Festive Bakes</a>
     <a href="shop.html" aria-label="Browse our shop">Shop</a>
     <a href="#market" aria-label="Visit us at market">Market</a>
-    <a href="account.html" id="accountLink" aria-label="Access your account">👤 Account</a>
   </nav>
 </header>
 
-<!-- Account System -->
-<div id="account" class="account-section">
-  <div class="account-tabs">
-    <button class="account-tab active" data-tab="login">Login</button>
-    <button class="account-tab" data-tab="register">Register</button>
-    <button class="account-tab" data-tab="profile">Profile</button>
-  </div>
 
-  <!-- Login Tab -->
-  <div class="account-content active" id="login">
-    <h3>Welcome Back!</h3>
-    <form class="auth-form" id="loginForm">
-      <input type="email" placeholder="Email Address" required>
-      <input type="password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
-    
-    <div class="guest-checkout">
-      <h4>Don't have an account?</h4>
-      <p>No worries! You can still place orders as a guest.</p>
-      <button class="guest-btn" id="guestCheckoutBtn">Continue as Guest</button>
-    </div>
-  </div>
-
-  <!-- Register Tab -->
-  <div class="account-content" id="register">
-    <h3>Create Account</h3>
-    <form class="auth-form" id="registerForm">
-      <input type="text" placeholder="Full Name" required>
-      <input type="email" placeholder="Email Address" required>
-      <input type="tel" placeholder="Mobile Number" required>
-      <input type="text" placeholder="Address" required>
-      <input type="password" placeholder="Password" required>
-      <input type="password" placeholder="Confirm Password" required>
-      <button type="submit">Create Account</button>
-    </form>
-  </div>
-
-  <!-- Profile Tab -->
-  <div class="account-content" id="profile">
-    <h3>My Account</h3>
-    <div class="loyalty-points">
-      <h4>🌟 Loyalty Points</h4>
-      <p style="font-size: 1.5rem; font-weight: bold;" id="loyaltyPoints">0 Points</p>
-      <p>Earn 1 point for every £1 spent • 100 points = £5 off</p>
-    </div>
-    
-    <div class="order-history">
-      <h4>📋 Order History</h4>
-      <div id="orderHistoryList">
-        <p style="color: #999; text-align: center; padding: 20px;">No orders yet</p>
-      </div>
-    </div>
-    
-    <div style="margin-top: 20px;">
-      <h4>👥 Referral Program</h4>
-      <p>Share your referral code: <strong id="referralCode">COTA123</strong></p>
-      <p>Get £5 off when someone uses your code!</p>
-    </div>
-  </div>
-</div>
 
 <div class="hero">
   <img src="pictures/logo.png" alt="Cupcakes on the Avenue">
