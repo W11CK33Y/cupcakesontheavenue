@@ -2017,11 +2017,9 @@ footer img {
   <img src="pictures\food hygiene.jpg"" alt="Cupcake illustration" style="width: 80px; margin-top: 12px; opacity: 0.8;">
 </footer>
 
-<script src="https://js.stripe.com/v3"></script>
 <script>
-// ✅ UPDATED: Use correct backend URL
+// ✅ SIMPLIFIED: Just the essentials for checkout
 const BACKEND_BASE = 'https://sumup-backend.vercel.app';
-const WEBHOOK_URL = 'https://discord.com/api/webhooks/1426192909044023297/Ilgqgr8p7buI95ai-zssfphPLzQlNBBZf6PY31BhVuptPd-ZyccSq5kAQJPoBkUt4PHK';
 
 let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 let currentMonth = new Date().getMonth();
@@ -2134,18 +2132,6 @@ function initializeEventListeners() {
         const email = emailEl.value;
         const message = messageEl.value;
         
-        // Store special request locally
-        const requests = JSON.parse(localStorage.getItem('specialRequests') || '[]');
-        requests.push({
-          id: Date.now(),
-          name,
-          email,
-          message,
-          date: new Date().toISOString(),
-          status: 'pending'
-        });
-        localStorage.setItem('specialRequests', JSON.stringify(requests));
-        
         showToast('✅ Request sent! We\'ll get back to you soon.');
         this.reset();
       }
@@ -2246,9 +2232,9 @@ function updateStickyCart() {
   }
 }
 
-// ✅ FIXED CHECKOUT FUNCTION - Proper redirect to Stripe
+// ✅ SIMPLIFIED CHECKOUT FUNCTION - Uses backend API for Discord & Stripe
 async function handlePlaceOrder() {
-  console.log('🚀 Starting order process...');
+  console.log('🚀 Starting checkout process...');
   
   // Get form elements
   const nameEl = document.getElementById('customerName');
@@ -2267,7 +2253,7 @@ async function handlePlaceOrder() {
     return;
   }
 
-  // Get values
+  // Get form values
   const name = nameEl.value.trim();
   const email = emailEl.value.trim();
   const mobile = mobileEl.value.trim();
@@ -2278,7 +2264,7 @@ async function handlePlaceOrder() {
   const privacy = privacyEl.checked;
   const terms = termsEl.checked;
 
-  // Validation
+  // Basic validation
   if (!name || !email || !mobile || !address || !delivery || !date) {
     showToast('⚠️ Please fill all required fields');
     return;
@@ -2304,138 +2290,85 @@ async function handlePlaceOrder() {
   orderBtn.textContent = 'Processing Order...';
 
   try {
-    // Calculate total and create order number
+    // Calculate total and create order reference
     const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-    const orderNumber = 'ORDER-' + Date.now();
+    const orderReference = 'ORDER-' + Date.now();
     
-    // Get delivery label
-    const deliveryLabel = delivery === 'collect' ? 'Collect' 
+    // Get delivery method label
+    const deliveryMethod = delivery === 'collect' ? 'Collection' 
       : delivery === 'collect_market' ? 'Market Collection'
-      : delivery === 'delivery' ? 'Home Delivery' : delivery;
+      : delivery === 'delivery' ? 'Delivery' : 'Delivery';
 
-    // Create cart snapshot BEFORE clearing
-    const cartSnapshot = [...cart];
+    // Create items string for Discord
+    const itemsString = cart.map(item => `${item.name} x${item.quantity}`).join(', ');
 
-    console.log('📦 Order details:', {
-      orderNumber,
-      customer: name,
+    console.log('📦 Sending order to backend:', {
+      reference: orderReference,
       total: total.toFixed(2),
-      items: cartSnapshot.length
+      customer: name,
+      items: itemsString
     });
 
-    // Step 1: Send to Discord (non-blocking)
-    console.log('🚀 Step 1: Sending to Discord...');
-    try {
-      const discordResponse = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          content: `🧁 **NEW ORDER**
+    // ✅ Send everything through your backend API
+    orderBtn.textContent = 'Sending to Discord & Stripe...';
+    
+    const response = await fetch(`${BACKEND_BASE}/api/discord-webhook`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        reference: orderReference,        // Required
+        total: total.toFixed(2),         // Required
+        name: name,                      // Customer name
+        email: email,                    // Customer email
+        phone: mobile,                   // Phone number (or use 'mobile')
+        delivery: deliveryMethod,        // 'Delivery' or 'Collection'
+        date: date,                      // Delivery/collection date
+        address: address,                // Delivery address
+        items: itemsString,              // What they ordered
+        notes: notes || 'No special instructions' // Special instructions
+      })
+    });
 
-**Order Number:** ${orderNumber}
-**Customer:** ${name}
-**Email:** ${email}
-**Mobile:** ${mobile}
-**Address:** ${address}
-**Delivery:** ${deliveryLabel}
-**Date:** ${date}
+    console.log('📡 Backend response status:', response.status);
 
-**Items:**
-${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantity).toFixed(2)}`).join('\n')}
-
-**TOTAL: £${total.toFixed(2)}**
-**Notes:** ${notes || 'None'}` 
-        })
-      });
+    if (response.ok) {
+      const result = await response.json();
+      console.log('✅ Backend processed successfully:', result);
       
-      if (discordResponse.ok) {
-        console.log('✅ Discord notification sent');
-        showToast('✅ Order sent to Discord!');
-      } else {
-        console.warn('⚠️ Discord failed:', discordResponse.status);
-      }
-    } catch (discordError) {
-      console.warn('⚠️ Discord error (continuing):', discordError.message);
-    }
-
-    // Step 2: Save order locally
-    console.log('💾 Step 2: Saving order locally...');
-    const orders = JSON.parse(localStorage.getItem('shopOrders') || '[]');
-    const orderData = {
-      id: orderNumber,
-      customerName: name,
-      customerEmail: email,
-      customerMobile: mobile,
-      items: cartSnapshot.map(i => ({ name: i.name, quantity: i.quantity, price: i.price })),
-      total,
-      status: 'pending',
-      deliveryMethod: deliveryLabel,
-      deliveryDate: date,
-      orderDate: new Date().toISOString(),
-      address,
-      notes: notes || ''
-    };
-    orders.push(orderData);
-    localStorage.setItem('shopOrders', JSON.stringify(orders));
-    console.log('✅ Order saved locally');
-
-    // Step 3: Save customer data
-    const customers = JSON.parse(localStorage.getItem('webCustomers') || '[]');
-    const existingCustomer = customers.find(c => c.email.toLowerCase() === email.toLowerCase());
-    
-    if (!existingCustomer) {
-      customers.push({
-        name, email, phone: mobile,
-        joinDate: new Date().toISOString().split('T')[0],
-        source: 'website',
-        totalOrders: 1,
-        totalSpent: total
-      });
-      localStorage.setItem('webCustomers', JSON.stringify(customers));
-      console.log('✅ New customer added');
-    } else {
-      existingCustomer.totalOrders = (existingCustomer.totalOrders || 0) + 1;
-      existingCustomer.totalSpent = (existingCustomer.totalSpent || 0) + total;
-      localStorage.setItem('webCustomers', JSON.stringify(customers));
-      console.log('✅ Customer updated');
-    }
-
-    // Step 4: Track analytics
-    if (typeof trackPurchase === 'function') {
-      trackPurchase(total, cartSnapshot);
-    }
-
-    // Step 5: Clear cart
-    console.log('🛒 Step 4: Clearing cart...');
-    cart = [];
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCart();
-    updateStickyCart();
-
-    // Step 6: ✅ FIXED - Immediate redirect to payment
-    console.log('💳 Step 5: Redirecting to payment...');
-    orderBtn.textContent = 'Redirecting to Payment...';
-    
-    // Build the checkout URL
-    const checkoutUrl = `${BACKEND_BASE}/api/checkout?total=${total.toFixed(2)}&reference=${orderNumber}`;
-    console.log('🔗 Payment URL:', checkoutUrl);
-    
-    // ✅ IMMEDIATE REDIRECT - No setTimeout delay
-    console.log('🔄 Redirecting to Stripe now...');
-    window.location.href = checkoutUrl;
-
-  } catch (error) {
-    console.error('❌ Order processing failed:', error);
-    
-    // Restore cart if it was cleared
-    if (cart.length === 0 && typeof cartSnapshot !== 'undefined') {
-      cart = cartSnapshot;
+      // Clear cart
+      cart = [];
       localStorage.setItem('cart', JSON.stringify(cart));
       updateCart();
       updateStickyCart();
+
+      // Show success and redirect to Stripe
+      showToast('✅ Order sent! Redirecting to payment...');
+      orderBtn.textContent = 'Redirecting to Stripe...';
+      
+      // If backend returns a Stripe URL, redirect to it
+      if (result.stripeUrl) {
+        console.log('� Redirecting to Stripe:', result.stripeUrl);
+        setTimeout(() => {
+          window.location.href = result.stripeUrl;
+        }, 1000);
+      } else {
+        // Fallback: redirect to checkout endpoint
+        const checkoutUrl = `${BACKEND_BASE}/api/checkout?total=${total.toFixed(2)}&reference=${orderReference}`;
+        console.log('� Redirecting to checkout:', checkoutUrl);
+        setTimeout(() => {
+          window.location.href = checkoutUrl;
+        }, 1000);
+      }
+      
+    } else {
+      const errorText = await response.text();
+      console.error('❌ Backend error:', errorText);
+      throw new Error(`Backend returned ${response.status}: ${errorText}`);
     }
-    
-    showToast('⚠️ Order failed. Please try again or call 07842817789');
+
+  } catch (error) {
+    console.error('❌ Checkout failed:', error);
+    showToast('⚠️ Checkout failed. Please try again or call us directly.');
     orderBtn.disabled = false;
     orderBtn.textContent = 'Place Order & Pay';
   }
@@ -2593,54 +2526,3 @@ window.removeFromCart = removeFromCart;
 window.selectDate = selectDate;
 </script>
 
-<!-- ✅ ENHANCED Fallback Email System -->
-<script>
-  function sendFallbackEmailNotification(emailType, data) {
-    console.log(`📧 Storing ${emailType} email for fallback processing...`);
-    
-    // Store email request for admin processing
-    let pendingEmails = JSON.parse(localStorage.getItem('pendingEmails') || '[]');
-    
-    const emailRequest = {
-      id: Date.now(),
-      type: emailType,
-      data: data,
-      timestamp: new Date().toISOString(),
-      status: 'pending',
-      preview: generateEmailContent(emailType, data)
-    };
-    
-    pendingEmails.push(emailRequest);
-    localStorage.setItem('pendingEmails', JSON.stringify(pendingEmails));
-    
-    console.log('✅ Email request stored for processing');
-    
-    // Show user notification
-    if (emailType === 'orderConfirmation') {
-      showToast('📧 Order confirmation will be sent via email backup system');
-    }
-  }
-
-  function generateEmailContent(emailType, data) {
-    switch(emailType) {
-      case 'welcome':
-        return {
-          subject: 'Welcome to Cupcakes on the Avenue! 🧁',
-          body: `Dear ${data.name},\n\nWelcome to Cupcakes on the Avenue! We're delighted to have you join our family of cake lovers.\n\nYou'll be the first to know about our fresh bakes, seasonal specialties, and exciting new flavors.\n\nThank you for choosing Cupcakes on the Avenue!\n\nWith sweet regards,\nCupcakes on the Avenue Team`
-        };
-      
-      case 'orderConfirmation':
-        const items = data.orderData.items.map(item => 
-          `${item.name} x${item.quantity} - £${item.price}`
-        ).join('\n');
-        
-        return {
-          subject: `Order Confirmation - ${data.orderData.orderNumber} 🧁`,
-          body: `Dear ${data.name},\n\nThank you for your order! Here are your order details:\n\nOrder Number: ${data.orderData.orderNumber}\n\nItems:\n${items}\n\nTotal: ${data.orderData.total}\nDelivery: ${data.orderData.deliveryInfo}\n\nWe'll update you when your order is ready!\n\nBest regards,\nCupcakes on the Avenue\nPhone: 07842817789`
-        };
-      
-      default:
-        return { subject: 'Cupcakes on the Avenue Notification', body: 'Email content will be generated.' };
-    }
-  }
-</script>
