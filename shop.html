@@ -869,6 +869,9 @@ footer img {
 </footer>
 
 <script>
+// ✅ CORRECT BACKEND URL
+const BACKEND_BASE = 'https://sumup-backend.vercel.app';
+
 document.addEventListener('DOMContentLoaded', () => {
   // Seasonal Theme System
   function setSeasonalTheme() {
@@ -1089,192 +1092,142 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Form submission
+  // ✅ SIMPLIFIED CHECKOUT FUNCTION - Uses backend API for Discord & Stripe
   document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+    console.log('🚀 Starting checkout process...');
+
+    // Get form elements and values
+    const name = document.getElementById('customerName').value.trim();
+    const email = document.getElementById('customerEmail').value.trim();
+    const mobile = document.getElementById('customerMobile').value.trim();
+    const address = document.getElementById('customerAddress').value.trim();
+    const notes = document.getElementById('customerNotes').value.trim();
     const deliveryDate = document.getElementById('deliveryDate').value;
-    if (!deliveryDate) {
-      showToast('⚠️ Please select a delivery/collection date');
+    
+    // Get delivery method
+    const deliveryMethodEl = document.querySelector('input[name="deliveryMethod"]:checked');
+    if (!deliveryMethodEl) {
+      showToast('⚠️ Please select a delivery method');
       return;
     }
-    
-    const deliveryMethod = document.querySelector('input[name="deliveryMethod"]:checked').value;
-    const customerAddress = document.getElementById('customerAddress').value;
-    
+    const deliveryMethod = deliveryMethodEl.value;
+
+    // Basic validation
+    if (!name || !email || !mobile || !deliveryDate) {
+      showToast('⚠️ Please fill all required fields');
+      return;
+    }
+
+    // Validate mobile number format
+    if (!/^[0-9]{11}$/.test(mobile)) {
+      showToast('⚠️ Please enter a valid 11-digit UK mobile number');
+      return;
+    }
+
     // Validate address for delivery
-    if (deliveryMethod === 'delivery' && !customerAddress.trim()) {
-      showToast('⚠️ Please enter a delivery address');
+    if (deliveryMethod === 'delivery' && !address.trim()) {
+      showToast('⚠️ Please enter a delivery address for home delivery');
       return;
     }
-    
+
+    if (cart.length === 0) {
+      showToast('⚠️ Your cart is empty');
+      return;
+    }
+
+    // Calculate totals
     const deliveryFee = deliveryMethod === 'delivery' ? 5.00 : 0.00;
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const total = subtotal + deliveryFee;
-    
-    const formData = {
-      id: `WEB-${Date.now()}`,
-      name: document.getElementById('customerName').value,
-      email: document.getElementById('customerEmail').value,
-      mobile: document.getElementById('customerMobile').value,
-      address: deliveryMethod === 'delivery' ? customerAddress : 'Market Collection',
-      deliveryDate: deliveryDate,
-      deliveryMethod: deliveryMethod,
-      deliveryFee: deliveryFee,
-      notes: document.getElementById('customerNotes').value,
-      items: cart,
-      subtotal: subtotal,
-      total: total,
-      orderDate: new Date().toISOString(),
-      status: 'pending',
-      paymentStatus: 'unpaid',
-      source: 'website'
-    };
 
-    // Save order to localStorage for admin sync
-    let shopOrders = JSON.parse(localStorage.getItem('shopOrders') || '[]');
-    shopOrders.push(formData);
-    localStorage.setItem('shopOrders', JSON.stringify(shopOrders));
-    
-    // Check if this is a new customer and save customer data
-    let customers = JSON.parse(localStorage.getItem('webCustomers') || '[]');
-    const existingCustomer = customers.find(c => c.email === formData.email);
-    let isNewCustomer = false;
-    
-    if (!existingCustomer) {
-      isNewCustomer = true;
-      customers.push({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.mobile,
-        address: formData.address,
-        joinDate: new Date().toISOString().split('T')[0],
-        source: 'website'
-      });
-      localStorage.setItem('webCustomers', JSON.stringify(customers));
-    }
+    // Disable submit button and show processing
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Processing Order...';
 
-    // Send welcome email for new customers
-    if (isNewCustomer) {
-      try {
-        console.log('Sending welcome email for new customer...');
-        
-        // Try backend first, fallback to client-side email
-        let emailSent = false;
-        
-        try {
-          const welcomeResponse = await fetch('https://sumup-backend-lemon.vercel.app/api/send-customer-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              emailType: 'welcome',
-              customerData: {
-                name: formData.name,
-                email: formData.email
-              }
-            })
-          });
-          
-          if (welcomeResponse.ok) {
-            console.log('✅ Welcome email sent via backend');
-            showToast('📧 Welcome email sent!');
-            emailSent = true;
-          }
-        } catch (backendError) {
-          console.log('Backend email failed, trying fallback method...');
-        }
-        
-        // Fallback: Client-side email notification
-        if (!emailSent) {
-          await sendFallbackEmail('welcome', {
-            name: formData.name,
-            email: formData.email,
-            orderData: null
-          });
-          showToast('📧 Welcome notification sent!');
-        }
-        
-      } catch (error) {
-        console.warn('⚠️ All email methods failed:', error);
-        showToast('⚠️ Email service temporarily unavailable');
-      }
-    }
-
-    // Send order confirmation email
     try {
-      console.log('Sending order confirmation email...');
-      
-      const orderData = {
-        orderNumber: formData.id,
-        items: formData.items.map(item => ({
-          name: item.name,
-          quantity: item.quantity,
-          price: `${(item.price * item.quantity).toFixed(2)}`,
-          customization: item.customization || null
-        })),
-        total: `£${total.toFixed(2)}`,
-        deliveryMethod: deliveryMethod === 'delivery' ? 'Home Delivery' : 'Market Collection',
-        deliveryInfo: deliveryMethod === 'delivery' ? 
-          `${customerAddress} on ${new Date(deliveryDate).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}` :
-          `Saturday Market Collection on ${new Date(deliveryDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}`,
-        date: new Date(deliveryDate).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
-        address: deliveryMethod === 'delivery' ? customerAddress : null,
-        notes: formData.notes || null
-      };
+      // Create order reference and data
+      const orderReference = 'SHOP-' + Date.now();
+      const deliveryMethodLabel = deliveryMethod === 'delivery' ? 'Delivery' : 'Collection';
+      const itemsString = cart.map(item => `${item.name} x${item.quantity}`).join(', ');
+      const finalAddress = deliveryMethod === 'delivery' ? address : 'Market Collection';
 
-      let confirmationSent = false;
+      console.log('📦 Sending order to backend:', {
+        reference: orderReference,
+        total: total.toFixed(2),
+        customer: name,
+        items: itemsString
+      });
+
+      // ✅ Send everything through your backend API
+      submitBtn.textContent = 'Sending to Discord & Stripe...';
       
-      try {
-        const orderResponse = await fetch('https://sumup-backend-lemon.vercel.app/api/send-customer-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            emailType: 'orderConfirmation',
-            customerData: {
-              name: formData.name,
-              email: formData.email
-            },
-            orderData: orderData
-          })
-        });
+      const response = await fetch(`${BACKEND_BASE}/api/discord-webhook`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reference: orderReference,        // Required
+          total: total.toFixed(2),         // Required
+          name: name,                      // Customer name
+          email: email,                    // Email for manual contact (NO AUTO-EMAILS)
+          phone: mobile,                   // Phone number
+          delivery: deliveryMethodLabel,   // 'Delivery' or 'Collection'
+          date: deliveryDate,              // Delivery/collection date
+          address: finalAddress,           // Delivery address or 'Market Collection'
+          items: itemsString,              // What they ordered
+          notes: notes || 'No special instructions' // Special instructions
+        })
+      });
+
+      console.log('📡 Backend response status:', response.status);
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Backend processed successfully:', result);
         
-        if (orderResponse.ok) {
-          console.log('✅ Order confirmation email sent via backend');
-          showToast('📧 Order confirmation email sent!');
-          confirmationSent = true;
+        // Clear cart
+        cart = [];
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateStickyCart();
+
+        // Show success and redirect to Stripe
+        showToast('✅ Order sent! Redirecting to payment...');
+        submitBtn.textContent = 'Redirecting to Stripe...';
+        
+        // Close modal
+        document.getElementById('checkoutModal').style.display = 'none';
+        
+        // If backend returns a Stripe URL, redirect to it
+        if (result.stripeUrl) {
+          console.log('💳 Redirecting to Stripe:', result.stripeUrl);
+          setTimeout(() => {
+            window.location.href = result.stripeUrl;
+          }, 1000);
+        } else {
+          // Fallback: redirect to checkout endpoint
+          const checkoutUrl = `${BACKEND_BASE}/api/checkout?total=${total.toFixed(2)}&reference=${orderReference}`;
+          console.log('💳 Redirecting to checkout:', checkoutUrl);
+          setTimeout(() => {
+            window.location.href = checkoutUrl;
+          }, 1000);
         }
-      } catch (backendError) {
-        console.log('Backend email failed, trying fallback method...');
-      }
-      
-      // Fallback: Client-side email notification
-      if (!confirmationSent) {
-        await sendFallbackEmail('orderConfirmation', {
-          name: formData.name,
-          email: formData.email,
-          orderData: orderData
-        });
-        showToast('📧 Order confirmation sent!');
+        
+      } else {
+        const errorText = await response.text();
+        console.error('❌ Backend error:', errorText);
+        throw new Error(`Backend returned ${response.status}: ${errorText}`);
       }
       
     } catch (error) {
-      console.warn('⚠️ All email methods failed:', error);
-      showToast('⚠️ Email service temporarily unavailable');
+      console.error('❌ Order processing failed:', error);
+      showToast(`❌ Order failed: ${error.message}`);
+      
+      // Re-enable submit button
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
     }
-
-    // Here you would normally send to your backend for payment processing
-    console.log('Order placed:', formData);
-    
-    // Clear cart and close modal
-    cart = [];
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateStickyCart();
-    document.getElementById('checkoutModal').style.display = 'none';
-    
-    showToast('🎉 Order placed successfully! Check your email for confirmation. Admin has been notified.');
-    
-    // Reset form
-    document.getElementById('checkoutForm').reset();
   });
 
   // Toast notification
@@ -1287,117 +1240,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
   }
 
-  // Fallback email function using EmailJS
-  async function sendFallbackEmail(emailType, customerData) {
-    try {
-      console.log('Attempting fallback email service...');
-      
-      // Use EmailJS public service (requires setup but works client-side)
-      const emailContent = generateEmailContent(emailType, customerData);
-      
-      // For now, store email request locally and notify admin
-      const emailRequest = {
-        timestamp: new Date().toISOString(),
-        type: emailType,
-        customer: customerData.name,
-        email: customerData.email,
-        content: emailContent,
-        status: 'pending'
-      };
-      
-      // Store for admin to process
-      let pendingEmails = JSON.parse(localStorage.getItem('pendingEmails') || '[]');
-      pendingEmails.push(emailRequest);
-      localStorage.setItem('pendingEmails', JSON.stringify(pendingEmails));
-      
-      // Create a visual notification for the user
-      showEmailPreview(emailContent, customerData.email);
-      
-      console.log('✅ Email request stored for processing');
-      return true;
-    } catch (error) {
-      console.error('Fallback email failed:', error);
-      return false;
-    }
-  }
 
-  function generateEmailContent(emailType, customerData) {
-    const { name, email, orderData } = customerData;
-    
-    if (emailType === 'welcome') {
-      return {
-        subject: '🎉 Welcome to Cupcakes on the Avenue!',
-        preview: `Hi ${name}! Welcome to our bakery family. We're excited to serve you delicious treats!`,
-        type: 'Welcome Email'
-      };
-    } else if (emailType === 'orderConfirmation') {
-      const itemsList = orderData.items.map(item => 
-        `${item.name} x${item.quantity} - £${item.price}`
-      ).join(', ');
-      
-      return {
-        subject: `🧁 Order Confirmation #${orderData.orderNumber}`,
-        preview: `Hi ${name}! Your order for ${itemsList} has been confirmed. Total: ${orderData.total}. ${orderData.deliveryInfo}`,
-        type: 'Order Confirmation',
-        orderNumber: orderData.orderNumber,
-        total: orderData.total,
-        deliveryInfo: orderData.deliveryInfo
-      };
-    }
-    
-    return {
-      subject: '🧁 Message from Cupcakes on the Avenue',
-      preview: `Hi ${name}! Thank you for choosing Cupcakes on the Avenue.`,
-      type: 'General'
-    };
-  }
-
-  function showEmailPreview(emailContent, recipientEmail) {
-    // Create a notification showing what email would be sent
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      max-width: 400px;
-      background: rgba(255, 255, 255, 0.95);
-      border: 2px solid #667eea;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      z-index: 1000;
-      font-family: Arial, sans-serif;
-    `;
-    
-    notification.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <strong style="color: #667eea;">📧 ${emailContent.type}</strong>
-        <button onclick="this.parentElement.parentElement.remove()" 
-                style="background: none; border: none; font-size: 18px; cursor: pointer;">×</button>
-      </div>
-      <div style="font-size: 14px; color: #666; margin-bottom: 10px;">
-        <strong>To:</strong> ${recipientEmail}
-      </div>
-      <div style="font-size: 14px; color: #333; margin-bottom: 10px;">
-        <strong>Subject:</strong> ${emailContent.subject}
-      </div>
-      <div style="font-size: 13px; color: #666; line-height: 1.4; padding: 10px; background: #f8f9fa; border-radius: 5px;">
-        ${emailContent.preview}
-      </div>
-      <div style="margin-top: 10px; font-size: 12px; color: #999;">
-        📝 Email notification recorded. Admin will process manually if needed.
-      </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Auto-remove after 10 seconds
-    setTimeout(() => {
-      if (notification.parentElement) {
-        notification.remove();
-      }
-    }, 10000);
-  }
 
   // Initialize cart display
   updateStickyCart();
