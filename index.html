@@ -2246,7 +2246,7 @@ function updateStickyCart() {
   }
 }
 
-// ✅ MAIN CHECKOUT FUNCTION - Email sending removed
+// ✅ FIXED CHECKOUT FUNCTION - Proper redirect to Stripe
 async function handlePlaceOrder() {
   console.log('🚀 Starting order process...');
   
@@ -2323,8 +2323,14 @@ async function handlePlaceOrder() {
       items: cartSnapshot.length
     });
 
-    // Discord message
-    const discordMessage = `🧁 **NEW ORDER**
+    // Step 1: Send to Discord (non-blocking)
+    console.log('🚀 Step 1: Sending to Discord...');
+    try {
+      const discordResponse = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          content: `🧁 **NEW ORDER**
 
 **Order Number:** ${orderNumber}
 **Customer:** ${name}
@@ -2338,15 +2344,8 @@ async function handlePlaceOrder() {
 ${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantity).toFixed(2)}`).join('\n')}
 
 **TOTAL: £${total.toFixed(2)}**
-**Notes:** ${notes || 'None'}`;
-
-    // Step 1: Send to Discord (non-blocking)
-    console.log('🚀 Step 1: Sending to Discord...');
-    try {
-      const discordResponse = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: discordMessage })
+**Notes:** ${notes || 'None'}` 
+        })
       });
       
       if (discordResponse.ok) {
@@ -2406,26 +2405,24 @@ ${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantit
       trackPurchase(total, cartSnapshot);
     }
 
-    // Step 5: Clear cart and redirect
+    // Step 5: Clear cart
     console.log('🛒 Step 4: Clearing cart...');
     cart = [];
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCart();
     updateStickyCart();
 
-    // Step 6: Redirect to payment
+    // Step 6: ✅ FIXED - Immediate redirect to payment
     console.log('💳 Step 5: Redirecting to payment...');
     orderBtn.textContent = 'Redirecting to Payment...';
     
-    // ✅ USING CORRECT BACKEND URL
+    // Build the checkout URL
     const checkoutUrl = `${BACKEND_BASE}/api/checkout?total=${total.toFixed(2)}&reference=${orderNumber}`;
     console.log('🔗 Payment URL:', checkoutUrl);
     
-    // Add small delay for user feedback
-    setTimeout(() => {
-      console.log('🔄 Redirecting now...');
-      window.location.href = checkoutUrl;
-    }, 1500);
+    // ✅ IMMEDIATE REDIRECT - No setTimeout delay
+    console.log('🔄 Redirecting to Stripe now...');
+    window.location.href = checkoutUrl;
 
   } catch (error) {
     console.error('❌ Order processing failed:', error);
