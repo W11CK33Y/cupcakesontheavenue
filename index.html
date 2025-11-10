@@ -2019,11 +2019,10 @@ footer img {
 
 <script src="https://js.stripe.com/v3"></script>
 <script>
-// ✅ CORRECTED: Use consistent working backend URL
-const BACKEND_BASE = 'https://sumup-backend.vercel.app'; // Working backend
+// ✅ FIXED: Consistent backend URLs
+const BACKEND_BASE = 'https://sumup-backend.vercel.app'; // Use the working one
 const WEBHOOK_URL = 'https://discord.com/api/webhooks/1426192909044023297/Ilgqgr8p7buI95ai-zssfphPLzQlNBBZf6PY31BhVuptPd-ZyccSq5kAQJPoBkUt4PHK';
 
-let stripe;
 let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
@@ -2045,48 +2044,119 @@ function initializeEventListeners() {
   document.querySelectorAll('.add-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const selectEl = document.querySelector(`.product-select[data-id="${this.dataset.id}"]`);
+      if (!selectEl || !selectEl.value) {
+        showToast('⚠️ Please select a size first');
+        return;
+      }
+      
       const [variant, price] = selectEl.value.split('|');
       const productName = this.dataset.name;
       const fullName = `${productName} (${variant})`;
       
       addToCart(fullName, parseFloat(price));
-      trackAddToCart(fullName, parseFloat(price));
+      if (typeof trackAddToCart === 'function') {
+        trackAddToCart(fullName, parseFloat(price));
+      }
     });
   });
 
-  // Calendar
-  document.getElementById('deliveryDate').addEventListener('click', openCalendar);
-  document.getElementById('closeCalendar').addEventListener('click', closeCalendar);
-  document.getElementById('calendarOverlay').addEventListener('click', closeCalendar);
-  document.getElementById('prevMonth').addEventListener('click', () => changeMonth(-1));
-  document.getElementById('nextMonth').addEventListener('click', () => changeMonth(1));
+  // Calendar events
+  const deliveryDateEl = document.getElementById('deliveryDate');
+  if (deliveryDateEl) {
+    deliveryDateEl.addEventListener('click', openCalendar);
+  }
+  
+  const closeCalendarEl = document.getElementById('closeCalendar');
+  if (closeCalendarEl) {
+    closeCalendarEl.addEventListener('click', closeCalendar);
+  }
+  
+  const calendarOverlayEl = document.getElementById('calendarOverlay');
+  if (calendarOverlayEl) {
+    calendarOverlayEl.addEventListener('click', closeCalendar);
+  }
+  
+  const prevMonthEl = document.getElementById('prevMonth');
+  if (prevMonthEl) {
+    prevMonthEl.addEventListener('click', () => changeMonth(-1));
+  }
+  
+  const nextMonthEl = document.getElementById('nextMonth');
+  if (nextMonthEl) {
+    nextMonthEl.addEventListener('click', () => changeMonth(1));
+  }
 
   // Lead time warning
-  document.getElementById('leadTimeNo').addEventListener('change', function() {
-    document.getElementById('leadTimeWarning').style.display = this.checked ? 'block' : 'none';
-  });
+  const leadTimeNoEl = document.getElementById('leadTimeNo');
+  if (leadTimeNoEl) {
+    leadTimeNoEl.addEventListener('change', function() {
+      const warningEl = document.getElementById('leadTimeWarning');
+      if (warningEl) {
+        warningEl.style.display = this.checked ? 'block' : 'none';
+      }
+    });
+  }
 
-  document.getElementById('leadTimeYes').addEventListener('change', function() {
-    document.getElementById('leadTimeWarning').style.display = 'none';
-  });
+  const leadTimeYesEl = document.getElementById('leadTimeYes');
+  if (leadTimeYesEl) {
+    leadTimeYesEl.addEventListener('change', function() {
+      const warningEl = document.getElementById('leadTimeWarning');
+      if (warningEl) {
+        warningEl.style.display = 'none';
+      }
+    });
+  }
 
   // Market toggle
-  document.getElementById('marketToggle').addEventListener('click', function() {
-    const bakes = document.getElementById('marketBakes');
-    bakes.classList.toggle('show');
-    this.textContent = bakes.classList.contains('show') ? 'Hide Market Bakes' : 'See This Week\'s Bakes';
-  });
+  const marketToggleEl = document.getElementById('marketToggle');
+  if (marketToggleEl) {
+    marketToggleEl.addEventListener('click', function() {
+      const bakes = document.getElementById('marketBakes');
+      if (bakes) {
+        bakes.classList.toggle('show');
+        this.textContent = bakes.classList.contains('show') ? 'Hide Market Bakes' : 'See This Week\'s Bakes';
+      }
+    });
+  }
 
   // Special request form
-  document.getElementById('specialForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const name = document.getElementById('srName').value;
-    const email = document.getElementById('srEmail').value;
-    const message = document.getElementById('srMessage').value;
-    
-    showToast('✅ Request sent! We\'ll get back to you soon.');
-    this.reset();
-  });
+  const specialFormEl = document.getElementById('specialForm');
+  if (specialFormEl) {
+    specialFormEl.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const nameEl = document.getElementById('srName');
+      const emailEl = document.getElementById('srEmail');
+      const messageEl = document.getElementById('srMessage');
+      
+      if (nameEl && emailEl && messageEl) {
+       
+        const name = nameEl.value;
+        const email = emailEl.value;
+        const message = messageEl.value;
+        
+        // Store special request locally
+        const requests = JSON.parse(localStorage.getItem('specialRequests') || '[]');
+        requests.push({
+          id: Date.now(),
+          name,
+          email,
+          message,
+          date: new Date().toISOString(),
+          status: 'pending'
+        });
+        localStorage.setItem('specialRequests', JSON.stringify(requests));
+        
+        showToast('✅ Request sent! We\'ll get back to you soon.');
+        this.reset();
+      }
+    });
+  }
+
+  // Place Order Button - THE MAIN FIX
+  const placeOrderBtn = document.getElementById('placeOrderBtn');
+  if (placeOrderBtn) {
+    placeOrderBtn.addEventListener('click', handlePlaceOrder);
+  }
 }
 
 function addToCart(name, price) {
@@ -2104,16 +2174,22 @@ function addToCart(name, price) {
 
 function updateCart() {
   const contents = document.getElementById('cartContents');
+  const itemCountEl = document.getElementById('itemCount');
+  const cartTotalEl = document.getElementById('cartTotal');
+  const orderEl = document.getElementById('order');
+  
+  if (!contents || !itemCountEl || !cartTotalEl || !orderEl) return;
+  
   const total = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
   
-  document.getElementById('itemCount').textContent = `${cart.length} items`;
-  document.getElementById('cartTotal').textContent = `£${total.toFixed(2)}`;
+  itemCountEl.textContent = `${cart.length} items`;
+  cartTotalEl.textContent = `£${total.toFixed(2)}`;
   
   if (cart.length === 0) {
     contents.innerHTML = '<p style="text-align: center; color: #999; padding: 30px;">Your cart is empty</p>';
-    document.getElementById('order').style.display = 'none';
+    orderEl.style.display = 'none';
   } else {
-    document.getElementById('order').style.display = 'block';
+    orderEl.style.display = 'block';
     contents.innerHTML = `<ul>${cart.map((item, idx) => `
       <li>
         <div>
@@ -2132,13 +2208,15 @@ function updateCart() {
 }
 
 function changeQuantity(index, delta) {
-  cart[index].quantity += delta;
-  if (cart[index].quantity <= 0) {
-    cart.splice(index, 1);
+  if (cart[index]) {
+    cart[index].quantity += delta;
+    if (cart[index].quantity <= 0) {
+      cart.splice(index, 1);
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCart();
+    updateStickyCart();
   }
-  localStorage.setItem('cart', JSON.stringify(cart));
-  updateCart();
-  updateStickyCart();
 }
 
 function removeFromCart(index) {
@@ -2150,11 +2228,16 @@ function removeFromCart(index) {
 
 function updateStickyCart() {
   const stickyCart = document.getElementById('stickyCart');
+  const countEl = document.getElementById('stickyCartCount');
+  const totalEl = document.getElementById('stickyCartTotal');
+  
+  if (!stickyCart || !countEl || !totalEl) return;
+  
   const total = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
   const itemCount = cart.reduce((sum, i) => sum + i.quantity, 0);
   
-  document.getElementById('stickyCartCount').textContent = `${itemCount} item${itemCount !== 1 ? 's' : ''}`;
-  document.getElementById('stickyCartTotal').textContent = `£${total.toFixed(2)}`;
+  countEl.textContent = `${itemCount} item${itemCount !== 1 ? 's' : ''}`;
+  totalEl.textContent = `£${total.toFixed(2)}`;
   
   if (itemCount > 0) {
     stickyCart.classList.add('show');
@@ -2163,24 +2246,37 @@ function updateStickyCart() {
   }
 }
 
-// Reliable checkout function
-function handleCheckout(total, reference) {
-    const checkoutUrl = `${BACKEND_BASE}/api/checkout?total=${total}&reference=${reference}`;
-    console.log('🔄 Redirecting to checkout:', checkoutUrl);
-    window.location.href = checkoutUrl;
-}
+// ✅ MAIN CHECKOUT FUNCTION - COMPLETELY REWRITTEN
+async function handlePlaceOrder() {
+  console.log('🚀 Starting order process...');
+  
+  // Get form elements
+  const nameEl = document.getElementById('customerName');
+  const emailEl = document.getElementById('customerEmail');
+  const mobileEl = document.getElementById('customerMobile');
+  const addressEl = document.getElementById('customerAddress');
+  const notesEl = document.getElementById('customerNotes');
+  const deliveryEl = document.getElementById('deliveryMethod');
+  const dateEl = document.getElementById('deliveryDate');
+  const privacyEl = document.getElementById('privacyCheck');
+  const termsEl = document.getElementById('termsCheck');
+  const orderBtn = document.getElementById('placeOrderBtn');
 
-// SIMPLIFIED PLACE ORDER HANDLER - No CORS issues
-document.getElementById('placeOrderBtn').addEventListener('click', async () => {
-  const name = document.getElementById('customerName').value.trim();
-  const email = document.getElementById('customerEmail').value.trim();
-  const mobile = document.getElementById('customerMobile').value.trim();
-  const address = document.getElementById('customerAddress').value.trim();
-  const notes = document.getElementById('customerNotes').value.trim();
-  const delivery = document.getElementById('deliveryMethod').value;
-  const date = document.getElementById('deliveryDate').value;
-  const privacy = document.getElementById('privacyCheck').checked;
-  const terms = document.getElementById('termsCheck').checked;
+  if (!nameEl || !emailEl || !mobileEl || !addressEl || !deliveryEl || !dateEl || !privacyEl || !termsEl || !orderBtn) {
+    showToast('⚠️ Form elements not found. Please refresh the page.');
+    return;
+  }
+
+  // Get values
+  const name = nameEl.value.trim();
+  const email = emailEl.value.trim();
+  const mobile = mobileEl.value.trim();
+  const address = addressEl.value.trim();
+  const delivery = deliveryEl.value;
+  const date = dateEl.value;
+  const notes = notesEl.value.trim();
+  const privacy = privacyEl.checked;
+  const terms = termsEl.checked;
 
   // Validation
   if (!name || !email || !mobile || !address || !delivery || !date) {
@@ -2203,24 +2299,32 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
     return;
   }
 
-  const orderBtn = document.getElementById('placeOrderBtn');
+  // Disable button and show processing
   orderBtn.disabled = true;
   orderBtn.textContent = 'Processing Order...';
 
-  // Calculate total and create order number
-  const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-  const orderNumber = 'ORDER-' + Date.now();
-  
-  // Get delivery label
-  const deliveryLabel = delivery === 'collect' ? 'Collect' 
-    : delivery === 'collect_market' ? 'Market Collection'
-    : delivery === 'delivery' ? 'Home Delivery' : delivery;
+  try {
+    // Calculate total and create order number
+    const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+    const orderNumber = 'ORDER-' + Date.now();
+    
+    // Get delivery label
+    const deliveryLabel = delivery === 'collect' ? 'Collect' 
+      : delivery === 'collect_market' ? 'Market Collection'
+      : delivery === 'delivery' ? 'Home Delivery' : delivery;
 
-  // Create cart snapshot BEFORE clearing
-  const cartSnapshot = [...cart];
+    // Create cart snapshot BEFORE clearing
+    const cartSnapshot = [...cart];
 
-  // Discord message
-  const discordMessage = `🧁 **NEW ORDER**
+    console.log('📦 Order details:', {
+      orderNumber,
+      customer: name,
+      total: total.toFixed(2),
+      items: cartSnapshot.length
+    });
+
+    // Discord message
+    const discordMessage = `🧁 **NEW ORDER**
 
 **Order Number:** ${orderNumber}
 **Customer:** ${name}
@@ -2236,36 +2340,32 @@ ${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantit
 **TOTAL: £${total.toFixed(2)}**
 **Notes:** ${notes || 'None'}`;
 
-  try {
+    // Step 1: Send to Discord (non-blocking)
     console.log('🚀 Step 1: Sending to Discord...');
-    
-    // ✅ Send to Discord (non-blocking, with timeout)
     try {
-      const discordController = new AbortController();
-      const discordTimeout = setTimeout(() => discordController.abort(), 5000);
-      
-      const discordResponse = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: discordMessage }),
-        signal: discordController.signal
-      });
-      
-      clearTimeout(discordTimeout);
+      const discordResponse = await Promise.race([
+        fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: discordMessage })
+        }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Discord timeout')), 5000))
+      ]);
       
       if (discordResponse.ok) {
-        console.log('✅ Discord notification sent successfully');
+        console.log('✅ Discord notification sent');
         showToast('✅ Order sent to Discord!');
       } else {
-        console.warn('⚠️ Discord notification failed:', discordResponse.status);
+        console.warn('⚠️ Discord failed:', discordResponse.status);
       }
     } catch (discordError) {
-      console.warn('⚠️ Discord error (continuing anyway):', discordError.message);
+      console.warn('⚠️ Discord error (continuing):', discordError.message);
     }
 
-    // ✅ Save order locally
+    // Step 2: Save order locally
+    console.log('💾 Step 2: Saving order locally...');
     const orders = JSON.parse(localStorage.getItem('shopOrders') || '[]');
-    orders.push({
+    const orderData = {
       id: orderNumber,
       customerName: name,
       customerEmail: email,
@@ -2278,11 +2378,12 @@ ${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantit
       orderDate: new Date().toISOString(),
       address,
       notes: notes || ''
-    });
+    };
+    orders.push(orderData);
     localStorage.setItem('shopOrders', JSON.stringify(orders));
     console.log('✅ Order saved locally');
 
-    // ✅ Save customer data
+    // Step 3: Save customer data
     const customers = JSON.parse(localStorage.getItem('webCustomers') || '[]');
     const existingCustomer = customers.find(c => c.email.toLowerCase() === email.toLowerCase());
     
@@ -2296,82 +2397,73 @@ ${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantit
       });
       localStorage.setItem('webCustomers', JSON.stringify(customers));
       console.log('✅ New customer added');
-      
-      // ✅ Store welcome email for fallback processing
-      sendFallbackEmailNotification('welcome', { name, email });
     } else {
-      // Update existing customer
       existingCustomer.totalOrders = (existingCustomer.totalOrders || 0) + 1;
       existingCustomer.totalSpent = (existingCustomer.totalSpent || 0) + total;
       localStorage.setItem('webCustomers', JSON.stringify(customers));
-      console.log('✅ Customer data updated');
+      console.log('✅ Customer updated');
     }
 
-    // ✅ Store order confirmation email for fallback processing
-    const orderData = {
-      orderNumber,
-      items: cartSnapshot.map(item => ({
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price.toFixed(2)
-      })),
-      total: `£${total.toFixed(2)}`,
-      deliveryMethod: deliveryLabel,
-      deliveryInfo: delivery === 'collect_market' ? 
-        `Saturday Market Collection on ${new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}` :
-        `${address} on ${new Date(date).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`,
-      date: new Date(date).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
-      address: delivery !== 'collect_market' ? address : null,
-      notes: notes && notes !== 'None' ? notes : null
-    };
-    
-    sendFallbackEmailNotification('orderConfirmation', { name, email, orderData });
-
-    // ✅ Track analytics
+    // Step 4: Track analytics
     if (typeof trackPurchase === 'function') {
       trackPurchase(total, cartSnapshot);
     }
 
-    // ✅ Clear cart BEFORE redirect
+    // Step 5: Clear cart and redirect
+    console.log('🛒 Step 3: Clearing cart...');
     cart = [];
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCart();
     updateStickyCart();
 
-    // ✅ Redirect to payment using working backend
-    console.log('🚀 Step 2: Redirecting to payment...');
+    // Step 6: Redirect to payment
+    console.log('💳 Step 4: Redirecting to payment...');
     orderBtn.textContent = 'Redirecting to Payment...';
     
-    // Use the working checkout URL with delay for user feedback
+    const checkoutUrl = `${BACKEND_BASE}/api/checkout?total=${total.toFixed(2)}&reference=${orderNumber}`;
+    console.log('🔗 Payment URL:', checkoutUrl);
+    
+    // Add small delay for user feedback
     setTimeout(() => {
-      handleCheckout(total.toFixed(2), orderNumber);
+      console.log('🔄 Redirecting now...');
+      window.location.href = checkoutUrl;
     }, 1500);
 
   } catch (error) {
     console.error('❌ Order processing failed:', error);
     
-    // Restore cart on failure
-    cart = cartSnapshot;
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCart();
-    updateStickyCart();
+    // Restore cart if it was cleared
+    if (cart.length === 0 && typeof cartSnapshot !== 'undefined') {
+      cart = cartSnapshot;
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCart();
+      updateStickyCart();
+    }
     
-    showToast('⚠️ Order failed. Please try again or contact us at 07842817789');
+    showToast('⚠️ Order failed. Please try again or call 07842817789');
     orderBtn.disabled = false;
     orderBtn.textContent = 'Place Order & Pay';
   }
-});
+}
 
 // Calendar functions
 function openCalendar() {
-  document.getElementById('calendarOverlay').style.display = 'block';
-  document.getElementById('calendarPopup').style.display = 'block';
-  renderCalendar();
+  const overlay = document.getElementById('calendarOverlay');
+  const popup = document.getElementById('calendarPopup');
+  if (overlay && popup) {
+    overlay.style.display = 'block';
+    popup.style.display = 'block';
+    renderCalendar();
+  }
 }
 
 function closeCalendar() {
-  document.getElementById('calendarOverlay').style.display = 'none';
-  document.getElementById('calendarPopup').style.display = 'none';
+  const overlay = document.getElementById('calendarOverlay');
+  const popup = document.getElementById('calendarPopup');
+  if (overlay && popup) {
+    overlay.style.display = 'none';
+    popup.style.display = 'none';
+  }
 }
 
 function changeMonth(delta) {
@@ -2387,8 +2479,13 @@ function changeMonth(delta) {
 }
 
 function renderCalendar() {
+  const calendarEl = document.getElementById('calendar');
+  const monthYearEl = document.getElementById('monthYear');
+  
+  if (!calendarEl || !monthYearEl) return;
+  
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  document.getElementById('monthYear').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+  monthYearEl.textContent = `${monthNames[currentMonth]} ${currentYear}`;
   
   const firstDay = new Date(currentYear, currentMonth, 1).getDay();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -2424,21 +2521,26 @@ function renderCalendar() {
   }
   
   html += '</tr></tbody></table>';
-  document.getElementById('calendar').innerHTML = html;
+  calendarEl.innerHTML = html;
 }
 
 function selectDate(dateStr) {
-  document.getElementById('deliveryDate').value = dateStr;
-  closeCalendar();
+  const dateEl = document.getElementById('deliveryDate');
+  if (dateEl) {
+    dateEl.value = dateStr;
+    closeCalendar();
+  }
 }
 
 function showToast(message) {
   const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.classList.add('show');
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, 3000);
+  if (toast) {
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
 }
 
 // Seasonal theme
@@ -2456,14 +2558,18 @@ function applySeason() {
 
 // Countdown timer
 function startCountdown() {
-  const endDate = new Date('2024-11-01T00:00:00');
+  const banner = document.getElementById('countdownBanner');
+  if (!banner) return;
   
-  setInterval(() => {
+  const endDate = new Date('2024-12-01T00:00:00'); // Updated end date
+  
+  const timer = setInterval(() => {
     const now = new Date();
     const diff = endDate - now;
     
     if (diff <= 0) {
-      document.getElementById('countdownBanner').style.display = 'none';
+      banner.style.display = 'none';
+      clearInterval(timer);
       return;
     }
     
@@ -2471,21 +2577,25 @@ function startCountdown() {
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
     
-    document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-    document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-    document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+    const hoursEl = document.getElementById('hours');
+    const minutesEl = document.getElementById('minutes');
+    const secondsEl = document.getElementById('seconds');
+    
+    if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+    if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
+    if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
   }, 1000);
 }
 
 function loadRecentlyViewed() {
-  // Placeholder for recently viewed items
+  // Placeholder for recently viewed items functionality
+  console.log('📖 Recently viewed items loaded');
 }
 
 // Make functions globally accessible
 window.changeQuantity = changeQuantity;
 window.removeFromCart = removeFromCart;
 window.selectDate = selectDate;
-window.handleCheckout = handleCheckout;
 </script>
 
 <!-- ✅ ENHANCED Fallback Email System -->
