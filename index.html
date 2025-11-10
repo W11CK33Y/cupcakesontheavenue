@@ -1960,12 +1960,11 @@ function initializeEventListeners() {
       const messageEl = document.getElementById('srMessage');
       
       if (nameEl && emailEl && messageEl) {
-       
         const name = nameEl.value;
         const email = emailEl.value;
         const message = messageEl.value;
         
-        showToast('✅ Request sent! We\'ll get back to you soon.');
+        showToast('✅ Request received! We\'ll contact you manually to discuss.');
         this.reset();
       }
     });
@@ -2152,7 +2151,7 @@ async function handlePlaceOrder() {
         reference: orderReference,        // Required
         total: total.toFixed(2),         // Required
         name: name,                      // Customer name
-        email: email,                    // Customer email
+        email: email,                    // Email for manual contact (NO AUTO-EMAILS)
         phone: mobile,                   // Phone number (or use 'mobile')
         delivery: deliveryMethod,        // 'Delivery' or 'Collection'
         date: date,                      // Delivery/collection date
