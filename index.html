@@ -2246,7 +2246,7 @@ function updateStickyCart() {
   }
 }
 
-// ✅ MAIN CHECKOUT FUNCTION - COMPLETELY REWRITTEN
+// ✅ MAIN CHECKOUT FUNCTION - Email sending removed
 async function handlePlaceOrder() {
   console.log('🚀 Starting order process...');
   
@@ -2380,43 +2380,7 @@ ${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantit
     localStorage.setItem('shopOrders', JSON.stringify(orders));
     console.log('✅ Order saved locally');
 
-    // Step 3: Send customer emails
-    console.log('📧 Step 3: Sending customer emails...');
-    const emailData = {
-      type: 'order_confirmation',
-      customerName: name,
-      customerEmail: email,
-      orderNumber: orderNumber,
-      items: cartSnapshot,
-      total: total.toFixed(2),
-      deliveryMethod: deliveryLabel,
-      deliveryDate: date,
-      address: address,
-      notes: notes
-    };
-
-    // ✅ NEW: Send email to backend
-    try {
-      const emailResponse = await fetch(`${BACKEND_BASE}/api/send-customer-email`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(emailData)
-      });
-
-      if (emailResponse.ok) {
-        console.log('✅ Customer email sent successfully');
-        showToast('📧 Confirmation email sent!');
-      } else {
-        console.warn('⚠️ Email sending failed:', emailResponse.status);
-        // Use fallback method
-        sendFallbackEmailNotification('orderConfirmation', { name, email, orderData: emailData });
-      }
-    } catch (emailError) {
-      console.warn('⚠️ Email error, using fallback:', emailError.message);
-      sendFallbackEmailNotification('orderConfirmation', { name, email, orderData: emailData });
-    }
-
-    // Step 4: Save customer data
+    // Step 3: Save customer data
     const customers = JSON.parse(localStorage.getItem('webCustomers') || '[]');
     const existingCustomer = customers.find(c => c.email.toLowerCase() === email.toLowerCase());
     
@@ -2430,27 +2394,6 @@ ${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantit
       });
       localStorage.setItem('webCustomers', JSON.stringify(customers));
       console.log('✅ New customer added');
-
-      // Send welcome email
-      try {
-        const welcomeEmailData = {
-          type: 'welcome',
-          customerName: name,
-          customerEmail: email
-        };
-
-        const welcomeResponse = await fetch(`${BACKEND_BASE}/api/send-customer-email`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(welcomeEmailData)
-        });
-
-        if (welcomeResponse.ok) {
-          console.log('✅ Welcome email sent');
-        }
-      } catch (welcomeError) {
-        console.warn('⚠️ Welcome email failed:', welcomeError.message);
-      }
     } else {
       existingCustomer.totalOrders = (existingCustomer.totalOrders || 0) + 1;
       existingCustomer.totalSpent = (existingCustomer.totalSpent || 0) + total;
@@ -2458,23 +2401,23 @@ ${cartSnapshot.map(i => `• ${i.name} x${i.quantity} - £${(i.price * i.quantit
       console.log('✅ Customer updated');
     }
 
-    // Step 5: Track analytics
+    // Step 4: Track analytics
     if (typeof trackPurchase === 'function') {
       trackPurchase(total, cartSnapshot);
     }
 
-    // Step 6: Clear cart and redirect
-    console.log('🛒 Step 5: Clearing cart...');
+    // Step 5: Clear cart and redirect
+    console.log('🛒 Step 4: Clearing cart...');
     cart = [];
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCart();
     updateStickyCart();
 
-    // Step 7: Redirect to payment
-    console.log('💳 Step 6: Redirecting to payment...');
+    // Step 6: Redirect to payment
+    console.log('💳 Step 5: Redirecting to payment...');
     orderBtn.textContent = 'Redirecting to Payment...';
     
-    // ✅ UPDATED: Use correct checkout URL
+    // ✅ USING CORRECT BACKEND URL
     const checkoutUrl = `${BACKEND_BASE}/api/checkout?total=${total.toFixed(2)}&reference=${orderNumber}`;
     console.log('🔗 Payment URL:', checkoutUrl);
     
