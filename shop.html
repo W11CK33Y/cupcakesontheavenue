@@ -825,18 +825,22 @@ footer img {
         <div style="display: flex; flex-direction: column; gap: 10px;">
           <label style="display: flex; align-items: center; cursor: pointer; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; background: #f8f9fa;">
             <input type="radio" name="deliveryMethod" value="delivery" required style="margin-right: 10px;" checked>
-            <span><strong>🚚 Home Delivery</strong> - Available Monday-Friday (£5 delivery fee)</span>
+            <span><strong>🚚 Home Delivery</strong> - Any day of the week <span style="color: #e74c3c; font-weight: bold;">(£5.00 delivery charge)</span></span>
           </label>
           <label style="display: flex; align-items: center; cursor: pointer; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; background: #f8f9fa;">
             <input type="radio" name="deliveryMethod" value="market" required style="margin-right: 10px;">
-            <span><strong>🏪 Collect from Highworth Market</strong> - Saturdays 8 AM - 2 PM (No fee)</span>
+            <span><strong>🏪 Collect from Highworth Market</strong> - Saturdays only 8 AM - 2 PM <span style="color: #27ae60; font-weight: bold;">(FREE)</span></span>
+          </label>
+          <label style="display: flex; align-items: center; cursor: pointer; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; background: #f8f9fa;">
+            <input type="radio" name="deliveryMethod" value="collect" required style="margin-right: 10px;">
+            <span><strong>🏠 Collect from Me</strong> - Any day by arrangement <span style="color: #27ae60; font-weight: bold;">(FREE)</span></span>
           </label>
         </div>
       </div>
       
       <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #555;">Preferred Date *</label>
       <input type="date" id="deliveryDate" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
-      <p id="dateInfo" style="color: #666; font-size: 0.9rem; margin-top: -5px; margin-bottom: 15px;">Minimum 7 days notice required. Delivery available Monday-Friday.</p>
+      <p id="dateInfo" style="color: #666; font-size: 0.9rem; margin-top: -5px; margin-bottom: 15px;">Minimum 7 days notice required. Home delivery available any day of the week (£5 delivery charge applies).</p>
       
       <textarea id="customerNotes" rows="3" placeholder="Special Requests (optional)" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;"></textarea>
       
@@ -1008,12 +1012,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('checkoutDeliveryFee').textContent = `£${deliveryFee.toFixed(2)}`;
     document.getElementById('checkoutTotal').textContent = `£${total.toFixed(2)}`;
     
-    // Show/hide delivery fee row
+    // Always show delivery fee row, but with different labels
     const deliveryFeeRow = document.getElementById('deliveryFeeRow');
+    const deliveryLabel = deliveryFeeRow.querySelector('span');
+    
     if (deliveryMethod === 'delivery') {
       deliveryFeeRow.style.display = 'flex';
-    } else {
-      deliveryFeeRow.style.display = 'none';
+      if (deliveryLabel) deliveryLabel.textContent = 'Delivery Charge:';
+      deliveryFeeRow.style.color = '#e74c3c'; // Red for charge
+    } else if (deliveryMethod === 'market') {
+      deliveryFeeRow.style.display = 'flex';
+      if (deliveryLabel) deliveryLabel.textContent = 'Market Collection:';
+      deliveryFeeRow.style.color = '#27ae60'; // Green for free
+    } else if (deliveryMethod === 'collect') {
+      deliveryFeeRow.style.display = 'flex';
+      if (deliveryLabel) deliveryLabel.textContent = 'Personal Collection:';
+      deliveryFeeRow.style.color = '#27ae60'; // Green for free
     }
   }
 
@@ -1031,11 +1045,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.target.value === 'delivery') {
         addressField.required = true;
         addressField.placeholder = 'Delivery Address *';
-        dateInfo.textContent = 'Minimum 7 days notice required. Delivery available Monday-Friday.';
-      } else {
+        dateInfo.textContent = 'Minimum 7 days notice required. Home delivery available any day of the week (£5 delivery charge applies).';
+      } else if (e.target.value === 'market') {
         addressField.required = false;
-        addressField.placeholder = 'Delivery Address (not needed for market collection)';
-        dateInfo.textContent = 'Minimum 7 days notice required. Market collection available Saturdays 8 AM - 2 PM.';
+        addressField.placeholder = 'Address (not needed for market collection)';
+        dateInfo.textContent = 'Minimum 7 days notice required. Market collection available Saturdays only 8 AM - 2 PM (FREE).';
+      } else if (e.target.value === 'collect') {
+        addressField.required = false;
+        addressField.placeholder = 'Address (not needed for personal collection)';
+        dateInfo.textContent = 'Minimum 7 days notice required. Personal collection available any day by arrangement (FREE).';
       }
       
       // Update checkout total when delivery method changes
@@ -1066,30 +1084,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const deliveryMethod = document.querySelector('input[name="deliveryMethod"]:checked').value;
     const dayOfWeek = selectedDate.getDay(); // 0=Sunday, 1=Monday, 2=Tuesday, etc.
     
-    if (deliveryMethod === 'delivery') {
-      // For delivery: Monday-Friday only (1-5)
-      if (dayOfWeek === 0 || dayOfWeek === 6) {
-        showToast('⚠️ Delivery is only available Monday-Friday. Please choose another date or select market collection for Saturday.');
-        e.target.value = '';
-        return;
-      }
-    } else {
+    if (deliveryMethod === 'market') {
       // For market collection: Saturday only (6)
       if (dayOfWeek !== 6) {
-        showToast('⚠️ Market collection is only available on Saturdays. Please choose a Saturday or select home delivery for other days.');
+        showToast('⚠️ Market collection is only available on Saturdays. Please choose a Saturday.');
         e.target.value = '';
         return;
       }
     }
-    
-    // Check against blocked dates
-    const blockedDates = JSON.parse(localStorage.getItem('adminBlockedDates') || '[]');
-    const dateStr = selectedDate.toISOString().split('T')[0];
-    if (blockedDates.includes(dateStr)) {
-      showToast('⚠️ Sorry, this date is not available. Please choose another date');
-      e.target.value = '';
-      return;
-    }
+    // For delivery and personal collection: any day is allowed (no day restrictions)
   });
 
   // ✅ SIMPLIFIED CHECKOUT FUNCTION - Uses backend API for Discord & Stripe
@@ -1150,9 +1153,20 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       // Create order reference and data
       const orderReference = 'SHOP-' + Date.now();
-      const deliveryMethodLabel = deliveryMethod === 'delivery' ? 'Delivery' : 'Collection';
+      let deliveryMethodLabel, finalAddress;
+      
+      if (deliveryMethod === 'delivery') {
+        deliveryMethodLabel = 'Home Delivery';
+        finalAddress = address;
+      } else if (deliveryMethod === 'market') {
+        deliveryMethodLabel = 'Market Collection';
+        finalAddress = 'Highworth Market - Saturday Collection';
+      } else if (deliveryMethod === 'collect') {
+        deliveryMethodLabel = 'Personal Collection';
+        finalAddress = 'Personal Collection - By Arrangement';
+      }
+      
       const itemsString = cart.map(item => `${item.name} x${item.quantity}`).join(', ');
-      const finalAddress = deliveryMethod === 'delivery' ? address : 'Market Collection';
 
       console.log('📦 Sending order to backend:', {
         reference: orderReference,
