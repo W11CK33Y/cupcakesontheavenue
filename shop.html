@@ -1265,5 +1265,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<!-- Discord Live Chat Widget -->
+<link rel="stylesheet" href="discord-chat.css">
+<script src="discord-chat.js"></script>
+<script>
+  // Initialize Discord chat widget
+  if (!window.discordChat) {
+    window.discordChat = new DiscordChatWidget({
+      webhookUrl: 'YOUR_DISCORD_WEBHOOK_URL_HERE', // Replace with your Discord webhook URL
+      businessName: 'Cupcakes on the Avenue'
+    });
+  }
+</script>
+
 </body>
 </html>

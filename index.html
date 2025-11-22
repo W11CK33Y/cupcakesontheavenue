@@ -1613,22 +1613,22 @@ footer img {
   <p>Fresh cupcakes, biscuits, and celebration cakes baked with love!</p>
 </div>
 
-<!-- Halloween Special Countdown -->
+<!-- Saturday Market Special -->
 <div class="countdown-banner" id="countdownBanner">
-  <h3>🎃 Halloween Special - 20% Off All Orders!</h3>
-  <p>Limited time offer ends in:</p>
-  <div class="countdown-timer" id="countdownTimer">
-    <div class="countdown-unit">
-      <div class="countdown-number" id="hours">00</div>
-      <div class="countdown-label">Hours</div>
+  <h3>� Saturday Market Special - Buy 2 Get 1 Free!</h3>
+  <p>Available every Saturday at Highworth Market • 8am - 2pm</p>
+  <div class="market-special-details" style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 15px; flex-wrap: wrap;">
+    <div style="background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 15px; backdrop-filter: blur(5px);">
+      <strong>🧁 Cupcakes</strong><br>
+      <small>Buy any 2, get 1 FREE</small>
     </div>
-    <div class="countdown-unit">
-      <div class="countdown-number" id="minutes">00</div>
-      <div class="countdown-label">Minutes</div>
+    <div style="background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 15px; backdrop-filter: blur(5px);">
+      <strong>🍪 Biscuits</strong><br>
+      <small>Mix & match varieties</small>
     </div>
-    <div class="countdown-unit">
-      <div class="countdown-number" id="seconds">00</div>
-      <div class="countdown-label">Seconds</div>
+    <div style="background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 15px; backdrop-filter: blur(5px);">
+      <strong>📍 Market Only</strong><br>
+      <small>Saturday exclusive deal</small>
     </div>
   </div>
 </div>
@@ -1853,7 +1853,6 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeCalendar();
   initializeEventListeners();
   applySeason();
-  startCountdown();
   updateStickyCart();
   loadRecentlyViewed();
 });
@@ -2320,36 +2319,7 @@ function applySeason() {
   document.body.className = season;
 }
 
-// Countdown timer
-function startCountdown() {
-  const banner = document.getElementById('countdownBanner');
-  if (!banner) return;
-  
-  const endDate = new Date('2024-12-01T00:00:00'); // Updated end date
-  
-  const timer = setInterval(() => {
-    const now = new Date();
-    const diff = endDate - now;
-    
-    if (diff <= 0) {
-      banner.style.display = 'none';
-      clearInterval(timer);
-      return;
-    }
-    
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-    
-    const hoursEl = document.getElementById('hours');
-    const minutesEl = document.getElementById('minutes');
-    const secondsEl = document.getElementById('seconds');
-    
-    if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
-    if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
-    if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
-  }, 1000);
-}
+// Saturday Market Special - No timer needed since it's permanent
 
 function loadRecentlyViewed() {
   // Placeholder for recently viewed items functionality
@@ -2361,4 +2331,20 @@ window.changeQuantity = changeQuantity;
 window.removeFromCart = removeFromCart;
 window.selectDate = selectDate;
 </script>
+
+<!-- Discord Live Chat Widget -->
+<link rel="stylesheet" href="discord-chat.css">
+<script src="discord-chat.js"></script>
+<script>
+  // Initialize Discord chat widget
+  document.addEventListener('DOMContentLoaded', function() {
+    window.discordChat = new DiscordChatWidget({
+      webhookUrl: 'https://discord.com/api/webhooks/1441917103153090671/KNupEAUqkfz0orXHbo31YH7_0ZmV8cIprHZr8rNFn1nDNfA-UUijrfUSPnzV7IYcKErB', // Replace with your Discord webhook URL
+      businessName: 'Cupcakes on the Avenue'
+    });
+  });
+</script>
+
+</body>
+</html>
 
