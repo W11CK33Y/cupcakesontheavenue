@@ -1848,16 +1848,13 @@ let currentYear = new Date().getFullYear();
 let blockedDates = JSON.parse(localStorage.getItem('blockedDates') || '[]');
 
 // Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-  updateCart();
-  initializeCalendar();
-  initializeEventListeners();
-  applySeason();
-  updateStickyCart();
-  loadRecentlyViewed();
-});
-
-function initializeEventListeners() {
+  document.addEventListener('DOMContentLoaded', function() {
+    updateCart();
+    initializeEventListeners();
+    applySeason();
+    updateStickyCart();
+    loadRecentlyViewed();
+  });function initializeEventListeners() {
   // Add to cart buttons
   document.querySelectorAll('.add-btn').forEach(btn => {
     btn.addEventListener('click', function() {
