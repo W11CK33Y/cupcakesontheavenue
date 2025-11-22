@@ -1569,11 +1569,11 @@ footer img {
 
   <div class="customer-form">
     <h3 style="color: #667eea; margin: 25px 0 15px;">Customer Details</h3>
-    <input type="text" id="customerName" placeholder="Full Name *" required>
-    <input type="email" id="customerEmail" placeholder="Email Address *" required>
-    <input type="tel" id="customerMobile" placeholder="Mobile Number *" required pattern="[0-9]{11}" title="Please enter an 11-digit UK mobile number">
-    <input type="text" id="customerAddress" placeholder="Delivery Address *" required>
-    <textarea id="customerNotes" rows="3" placeholder="Special Requests / Toppings (optional)"></textarea>
+    <input type="text" id="customerName" name="customerName" placeholder="Full Name *" autocomplete="name" required>
+    <input type="email" id="customerEmail" name="customerEmail" placeholder="Email Address *" autocomplete="email" required>
+    <input type="tel" id="customerMobile" name="customerMobile" placeholder="Mobile Number *" autocomplete="tel" required pattern="[0-9]{11}" title="Please enter an 11-digit UK mobile number">
+    <input type="text" id="customerAddress" name="customerAddress" placeholder="Delivery Address *" autocomplete="street-address" required>
+    <textarea id="customerNotes" name="customerNotes" rows="3" placeholder="Special Requests / Toppings (optional)"></textarea>
 
     <label for="deliveryMethod">Delivery method *</label>
     <select id="deliveryMethod" name="deliveryMethod" required>
@@ -1584,7 +1584,7 @@ footer img {
     </select>
 
     <label for="deliveryDate">Delivery/Collection date *</label>
-    <input type="date" id="deliveryDate" required>
+    <input type="date" id="deliveryDate" name="deliveryDate" required>
 
     <div class="delivery-info">
       <h4>📅 Calendar</h4>
@@ -1592,12 +1592,12 @@ footer img {
     </div>
 
     <div style="display: flex; align-items: center; margin: 20px 0;">
-      <input type="checkbox" id="privacyCheck" required>
+      <input type="checkbox" id="privacyCheck" name="privacyCheck" required>
       <label for="privacyCheck" style="margin-left: 10px; font-size: 0.9rem;">I agree to the <a href="privacy.html" target="_blank" style="color: #667eea;">Privacy Policy</a> *</label>
     </div>
 
     <div style="display: flex; align-items: center; margin: 20px 0;">
-      <input type="checkbox" id="termsCheck" required>
+      <input type="checkbox" id="termsCheck" name="termsCheck" required>
       <label for="termsCheck" style="margin-left: 10px; font-size: 0.9rem;">I agree to the <a href="terms.html" target="_blank" style="color: #667eea;">Terms & Conditions</a> *</label>
     </div>
 
@@ -1818,9 +1818,9 @@ footer img {
     Have a custom order or special requirement? Let us know!
   </p>
   <form id="specialForm">
-    <input type="text" id="srName" placeholder="Your Name *" required>
-    <input type="email" id="srEmail" placeholder="Your Email *" required>
-    <textarea id="srMessage" rows="5" placeholder="Describe your special request... *" required></textarea>
+    <input type="text" id="srName" name="srName" placeholder="Your Name *" autocomplete="name" required>
+    <input type="email" id="srEmail" name="srEmail" placeholder="Your Email *" autocomplete="email" required>
+    <textarea id="srMessage" name="srMessage" rows="5" placeholder="Describe your special request... *" required></textarea>
     <button type="submit">Send Request</button>
   </form>
 </section>
@@ -1854,7 +1854,9 @@ let blockedDates = JSON.parse(localStorage.getItem('blockedDates') || '[]');
     applySeason();
     updateStickyCart();
     loadRecentlyViewed();
-  });function initializeEventListeners() {
+  });
+
+  function initializeEventListeners() {
   // Add to cart buttons
   document.querySelectorAll('.add-btn').forEach(btn => {
     btn.addEventListener('click', function() {

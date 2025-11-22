@@ -813,10 +813,10 @@ footer img {
 
     <form id="checkoutForm">
       <h3 style="color: #667eea; margin-bottom: 15px;">Customer Details</h3>
-      <input type="text" id="customerName" placeholder="Full Name *" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
-      <input type="email" id="customerEmail" placeholder="Email Address *" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
-      <input type="tel" id="customerMobile" placeholder="Mobile Number *" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
-      <input type="text" id="customerAddress" placeholder="Delivery Address (if delivery selected)" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <input type="text" id="customerName" name="customerName" placeholder="Full Name *" autocomplete="name" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <input type="email" id="customerEmail" name="customerEmail" placeholder="Email Address *" autocomplete="email" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <input type="tel" id="customerMobile" name="customerMobile" placeholder="Mobile Number *" autocomplete="tel" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <input type="text" id="customerAddress" name="customerAddress" placeholder="Delivery Address (if delivery selected)" autocomplete="street-address" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
       
       <h3 style="color: #667eea; margin: 20px 0 15px 0;">Delivery & Collection</h3>
       
@@ -839,14 +839,14 @@ footer img {
       </div>
       
       <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #555;">Preferred Date *</label>
-      <input type="date" id="deliveryDate" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <input type="date" id="deliveryDate" name="deliveryDate" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
       <p id="dateInfo" style="color: #666; font-size: 0.9rem; margin-top: -5px; margin-bottom: 15px;">Minimum 7 days notice required. Home delivery available any day of the week (£5 delivery charge applies).</p>
       
-      <textarea id="customerNotes" rows="3" placeholder="Special Requests (optional)" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;"></textarea>
+      <textarea id="customerNotes" name="customerNotes" rows="3" placeholder="Special Requests (optional)" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;"></textarea>
       
       <div style="margin: 20px 0;">
         <label style="display: flex; align-items: center; margin: 8px 0; cursor: pointer;">
-          <input type="checkbox" id="termsCheck" required style="margin-right: 10px;">
+          <input type="checkbox" id="termsCheck" name="termsCheck" required style="margin-right: 10px;">
           I agree to the <a href="terms.html" target="_blank" style="color: #667eea;">Terms & Conditions</a> *
         </label>
       </div>

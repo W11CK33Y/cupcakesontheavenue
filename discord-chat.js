@@ -91,7 +91,8 @@ class DiscordChatWidget {
           <div class="chat-input-wrapper">
             <textarea 
               class="chat-input" 
-              id="chatInput" 
+              id="chatInput"
+              name="chatInput"
               placeholder="Type your message..."
               rows="1"
             ></textarea>
