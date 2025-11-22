@@ -41,10 +41,17 @@ class DiscordChatWidget {
   }
 
   createWidget() {
+    // Remove any existing widget first
+    const existingWidget = document.querySelector('.discord-chat-widget');
+    if (existingWidget) {
+      console.log('⚠️ Removing existing chat widget');
+      existingWidget.remove();
+    }
+    
     const widget = document.createElement('div');
     widget.className = 'discord-chat-widget';
     widget.innerHTML = `
-      <button class="chat-button" id="chatToggleBtn" aria-label="Open chat">
+      <button class="chat-button" id="chatToggleBtn" aria-label="Open chat" onclick="console.log('🖱️ Button onclick fired!')">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="white">
           <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
           <circle cx="8" cy="10" r="1.5"/>

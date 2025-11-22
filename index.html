@@ -2337,6 +2337,12 @@ window.selectDate = selectDate;
 <script>
   // Initialize Discord chat widget after everything loads
   window.addEventListener('load', function() {
+    // Prevent double initialization
+    if (window.discordChat) {
+      console.log('⚠️ Chat widget already initialized, skipping...');
+      return;
+    }
+    
     console.log('🧁 Initializing chat widget...');
     try {
       if (typeof DiscordChatWidget === 'undefined') {
