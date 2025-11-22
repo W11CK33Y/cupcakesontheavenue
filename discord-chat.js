@@ -350,16 +350,5 @@ class DiscordChatWidget {
   }
 }
 
-// Initialize the chat widget when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-  // Configure your Discord webhook URL here
-  const discordChat = new DiscordChatWidget({
-    webhookUrl: 'YOUR_DISCORD_WEBHOOK_URL_HERE', // Replace with your Discord webhook URL
-    businessName: 'Cupcakes on the Avenue',
-    channelId: 'YOUR_CHANNEL_ID', // Optional: for advanced features
-    botToken: 'YOUR_BOT_TOKEN' // Optional: for two-way communication
-  });
-
-  // Make it globally accessible for debugging
-  window.discordChat = discordChat;
-});
+// Note: Widget is initialized in the HTML file with proper webhook URL
+// Do not initialize here to avoid conflicts
