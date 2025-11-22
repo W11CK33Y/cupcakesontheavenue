@@ -119,21 +119,42 @@ class DiscordChatWidget {
     const input = document.getElementById('chatInput');
     const quickReplies = document.querySelectorAll('.quick-reply-btn');
 
-    toggleBtn.addEventListener('click', () => this.toggleChat());
-    closeBtn.addEventListener('click', () => this.closeChat());
-    sendBtn.addEventListener('click', () => this.sendMessage());
-    input.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        this.sendMessage();
-      }
-    });
+    console.log('🔍 Toggle button:', toggleBtn);
+    console.log('🔍 Close button:', closeBtn);
+    console.log('🔍 Send button:', sendBtn);
+    console.log('🔍 Input:', input);
 
-    // Auto-resize textarea
-    input.addEventListener('input', function() {
-      this.style.height = 'auto';
-      this.style.height = Math.min(this.scrollHeight, 100) + 'px';
-    });
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        console.log('🖱️ Toggle button clicked!');
+        this.toggleChat();
+      });
+      console.log('✅ Click listener attached to toggle button');
+    } else {
+      console.error('❌ Toggle button not found!');
+    }
+    
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => this.closeChat());
+    }
+    if (sendBtn) {
+      sendBtn.addEventListener('click', () => this.sendMessage());
+    }
+    
+    if (input) {
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          this.sendMessage();
+        }
+      });
+
+      // Auto-resize textarea
+      input.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+      });
+    }
 
     // Quick replies
     quickReplies.forEach(btn => {
@@ -146,17 +167,23 @@ class DiscordChatWidget {
   }
 
   toggleChat() {
-    const window = document.getElementById('chatWindow');
+    console.log('🔄 toggleChat() called');
+    const chatWindow = document.getElementById('chatWindow');
+    console.log('🔍 Chat window element:', chatWindow);
     this.isOpen = !this.isOpen;
+    console.log('🔍 isOpen:', this.isOpen);
     
     if (this.isOpen) {
-      window.classList.add('open');
-      document.getElementById('chatInput').focus();
+      chatWindow.classList.add('open');
+      console.log('✅ Added "open" class to chat window');
+      const input = document.getElementById('chatInput');
+      if (input) input.focus();
       
       // Send session start notification to Discord
       this.sendSystemMessage('🟢 New chat session started');
     } else {
-      window.classList.remove('open');
+      chatWindow.classList.remove('open');
+      console.log('✅ Removed "open" class from chat window');
     }
   }
 
