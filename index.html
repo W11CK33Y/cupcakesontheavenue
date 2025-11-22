@@ -2336,12 +2336,23 @@ window.selectDate = selectDate;
 <link rel="stylesheet" href="discord-chat.css">
 <script src="discord-chat.js"></script>
 <script>
-  // Initialize Discord chat widget
-  document.addEventListener('DOMContentLoaded', function() {
-    window.discordChat = new DiscordChatWidget({
-      webhookUrl: 'https://discord.com/api/webhooks/1441917103153090671/KNupEAUqkfz0orXHbo31YH7_0ZmV8cIprHZr8rNFn1nDNfA-UUijrfUSPnzV7IYcKErB', // Replace with your Discord webhook URL
-      businessName: 'Cupcakes on the Avenue'
-    });
+  // Initialize Discord chat widget after everything loads
+  window.addEventListener('load', function() {
+    console.log('🧁 Initializing chat widget...');
+    try {
+      if (typeof DiscordChatWidget === 'undefined') {
+        console.error('❌ DiscordChatWidget class not found. Check if discord-chat.js is loaded.');
+        return;
+      }
+      
+      window.discordChat = new DiscordChatWidget({
+        webhookUrl: 'https://discord.com/api/webhooks/1441917103153090671/KNupEAUqkfz0orXHbo31YH7_0ZmV8cIprHZr8rNFn1nDNfA-UUijrfUSPnzV7IYcKErB',
+        businessName: 'Cupcakes on the Avenue'
+      });
+      console.log('✅ Chat widget initialized successfully!');
+    } catch (error) {
+      console.error('❌ Error initializing chat widget:', error);
+    }
   });
 </script>
 
