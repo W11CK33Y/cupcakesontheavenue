@@ -1342,6 +1342,12 @@ section h2::after {
 @keyframes shimmer {
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
 /* Multiple animated snowflakes for winter wonderland effect */
 body {
@@ -1376,10 +1382,6 @@ nav::after {
   animation-duration: 9s;
   content: '⭐';
   color: rgba(255, 215, 0, 0.8);
-}
-}
-  font-weight: bold;
-  color: #FFD700;
 }
 
 /* Winter Market Special with Countdown */
@@ -2140,45 +2142,10 @@ nav::after {
   <h2 style="text-align: center; color: #667eea; margin-bottom: 10px;">⭐ Customer Reviews</h2>
   <p style="text-align: center; color: #666; margin-bottom: 25px;">See what our customers are saying</p>
   
-  <div class="review-card">
-    <div class="review-header">
-      <div>
-        <span class="reviewer-name">Sarah M.</span>
-        <span class="verified-badge">✓ Verified Purchase</span>
-      </div>
-      <span class="review-date">2 days ago</span>
-    </div>
-    <div class="review-stars">★★★★★</div>
-    <div class="review-text">
-      "The Shortbread Delight is absolutely incredible! Best shortbread I've ever had. Buttery, crumbly perfection. I ordered for a party and everyone was asking where I got them. Will definitely order again!"
-    </div>
-  </div>
-
-  <div class="review-card">
-    <div class="review-header">
-      <div>
-        <span class="reviewer-name">James P.</span>
-        <span class="verified-badge">✓ Verified Purchase</span>
-      </div>
-      <span class="review-date">1 week ago</span>
-    </div>
-    <div class="review-stars">★★★★★</div>
-    <div class="review-text">
-      "Ordered a Christmas cake for our family celebration. The royal icing was beautiful and the cake was moist and delicious. Great communication and delivery was on time. Highly recommend!"
-    </div>
-  </div>
-
-  <div class="review-card">
-    <div class="review-header">
-      <div>
-        <span class="reviewer-name">Emma L.</span>
-        <span class="verified-badge">✓ Verified Purchase</span>
-      </div>
-      <span class="review-date">2 weeks ago</span>
-    </div>
-    <div class="review-stars">★★★★★</div>
-    <div class="review-text">
-      "Found them at Highworth Market and I'm so glad I did! The cupcakes are amazing - perfectly moist with just the right amount of frosting. Love supporting a local business that clearly cares about quality."
+  <div id="reviewsContainer">
+    <div style="text-align: center; padding: 30px; color: #666;">
+      <div class="loading-spinner" style="display: inline-block; width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+      <p style="margin-top: 15px;">Loading reviews...</p>
     </div>
   </div>
 
@@ -2202,9 +2169,19 @@ nav::after {
           <label for="star1">★</label>
         </div>
       </div>
-      <input type="text" placeholder="Your Name *" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
-      <input type="email" placeholder="Your Email *" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
-      <textarea placeholder="Your Review *" rows="4" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px; resize: vertical;"></textarea>
+      <input type="text" id="reviewName" placeholder="Your Name *" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <input type="email" id="reviewEmail" placeholder="Your Email *" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <select id="reviewProduct" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+        <option value="">Select Product (optional)</option>
+        <option value="Shortbread Delight">Shortbread Delight</option>
+        <option value="Christmas Cake - Royal Icing">Christmas Cake - Royal Icing</option>
+        <option value="Christmas Cake - Marzipan">Christmas Cake - Marzipan</option>
+        <option value="Iced Shortbread">Iced Shortbread</option>
+        <option value="Cupcakes">Cupcakes</option>
+        <option value="Rice Crispy Treats">Rice Crispy Treats</option>
+        <option value="Other">Other</option>
+      </select>
+      <textarea id="reviewText" placeholder="Your Review *" rows="4" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px; resize: vertical;"></textarea>
       <div style="display: flex; gap: 10px; margin-top: 15px;">
         <button onclick="toggleReviewForm()" style="flex: 1; padding: 12px; background: #ccc; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Cancel</button>
         <button onclick="submitReview()" style="flex: 2; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Submit Review</button>
@@ -2573,34 +2550,163 @@ function toggleReviewForm() {
   form.classList.toggle('active');
 }
 
-function submitReview() {
-  const rating = document.querySelector('input[name="rating"]:checked');
-  const name = document.querySelector('#reviewForm input[type="text"]').value;
-  const email = document.querySelector('#reviewForm input[type="email"]').value;
-  const review = document.querySelector('#reviewForm textarea').value;
+// Load reviews from backend
+async function loadReviews() {
+  try {
+    const response = await fetch('https://sumup-backend.vercel.app/api/reviews');
+    
+    if (!response.ok) {
+      throw new Error('Failed to load reviews');
+    }
+    
+    const data = await response.json();
+    displayReviews(data.reviews || []);
+  } catch (error) {
+    console.error('Error loading reviews:', error);
+    document.getElementById('reviewsContainer').innerHTML = `
+      <div style="text-align: center; padding: 30px; color: #666;">
+        <p>Unable to load reviews. Showing sample reviews:</p>
+      </div>
+      <div class="review-card">
+        <div class="review-header">
+          <div>
+            <span class="reviewer-name">Sarah M.</span>
+            <span class="verified-badge">✓ Verified Purchase</span>
+          </div>
+          <span class="review-date">2 days ago</span>
+        </div>
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">
+          "The Shortbread Delight is absolutely incredible! Best shortbread I've ever had. Buttery, crumbly perfection. I ordered for a party and everyone was asking where I got them. Will definitely order again!"
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-header">
+          <div>
+            <span class="reviewer-name">James P.</span>
+            <span class="verified-badge">✓ Verified Purchase</span>
+          </div>
+          <span class="review-date">1 week ago</span>
+        </div>
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">
+          "Ordered a Christmas cake for our family celebration. The royal icing was beautiful and the cake was moist and delicious. Great communication and delivery was on time. Highly recommend!"
+        </div>
+      </div>
+    `;
+  }
+}
 
-  if (!rating || !name || !email || !review) {
-    alert('Please fill in all fields including your star rating!');
+function displayReviews(reviews) {
+  const container = document.getElementById('reviewsContainer');
+  
+  if (reviews.length === 0) {
+    container.innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">No reviews yet. Be the first to leave a review!</p>';
+    return;
+  }
+  
+  container.innerHTML = reviews.map(review => {
+    const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+    const date = new Date(review.createdAt).toLocaleDateString('en-GB', { 
+      day: 'numeric', 
+      month: 'short', 
+      year: 'numeric' 
+    });
+    
+    return `
+      <div class="review-card">
+        <div class="review-header">
+          <div>
+            <span class="reviewer-name">${escapeHtml(review.name)}</span>
+            ${review.verified ? '<span class="verified-badge">✓ Verified Purchase</span>' : ''}
+          </div>
+          <span class="review-date">${date}</span>
+        </div>
+        <div class="review-stars">${stars}</div>
+        ${review.product ? `<div style="color: #667eea; font-size: 13px; margin: 5px 0; font-weight: 600;">${escapeHtml(review.product)}</div>` : ''}
+        <div class="review-text">
+          "${escapeHtml(review.reviewText)}"
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+async function submitReview() {
+  const rating = document.querySelector('input[name="rating"]:checked');
+  const name = document.getElementById('reviewName').value.trim();
+  const email = document.getElementById('reviewEmail').value.trim();
+  const product = document.getElementById('reviewProduct').value;
+  const reviewText = document.getElementById('reviewText').value.trim();
+
+  if (!rating || !name || !email || !reviewText) {
+    alert('Please fill in all required fields including your star rating!');
     return;
   }
 
-  // In a real app, this would send to your backend
-  console.log('Review submitted:', {
-    rating: rating.value,
-    name,
-    email,
-    review
-  });
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    alert('Please enter a valid email address!');
+    return;
+  }
 
-  alert('Thank you for your review! It will be published after verification. 🌟');
-  toggleReviewForm();
-  
-  // Reset form
-  document.querySelector('#reviewForm input[type="text"]').value = '';
-  document.querySelector('#reviewForm input[type="email"]').value = '';
-  document.querySelector('#reviewForm textarea').value = '';
-  document.querySelectorAll('input[name="rating"]').forEach(input => input.checked = false);
+  const submitButton = event.target;
+  submitButton.disabled = true;
+  submitButton.textContent = 'Submitting...';
+
+  try {
+    const response = await fetch('https://sumup-backend.vercel.app/api/reviews', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        rating: parseInt(rating.value),
+        name,
+        email,
+        product: product || null,
+        reviewText
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to submit review');
+    }
+
+    const data = await response.json();
+    
+    alert('Thank you for your review! It will be published after verification. 🌟');
+    toggleReviewForm();
+    
+    // Reset form
+    document.getElementById('reviewName').value = '';
+    document.getElementById('reviewEmail').value = '';
+    document.getElementById('reviewProduct').value = '';
+    document.getElementById('reviewText').value = '';
+    document.querySelectorAll('input[name="rating"]').forEach(input => input.checked = false);
+    
+    // Reload reviews
+    loadReviews();
+  } catch (error) {
+    console.error('Error submitting review:', error);
+    alert('Failed to submit review. Please try again later.');
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = 'Submit Review';
+  }
 }
+
+// Load reviews when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  loadReviews();
+});
 
 // ✅ SIMPLIFIED CHECKOUT FUNCTION - Uses backend API for Discord & Stripe
 async function handlePlaceOrder() {
