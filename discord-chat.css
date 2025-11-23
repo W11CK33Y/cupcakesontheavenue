@@ -435,10 +435,24 @@
 
   .quick-replies {
     padding: 12px 16px;
+    gap: 6px;
+  }
+
+  .quick-reply-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+    flex: 1 1 calc(50% - 3px);
+    min-width: 0;
+    text-align: center;
   }
 
   .chat-input-container {
     padding: 12px 16px;
+  }
+
+  .message-text {
+    font-size: 13px;
+    padding: 10px 14px;
   }
 }
 
