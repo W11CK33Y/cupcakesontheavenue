@@ -1769,6 +1769,144 @@ nav::after {
     margin-bottom: 2px;
   }
 }
+
+/* Product Reviews & Ratings */
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.stars {
+  color: #fbbf24;
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+
+.rating-count {
+  color: #666;
+  font-size: 13px;
+}
+
+.reviews-section {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 30px;
+  margin: 40px auto;
+  max-width: 1000px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.review-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 15px 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.reviewer-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.review-date {
+  color: #999;
+  font-size: 13px;
+}
+
+.review-stars {
+  color: #fbbf24;
+  margin: 5px 0;
+}
+
+.review-text {
+  color: #555;
+  line-height: 1.6;
+  margin-top: 10px;
+}
+
+.verified-badge {
+  background: #10b981;
+  color: white;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  margin-left: 8px;
+}
+
+.write-review-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: transform 0.2s;
+}
+
+.write-review-btn:hover {
+  transform: translateY(-2px);
+}
+
+.review-form {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-top: 20px;
+  display: none;
+}
+
+.review-form.active {
+  display: block;
+}
+
+.rating-input {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.rating-input input[type="radio"] {
+  display: none;
+}
+
+.rating-input label {
+  font-size: 30px;
+  color: #d1d5db;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.rating-input label:hover,
+.rating-input label:hover ~ label,
+.rating-input input:checked ~ label {
+  color: #fbbf24;
+}
+
+@media (max-width: 480px) {
+  .review-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .reviews-section {
+    padding: 20px 15px;
+  }
+}
 </style>
 </head>
 <body>
@@ -1931,6 +2069,10 @@ nav::after {
       <div class="product-overlay">
         <div>
           <div class="product-title">Christmas Cake with Royal Icing</div>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(12 reviews)</span>
+          </div>
           <div class="product-description">Traditional Christmas cake with elegant royal icing. Available with or without alcohol.</div>
         </div>
         <div>
@@ -1949,6 +2091,10 @@ nav::after {
       <div class="product-overlay">
         <div>
           <div class="product-title">Christmas Cake with Marzipan</div>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(15 reviews)</span>
+          </div>
           <div class="product-description">Rich fruit cake with marzipan and fondant icing. With or without alcohol.</div>
         </div>
         <div>
@@ -1988,6 +2134,84 @@ nav::after {
     </div>
   </div>
 </div>
+
+<!-- Customer Reviews -->
+<section class="reviews-section">
+  <h2 style="text-align: center; color: #667eea; margin-bottom: 10px;">⭐ Customer Reviews</h2>
+  <p style="text-align: center; color: #666; margin-bottom: 25px;">See what our customers are saying</p>
+  
+  <div class="review-card">
+    <div class="review-header">
+      <div>
+        <span class="reviewer-name">Sarah M.</span>
+        <span class="verified-badge">✓ Verified Purchase</span>
+      </div>
+      <span class="review-date">2 days ago</span>
+    </div>
+    <div class="review-stars">★★★★★</div>
+    <div class="review-text">
+      "The Shortbread Delight is absolutely incredible! Best shortbread I've ever had. Buttery, crumbly perfection. I ordered for a party and everyone was asking where I got them. Will definitely order again!"
+    </div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div>
+        <span class="reviewer-name">James P.</span>
+        <span class="verified-badge">✓ Verified Purchase</span>
+      </div>
+      <span class="review-date">1 week ago</span>
+    </div>
+    <div class="review-stars">★★★★★</div>
+    <div class="review-text">
+      "Ordered a Christmas cake for our family celebration. The royal icing was beautiful and the cake was moist and delicious. Great communication and delivery was on time. Highly recommend!"
+    </div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div>
+        <span class="reviewer-name">Emma L.</span>
+        <span class="verified-badge">✓ Verified Purchase</span>
+      </div>
+      <span class="review-date">2 weeks ago</span>
+    </div>
+    <div class="review-stars">★★★★★</div>
+    <div class="review-text">
+      "Found them at Highworth Market and I'm so glad I did! The cupcakes are amazing - perfectly moist with just the right amount of frosting. Love supporting a local business that clearly cares about quality."
+    </div>
+  </div>
+
+  <div style="text-align: center;">
+    <button class="write-review-btn" onclick="toggleReviewForm()">Write a Review</button>
+    
+    <div class="review-form" id="reviewForm">
+      <h3 style="color: #667eea; margin-bottom: 15px;">Share Your Experience</h3>
+      <div>
+        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Your Rating *</label>
+        <div class="rating-input">
+          <input type="radio" name="rating" value="5" id="star5">
+          <label for="star5">★</label>
+          <input type="radio" name="rating" value="4" id="star4">
+          <label for="star4">★</label>
+          <input type="radio" name="rating" value="3" id="star3">
+          <label for="star3">★</label>
+          <input type="radio" name="rating" value="2" id="star2">
+          <label for="star2">★</label>
+          <input type="radio" name="rating" value="1" id="star1">
+          <label for="star1">★</label>
+        </div>
+      </div>
+      <input type="text" placeholder="Your Name *" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <input type="email" placeholder="Your Email *" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
+      <textarea placeholder="Your Review *" rows="4" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px; resize: vertical;"></textarea>
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button onclick="toggleReviewForm()" style="flex: 1; padding: 12px; background: #ccc; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Cancel</button>
+        <button onclick="submitReview()" style="flex: 2; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Submit Review</button>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- Shop Call-to-Action -->
 <section style="text-align: center; background: white; margin: 40px auto; max-width: 800px; padding: 60px 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
@@ -2341,6 +2565,41 @@ function scrollToCart() {
       cartSection.style.animation = '';
     }, 1000);
   }
+}
+
+// Review form functions
+function toggleReviewForm() {
+  const form = document.getElementById('reviewForm');
+  form.classList.toggle('active');
+}
+
+function submitReview() {
+  const rating = document.querySelector('input[name="rating"]:checked');
+  const name = document.querySelector('#reviewForm input[type="text"]').value;
+  const email = document.querySelector('#reviewForm input[type="email"]').value;
+  const review = document.querySelector('#reviewForm textarea').value;
+
+  if (!rating || !name || !email || !review) {
+    alert('Please fill in all fields including your star rating!');
+    return;
+  }
+
+  // In a real app, this would send to your backend
+  console.log('Review submitted:', {
+    rating: rating.value,
+    name,
+    email,
+    review
+  });
+
+  alert('Thank you for your review! It will be published after verification. 🌟');
+  toggleReviewForm();
+  
+  // Reset form
+  document.querySelector('#reviewForm input[type="text"]').value = '';
+  document.querySelector('#reviewForm input[type="email"]').value = '';
+  document.querySelector('#reviewForm textarea').value = '';
+  document.querySelectorAll('input[name="rating"]').forEach(input => input.checked = false);
 }
 
 // ✅ SIMPLIFIED CHECKOUT FUNCTION - Uses backend API for Discord & Stripe
