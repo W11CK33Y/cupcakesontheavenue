@@ -1208,16 +1208,38 @@ footer img {
   color: #FFD700;
 }
 
-/* Countdown Timer */
+/* Winter Market Special with Countdown */
 .countdown-banner {
-  background: linear-gradient(45deg, #FF6B35, #F7931E);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 20px;
+  padding: 30px 20px;
   text-align: center;
   margin: 20px 0;
-  border-radius: 15px;
+  border-radius: 20px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+.countdown-banner.winter-special {
+  background: linear-gradient(135deg, #2c5f99 0%, #1e3a5f 100%);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.snow-overlay {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  font-size: 2rem;
+  opacity: 0.3;
+  animation: snowfall 10s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes snowfall {
+  0% { transform: translateY(-20px); }
+  100% { transform: translateY(100vh); }
 }
 
 .countdown-banner::before {
@@ -1227,13 +1249,46 @@ footer img {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  animation: shimmer 2s infinite;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  animation: shimmer 3s infinite;
 }
 
 @keyframes shimmer {
   0% { left: -100%; }
   100% { left: 100%; }
+}
+
+.countdown-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 15px 20px;
+  border-radius: 12px;
+  min-width: 70px;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.countdown-number {
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.countdown-label {
+  font-size: 0.85rem;
+  margin-top: 5px;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 .countdown-timer {
@@ -1613,21 +1668,43 @@ footer img {
   <p>Fresh cupcakes, biscuits, and celebration cakes baked with love!</p>
 </div>
 
-<!-- Saturday Market Special -->
-<div class="countdown-banner" id="countdownBanner">
-  <h3>� Saturday Market Special - Buy 2 Get 1 Free!</h3>
-  <p>Available every Saturday at Highworth Market • 8am - 2pm</p>
+<!-- Winter Market Special with Countdown -->
+<div class="countdown-banner winter-special" id="countdownBanner">
+  <div class="snow-overlay">❄️ ❄️ ❄️</div>
+  <h3>🎄 Winter Market Special - Buy 2 Get 1 Free! 🎄</h3>
+  <p style="font-size: 1.1rem; margin: 10px 0;">Next Saturday at Highworth Market • 8am - 2pm</p>
+  
+  <!-- Countdown Timer -->
+  <div id="marketCountdown" style="display: flex; justify-content: center; gap: 15px; margin: 20px 0; font-size: 1.1rem;">
+    <div class="countdown-item">
+      <span id="days" class="countdown-number">0</span>
+      <span class="countdown-label">Days</span>
+    </div>
+    <div class="countdown-item">
+      <span id="hours" class="countdown-number">0</span>
+      <span class="countdown-label">Hours</span>
+    </div>
+    <div class="countdown-item">
+      <span id="minutes" class="countdown-number">0</span>
+      <span class="countdown-label">Mins</span>
+    </div>
+    <div class="countdown-item">
+      <span id="seconds" class="countdown-number">0</span>
+      <span class="countdown-label">Secs</span>
+    </div>
+  </div>
+
   <div class="market-special-details" style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 15px; flex-wrap: wrap;">
-    <div style="background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 15px; backdrop-filter: blur(5px);">
+    <div style="background: rgba(255,255,255,0.3); padding: 12px 20px; border-radius: 15px; backdrop-filter: blur(5px); border: 2px solid rgba(255,255,255,0.4);">
       <strong>🧁 Cupcakes</strong><br>
       <small>Buy any 2, get 1 FREE</small>
     </div>
-    <div style="background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 15px; backdrop-filter: blur(5px);">
-      <strong>🍪 Biscuits</strong><br>
+    <div style="background: rgba(255,255,255,0.3); padding: 12px 20px; border-radius: 15px; backdrop-filter: blur(5px); border: 2px solid rgba(255,255,255,0.4);">
+      <strong>🍪 Festive Treats</strong><br>
       <small>Mix & match varieties</small>
     </div>
-    <div style="background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 15px; backdrop-filter: blur(5px);">
-      <strong>📍 Market Only</strong><br>
+    <div style="background: rgba(255,255,255,0.3); padding: 12px 20px; border-radius: 15px; backdrop-filter: blur(5px); border: 2px solid rgba(255,255,255,0.4);">
+      <strong>🎁 Limited Time</strong><br>
       <small>Saturday exclusive deal</small>
     </div>
   </div>
@@ -2318,7 +2395,51 @@ function applySeason() {
   document.body.className = season;
 }
 
-// Saturday Market Special - No timer needed since it's permanent
+// Saturday Market Countdown Timer
+function updateMarketCountdown() {
+  const now = new Date();
+  const currentDay = now.getDay(); // 0 = Sunday, 6 = Saturday
+  
+  // Find next Saturday
+  let daysUntilSaturday = (6 - currentDay + 7) % 7;
+  if (daysUntilSaturday === 0 && now.getHours() >= 14) {
+    // If it's Saturday after 2pm, count to next Saturday
+    daysUntilSaturday = 7;
+  } else if (daysUntilSaturday === 0) {
+    // If it's Saturday before 2pm, show "Today!"
+    daysUntilSaturday = 0;
+  }
+  
+  const nextSaturday = new Date(now);
+  nextSaturday.setDate(now.getDate() + daysUntilSaturday);
+  nextSaturday.setHours(8, 0, 0, 0); // Market starts at 8am
+  
+  const timeUntil = nextSaturday - now;
+  
+  if (timeUntil < 0 && currentDay === 6 && now.getHours() < 14) {
+    // It's Saturday and market is open!
+    document.getElementById('marketCountdown').innerHTML = `
+      <div style="font-size: 1.5rem; font-weight: bold; animation: pulse 1.5s infinite;">
+        🎉 MARKET IS OPEN NOW! 🎉
+      </div>
+    `;
+    return;
+  }
+  
+  const days = Math.floor(timeUntil / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((timeUntil % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((timeUntil % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((timeUntil % (1000 * 60)) / 1000);
+  
+  document.getElementById('days').textContent = days.toString().padStart(2, '0');
+  document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+  document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+  document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+}
+
+// Start countdown timer
+setInterval(updateMarketCountdown, 1000);
+updateMarketCountdown(); // Initial call
 
 function loadRecentlyViewed() {
   // Placeholder for recently viewed items functionality
@@ -2333,7 +2454,7 @@ window.selectDate = selectDate;
 
 <!-- Discord Live Chat Widget -->
 <link rel="stylesheet" href="discord-chat.css">
-<script src="discord-chat.js?v=2"></script>
+<script src="discord-chat.js"></script>
 <script>
   // Initialize Discord chat widget after everything loads
   window.addEventListener('load', function() {
