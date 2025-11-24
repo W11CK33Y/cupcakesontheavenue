@@ -2025,7 +2025,7 @@ nav::after {
   transform: translateX(-50%) translateY(-150%);
   width: auto;
   max-width: 90vw;
-  padding: 12px 30px;
+  padding: 12px 50px 12px 30px;
   text-align: center;
   font-weight: bold;
   font-size: 1rem;
@@ -2034,6 +2034,30 @@ nav::after {
   box-shadow: 0 6px 20px rgba(0,0,0,0.3);
   overflow: hidden;
   border-radius: 25px;
+}
+
+.market-banner-close {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  color: white;
+  font-size: 20px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.market-banner-close:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .market-status-banner.show {
@@ -2185,6 +2209,7 @@ nav::after {
 <!-- Market Status Banner -->
 <div class="market-status-banner" id="marketStatusBanner">
   <span id="marketStatusText">🏪 Market Status</span>
+  <button class="market-banner-close" onclick="closeMarketBanner()" aria-label="Close banner">×</button>
 </div>
 
 <!-- Poll Widget -->
@@ -3088,6 +3113,8 @@ function showNotification(icon, title, message, type = '') {
   }, 8000);
 }
 
+let marketBannerTimeout = null;
+
 function updateMarketStatus(status) {
   console.log('[Market Status] Updating to:', status);
   const banner = document.getElementById('marketStatusBanner');
@@ -3098,6 +3125,12 @@ function updateMarketStatus(status) {
     return;
   }
   
+  // Clear any existing timeout
+  if (marketBannerTimeout) {
+    clearTimeout(marketBannerTimeout);
+    marketBannerTimeout = null;
+  }
+  
   banner.className = 'market-status-banner';
   
   if (status === 'open') {
@@ -3105,13 +3138,37 @@ function updateMarketStatus(status) {
     text.innerHTML = '🏪 <strong>WE\'RE OPEN!</strong> Come visit us at Highworth Market - Fresh bakes available now!';
     console.log('[Market Status] Banner set to OPEN');
     showNotification('🎉', 'Market is OPEN!', 'Come visit us for fresh baked goods!', 'market-open');
+    
+    // Auto-hide after 15 seconds
+    marketBannerTimeout = setTimeout(() => {
+      banner.classList.remove('show');
+      console.log('[Market Status] Banner auto-hidden');
+    }, 15000);
   } else if (status === 'closed') {
     banner.classList.add('closed', 'show');
     text.innerHTML = '😴 <strong>Market Closed</strong> - See you next Saturday 8am-2pm!';
     console.log('[Market Status] Banner set to CLOSED');
+    
+    // Auto-hide after 15 seconds
+    marketBannerTimeout = setTimeout(() => {
+      banner.classList.remove('show');
+      console.log('[Market Status] Banner auto-hidden');
+    }, 15000);
   } else {
     banner.classList.remove('show');
     console.log('[Market Status] Banner hidden');
+  }
+}
+
+function closeMarketBanner() {
+  const banner = document.getElementById('marketStatusBanner');
+  if (banner) {
+    banner.classList.remove('show');
+    console.log('[Market Status] Banner manually closed');
+  }
+  if (marketBannerTimeout) {
+    clearTimeout(marketBannerTimeout);
+    marketBannerTimeout = null;
   }
 }
 
