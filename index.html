@@ -1390,16 +1390,25 @@ nav::after {
   color: white;
   padding: 30px 20px;
   text-align: center;
-  margin: 20px 0;
+  margin: 20px auto;
   border-radius: 20px;
   position: relative;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+  max-width: 1200px;
 }
 
 .countdown-banner.winter-special {
   background: linear-gradient(135deg, #2c5f99 0%, #1e3a5f 100%);
   border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.countdown-banner h3,
+.countdown-banner p {
+  position: relative;
+  z-index: 2;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .snow-overlay {
@@ -1496,7 +1505,7 @@ nav::after {
   backdrop-filter: blur(10px);
   border-bottom: 2px solid #667eea;
   padding: 15px 20px;
-  z-index: 1000;
+  z-index: 999;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1793,21 +1802,29 @@ nav::after {
 }
 
 .reviews-section {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(15px);
   border-radius: 20px;
-  padding: 30px;
+  padding: 40px;
   margin: 40px auto;
   max-width: 1000px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
 }
 
 .review-card {
   background: white;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 15px 0;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  border-radius: 15px;
+  padding: 25px;
+  margin: 20px 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.review-card:hover {
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
+  transform: translateY(-2px);
 }
 
 .review-header {
@@ -1829,7 +1846,9 @@ nav::after {
 
 .review-stars {
   color: #fbbf24;
-  margin: 5px 0;
+  margin: 8px 0;
+  font-size: 18px;
+  letter-spacing: 2px;
 }
 
 .review-text {
@@ -1864,11 +1883,13 @@ nav::after {
 }
 
 .review-form {
-  background: white;
-  border-radius: 12px;
-  padding: 25px;
-  margin-top: 20px;
+  background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+  border-radius: 15px;
+  padding: 30px;
+  margin-top: 25px;
   display: none;
+  border: 2px solid #667eea;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
 }
 
 .review-form.active {
@@ -1877,7 +1898,9 @@ nav::after {
 
 .rating-input {
   display: flex;
-  gap: 10px;
+  flex-direction: row-reverse;
+  justify-content: center;
+  gap: 8px;
   margin: 15px 0;
 }
 
@@ -1886,15 +1909,24 @@ nav::after {
 }
 
 .rating-input label {
-  font-size: 30px;
+  font-size: 40px;
   color: #d1d5db;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: all 0.2s;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.rating-input label:hover {
+  color: #fbbf24;
+  transform: scale(1.2);
+}
+
+.rating-input input[type="radio"]:checked ~ label {
+  color: #fbbf24;
 }
 
 .rating-input label:hover,
-.rating-input label:hover ~ label,
-.rating-input input:checked ~ label {
+.rating-input label:hover ~ label {
   color: #fbbf24;
 }
 
@@ -1909,9 +1941,243 @@ nav::after {
     padding: 20px 15px;
   }
 }
+
+/* Live Notifications & Status Banners */
+.live-notification {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-120%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+  z-index: 9998;
+  min-width: 300px;
+  max-width: 600px;
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.live-notification.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+.live-notification.market-open {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.live-notification.market-closed {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.live-notification.announcement {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.live-notification.poll {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.notification-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.notification-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.notification-message {
+  font-size: 1rem;
+  line-height: 1.5;
+  opacity: 0.95;
+}
+
+.market-status-banner {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  padding: 15px 20px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  z-index: 998;
+  transform: translateY(-100%);
+  transition: transform 0.5s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.market-status-banner.show {
+  transform: translateY(0);
+}
+
+.market-status-banner.open {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.market-status-banner.closed {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  color: white;
+}
+
+.poll-container {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  max-width: 350px;
+  z-index: 997;
+  transform: translateX(120%);
+  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border: 2px solid #8b5cf6;
+}
+
+.poll-container.show {
+  transform: translateX(0);
+}
+
+.poll-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.poll-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #8b5cf6;
+}
+
+.poll-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.poll-close-btn:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.poll-option {
+  padding: 12px 15px;
+  margin: 10px 0;
+  background: #f8f9fa;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.poll-option:hover {
+  background: #e9ecef;
+  border-color: #8b5cf6;
+  transform: translateX(5px);
+}
+
+.poll-option.voted {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: white;
+  border-color: #7c3aed;
+}
+
+.poll-option-text {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.poll-votes {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.poll-option.voted .poll-votes {
+  color: rgba(255,255,255,0.9);
+}
+
+.poll-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: #8b5cf6;
+  transition: width 0.5s ease;
+}
+
+@media (max-width: 768px) {
+  .live-notification {
+    top: 60px;
+    min-width: 280px;
+    max-width: calc(100vw - 40px);
+    padding: 15px 20px;
+  }
+  
+  .poll-container {
+    bottom: 80px;
+    right: 10px;
+    left: 10px;
+    max-width: calc(100vw - 20px);
+  }
+  
+  .market-status-banner {
+    top: 60px;
+    font-size: 1rem;
+    padding: 12px 15px;
+  }
+}
 </style>
 </head>
 <body>
+
+<!-- Live Notification Toast -->
+<div class="live-notification" id="liveNotification">
+  <div class="notification-icon" id="notificationIcon">📢</div>
+  <div class="notification-title" id="notificationTitle">Notification</div>
+  <div class="notification-message" id="notificationMessage">Message</div>
+</div>
+
+<!-- Market Status Banner -->
+<div class="market-status-banner" id="marketStatusBanner">
+  <span id="marketStatusText">🏪 Market Status</span>
+</div>
+
+<!-- Poll Widget -->
+<div class="poll-container" id="pollContainer">
+  <div class="poll-header">
+    <div class="poll-title">🍰 Vote for Next Flavor!</div>
+    <button class="poll-close-btn" onclick="closePoll()">×</button>
+  </div>
+  <div id="pollOptions"></div>
+</div>
 
 <!-- Sticky Cart Bar -->
 <div class="sticky-cart" id="stickyCart">
@@ -2706,7 +2972,191 @@ async function submitReview() {
 // Load reviews when page loads
 document.addEventListener('DOMContentLoaded', () => {
   loadReviews();
+  startLiveUpdates();
 });
+
+// ========================================
+// Live Notifications System
+// ========================================
+
+let pollData = null;
+let userVote = null;
+
+function startLiveUpdates() {
+  // Poll for live updates every 5 seconds
+  setInterval(checkForLiveUpdates, 5000);
+  
+  // Check immediately on load
+  checkForLiveUpdates();
+}
+
+async function checkForLiveUpdates() {
+  try {
+    const response = await fetch('https://sumup-backend.vercel.app/api/live-status');
+    
+    if (!response.ok) return;
+    
+    const data = await response.json();
+    
+    // Update market status
+    if (data.marketStatus) {
+      updateMarketStatus(data.marketStatus);
+    }
+    
+    // Show announcement if new
+    if (data.announcement && data.announcement.id !== localStorage.getItem('lastAnnouncementId')) {
+      showAnnouncement(data.announcement);
+      localStorage.setItem('lastAnnouncementId', data.announcement.id);
+    }
+    
+    // Update poll if active
+    if (data.poll && data.poll.active) {
+      updatePoll(data.poll);
+    } else {
+      closePoll();
+    }
+    
+  } catch (error) {
+    console.error('Failed to check live updates:', error);
+  }
+}
+
+function showNotification(icon, title, message, type = '') {
+  const notification = document.getElementById('liveNotification');
+  const iconEl = document.getElementById('notificationIcon');
+  const titleEl = document.getElementById('notificationTitle');
+  const messageEl = document.getElementById('notificationMessage');
+  
+  // Reset classes
+  notification.className = 'live-notification';
+  if (type) {
+    notification.classList.add(type);
+  }
+  
+  // Set content
+  iconEl.textContent = icon;
+  titleEl.textContent = title;
+  messageEl.textContent = message;
+  
+  // Show notification
+  notification.classList.add('show');
+  
+  // Auto hide after 8 seconds
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 8000);
+}
+
+function updateMarketStatus(status) {
+  const banner = document.getElementById('marketStatusBanner');
+  const text = document.getElementById('marketStatusText');
+  
+  banner.className = 'market-status-banner';
+  
+  if (status === 'open') {
+    banner.classList.add('open', 'show');
+    text.innerHTML = '🏪 <strong>WE\'RE OPEN!</strong> Come visit us at Highworth Market - Fresh bakes available now!';
+    showNotification('🎉', 'Market is OPEN!', 'Come visit us for fresh baked goods!', 'market-open');
+  } else if (status === 'closed') {
+    banner.classList.add('closed', 'show');
+    text.innerHTML = '😴 <strong>Market Closed</strong> - See you next Saturday 8am-2pm!';
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+function showAnnouncement(announcement) {
+  showNotification('📢', 'Announcement', announcement.message, 'announcement');
+  
+  // Also create a persistent banner for important announcements
+  if (announcement.important) {
+    const banner = document.getElementById('marketStatusBanner');
+    banner.className = 'market-status-banner announcement show';
+    document.getElementById('marketStatusText').innerHTML = `📢 <strong>${escapeHtml(announcement.message)}</strong>`;
+  }
+}
+
+function updatePoll(poll) {
+  const container = document.getElementById('pollContainer');
+  const optionsEl = document.getElementById('pollOptions');
+  
+  // Save poll data
+  pollData = poll;
+  
+  // Check if user already voted
+  const savedVote = localStorage.getItem(`poll_${poll.id}_vote`);
+  if (savedVote) {
+    userVote = savedVote;
+  }
+  
+  // Calculate total votes
+  const totalVotes = poll.options.reduce((sum, opt) => sum + opt.votes, 0);
+  
+  // Build options HTML
+  optionsEl.innerHTML = poll.options.map((option, index) => {
+    const percentage = totalVotes > 0 ? (option.votes / totalVotes * 100).toFixed(1) : 0;
+    const voted = userVote === option.text;
+    
+    return `
+      <div class="poll-option ${voted ? 'voted' : ''}" onclick="votePoll('${option.text}')">
+        <div class="poll-option-text">${escapeHtml(option.text)}</div>
+        <div class="poll-votes">${option.votes} vote${option.votes !== 1 ? 's' : ''} (${percentage}%)</div>
+        <div class="poll-progress" style="width: ${percentage}%"></div>
+      </div>
+    `;
+  }).join('');
+  
+  // Show container
+  container.classList.add('show');
+  
+  // Show notification if poll is new
+  const lastPollId = localStorage.getItem('lastPollId');
+  if (lastPollId !== poll.id) {
+    showNotification('🍰', 'New Poll!', `Vote for: ${poll.question || 'Next Flavor'}`, 'poll');
+    localStorage.setItem('lastPollId', poll.id);
+  }
+}
+
+async function votePoll(option) {
+  if (!pollData) return;
+  
+  // Don't allow voting twice
+  if (userVote) {
+    alert('You\'ve already voted in this poll!');
+    return;
+  }
+  
+  try {
+    const response = await fetch('https://sumup-backend.vercel.app/api/live-status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'vote',
+        data: { option: option }
+      })
+    });
+    
+    if (!response.ok) throw new Error('Vote failed');
+    
+    // Save vote locally
+    userVote = option;
+    localStorage.setItem(`poll_${pollData.id}_vote`, option);
+    
+    // Refresh poll data
+    checkForLiveUpdates();
+    
+    showNotification('✅', 'Vote Recorded!', `You voted for ${option}`, 'poll');
+    
+  } catch (error) {
+    console.error('Failed to vote:', error);
+    alert('Failed to record vote. Please try again.');
+  }
+}
+
+function closePoll() {
+  const container = document.getElementById('pollContainer');
+  container.classList.remove('show');
+}
 
 // ✅ SIMPLIFIED CHECKOUT FUNCTION - Uses backend API for Discord & Stripe
 async function handlePlaceOrder() {

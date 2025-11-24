@@ -1,0 +1,173 @@
+﻿// Add this helper function near the postState function (around line 45)
+
+// Helper to update live website notifications
+async function updateLiveStatus(action, data) {
+  try {
+    const res = await fetch(${BACKEND_URL}/api/live-status, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, data })
+    });
+    if (!res.ok) {
+      console.error('Live status API error:', res.status);
+      return { error: Failed to update live status () };
+    }
+    return await res.json();
+  } catch (e) {
+    console.error('Live status update error:', e);
+    return { error: e.message };
+  }
+}
+
+// Updated handleMarket function (replace existing around line 461)
+async function handleMarket(message, content) {
+  const arg = content.split(' ')[1];
+  if (!['live','closed'].includes(arg)) {
+    return message.reply(' Usage: !market live or !market closed');
+  }
+  marketLive = arg === 'live';
+  
+  // Update via state endpoint (for bot state)
+  const stateResult = await postState({ market: { live: marketLive } });
+  if (stateResult.error) {
+    return message.reply( Failed to update market status: );
+  }
+  
+  // Update live-status API (for website notifications)
+  const liveResult = await updateLiveStatus('market', { 
+    status: arg === 'live' ? 'open' : 'closed' 
+  });
+  if (liveResult.error) {
+    console.error('Warning: Failed to update website live status:', liveResult.error);
+  }
+  
+  const embed = new EmbedBuilder()
+    .setColor(marketLive ? 0x22c55e : 0x9ca3af)
+    .setTitle(marketLive ? ' Market Status: LIVE' : ' Market Status: CLOSED')
+    .setFooter({ text: 'Customers see this on site banner' })
+    .setTimestamp();
+
+  // Post to market channel
+  const marketChannel = await client.channels.fetch(OUTPUT_CHANNELS.market);
+  if (marketChannel) {
+    await marketChannel.send({ embeds: [embed] });
+  }
+  await message.react('');
+}
+
+// Updated handleAnnounce function (replace existing around line 486)
+async function handleAnnounce(message, content) {
+  const text = content.slice('!announce '.length).trim();
+  if (!text) return message.reply(' Usage: !announce Your message here');
+  
+  // Push to website via state endpoint (for bot state)
+  const stateResult = await postState({ announcement: { message: text } });
+  if (stateResult.error) {
+    return message.reply( Failed to post announcement: );
+  }
+  
+  // Update live-status API (for website notifications)
+  const liveResult = await updateLiveStatus('announcement', { 
+    message: text,
+    important: false
+  });
+  if (liveResult.error) {
+    console.error('Warning: Failed to update website live status:', liveResult.error);
+  }
+  
+  const embed = new EmbedBuilder()
+    .setColor(0xf59e0b)
+    .setTitle(' Announcement')
+    .setDescription(text)
+    .setFooter({ text: 'Broadcast to Discord + Website' })
+    .setTimestamp();
+
+  // Post to announcements channel
+  const announcementChannel = await client.channels.fetch(OUTPUT_CHANNELS.announcements);
+  if (announcementChannel) {
+    await announcementChannel.send({ embeds: [embed] });
+  }
+  await message.react('');
+}
+
+// Updated handleFlavorPoll function (replace existing around line 508)
+async function handleFlavorPoll(message, content) {
+  const list = content.slice('!poll flavors '.length).trim();
+  if (!list) return message.reply(' Usage: !poll flavors vanilla,chocolate,red-velvet');
+  const options = list.split(',').map(s => s.trim()).filter(Boolean).slice(0,6);
+  if (options.length < 2) return message.reply(' Provide at least 2 flavors');
+  
+  // Create poll via state endpoint (for bot state)
+  const stateResult = await postState({ pollCreate: { question: 'Favorite Flavor?', options } });
+  if (stateResult.error) {
+    return message.reply( Failed to create poll: );
+  }
+  
+  // Update live-status API (for website notifications)
+  const liveResult = await updateLiveStatus('poll', {
+    question: 'Vote for Next Flavor!',
+    options: options,
+    active: true
+  });
+  if (liveResult.error) {
+    console.error('Warning: Failed to update website live status:', liveResult.error);
+  }
+  
+  const pollId = stateResult.state?.poll?.id;
+  const emojis = pollEmojis;
+  const embed = new EmbedBuilder()
+    .setColor(0xec4899)
+    .setTitle(' Flavor Poll')
+    .setDescription(options.map((o,i)=>${emojis[i]} ).join('\n'))
+    .setFooter({ text: 'React below to vote' })
+    .setTimestamp();
+
+  // Post to polls channel
+  const pollsChannel = await client.channels.fetch(OUTPUT_CHANNELS.polls);
+  let pollMessage;
+  if (pollsChannel) {
+    pollMessage = await pollsChannel.send({ embeds: [embed] });
+  } else {
+    pollMessage = await message.channel.send({ embeds: [embed] });
+  }
+
+  for (let i=0;i<options.length;i++) {
+    await pollMessage.react(emojis[i]);
+  }
+  await message.react('');
+  activePollMessageId = pollMessage.id;
+  // Store poll context globally
+  global.currentPollId = pollId;
+  global.currentPollOptions = options;
+}
+
+// Updated handlePollClose function (replace existing around line 545)
+async function handlePollClose(message) {
+  const stateResult = await postState({ pollClose: true });
+  if (stateResult.error) return message.reply( Failed to close poll: );
+  
+  // Close poll on live-status API (for website)
+  const liveResult = await updateLiveStatus('poll', { active: false });
+  if (liveResult.error) {
+    console.error('Warning: Failed to close website poll:', liveResult.error);
+  }
+  
+  const poll = stateResult.state?.poll;
+  if (!poll || !poll.options) return message.reply(' No poll data');
+  const totalVotes = poll.options.reduce((sum, o) => sum + o.votes, 0);
+  const results = poll.options.map(o => ({
+    option: o.text,
+    votes: o.votes,
+    percentage: totalVotes > 0 ? ((o.votes / totalVotes) * 100).toFixed(1) : '0.0'
+  })).sort((a, b) => b.votes - a.votes);
+
+  const embed = new EmbedBuilder()
+    .setColor(0x64748b)
+    .setTitle(' Poll Closed')
+    .setDescription(results.map(r =>  :  votes (%)).join('\n'))
+    .setFooter({ text: Total votes:  })
+    .setTimestamp();
+  await message.reply({ embeds: [embed] });
+  await message.react('');
+  activePollMessageId = null;
+}
