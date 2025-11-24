@@ -139,6 +139,11 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -147,6 +152,10 @@ body {
   transition: background 1s ease-in-out;
   position: relative;
   overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100vw;
 }
 
 /* Christmas Winter Theme - Falling Snow Animation */
@@ -2010,6 +2019,8 @@ nav::after {
   top: 70px;
   left: 0;
   right: 0;
+  width: 100%;
+  max-width: 100vw;
   padding: 15px 20px;
   text-align: center;
   font-weight: bold;
@@ -2018,6 +2029,7 @@ nav::after {
   transform: translateY(-100%);
   transition: transform 0.5s ease;
   box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  overflow: hidden;
 }
 
 .market-status-banner.show {
