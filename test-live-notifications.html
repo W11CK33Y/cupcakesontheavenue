@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Notifications Debug</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 5px;
+    }
+    button:hover {
+      background: #5568d3;
+    }
+    #console {
+      background: #1e1e1e;
+      color: #00ff00;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 20px;
+    }
+    .console-line {
+      margin: 2px 0;
+    }
+    .error { color: #ff5555; }
+    .success { color: #50fa7b; }
+    .info { color: #8be9fd; }
+    .status {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 5px 0;
+    }
+    .status.online { background: #10b981; color: white; }
+    .status.offline { background: #ef4444; color: white; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Live Notifications Debug Tool</h1>
+  
+  <div class="test-section">
+    <h2>Backend API Status</h2>
+    <div id="apiStatus">Checking...</div>
+  </div>
+
+  <div class="test-section">
+    <h2>Manual Tests</h2>
+    <button onclick="testMarketOpen()">Test Market OPEN</button>
+    <button onclick="testMarketClosed()">Test Market CLOSED</button>
+    <button onclick="testAnnouncement()">Test Announcement</button>
+    <button onclick="testPoll()">Test Poll</button>
+    <button onclick="clearStorage()">Clear LocalStorage</button>
+    <button onclick="checkStatus()">Check Current Status</button>
+  </div>
+
+  <div class="test-section">
+    <h2>Console Output</h2>
+    <div id="console"></div>
+  </div>
+
+  <script>
+    const BACKEND_URL = 'https://sumup-backend.vercel.app';
+    const consoleEl = document.getElementById('console');
+
+    function log(message, type = 'info') {
+      const line = document.createElement('div');
+      line.className = `console-line ${type}`;
+      line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      consoleEl.appendChild(line);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+      console.log(message);
+    }
+
+    async function checkAPI() {
+      try {
+        log('Testing API connection...', 'info');
+        const response = await fetch(`${BACKEND_URL}/api/live-status`);
+        
+        if (!response.ok) {
+          log(`API returned status ${response.status}`, 'error');
+          document.getElementById('apiStatus').innerHTML = '<span class="status offline">OFFLINE</span>';
+          return false;
+        }
+        
+        const data = await response.json();
+        log(`API Response: ${JSON.stringify(data)}`, 'success');
+        document.getElementById('apiStatus').innerHTML = '<span class="status online">ONLINE</span> ✅';
+        return true;
+      } catch (error) {
+        log(`API Error: ${error.message}`, 'error');
+        document.getElementById('apiStatus').innerHTML = '<span class="status offline">ERROR</span>';
+        return false;
+      }
+    }
+
+    async function testMarketOpen() {
+      log('Setting market status to OPEN...', 'info');
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/live-status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'market',
+            data: { status: 'open' }
+          })
+        });
+        const result = await response.json();
+        log(`Market set to OPEN: ${JSON.stringify(result)}`, 'success');
+        log('✅ Now check your main website!', 'success');
+      } catch (error) {
+        log(`Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testMarketClosed() {
+      log('Setting market status to CLOSED...', 'info');
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/live-status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'market',
+            data: { status: 'closed' }
+          })
+        });
+        const result = await response.json();
+        log(`Market set to CLOSED: ${JSON.stringify(result)}`, 'success');
+        log('✅ Now check your main website!', 'success');
+      } catch (error) {
+        log(`Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testAnnouncement() {
+      log('Posting announcement...', 'info');
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/live-status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'announcement',
+            data: { 
+              message: `Test announcement at ${new Date().toLocaleTimeString()}!`,
+              important: false
+            }
+          })
+        });
+        const result = await response.json();
+        log(`Announcement posted: ${JSON.stringify(result)}`, 'success');
+        log('✅ Now check your main website!', 'success');
+      } catch (error) {
+        log(`Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testPoll() {
+      log('Creating poll...', 'info');
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/live-status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'poll',
+            data: {
+              question: 'Vote for Next Flavor!',
+              options: ['Vanilla', 'Chocolate', 'Strawberry'],
+              active: true
+            }
+          })
+        });
+        const result = await response.json();
+        log(`Poll created: ${JSON.stringify(result)}`, 'success');
+        log('✅ Now check your main website!', 'success');
+      } catch (error) {
+        log(`Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function checkStatus() {
+      log('Fetching current status...', 'info');
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/live-status`);
+        const data = await response.json();
+        log(`Current Status:`, 'info');
+        log(`  Market: ${data.marketStatus || 'null'}`, 'info');
+        log(`  Announcement: ${data.announcement ? data.announcement.message : 'null'}`, 'info');
+        log(`  Poll: ${data.poll ? 'Active' : 'null'}`, 'info');
+      } catch (error) {
+        log(`Error: ${error.message}`, 'error');
+      }
+    }
+
+    function clearStorage() {
+      localStorage.clear();
+      log('LocalStorage cleared!', 'success');
+      log('Refresh your main website to see notifications again', 'info');
+    }
+
+    // Auto-check API on load
+    checkAPI();
+  </script>
+</body>
+</html>
