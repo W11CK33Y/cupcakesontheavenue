@@ -2994,23 +2994,39 @@ async function checkForLiveUpdates() {
   try {
     const response = await fetch('https://sumup-backend.vercel.app/api/live-status');
     
-    if (!response.ok) return;
+    if (!response.ok) {
+      console.error('Live status request failed:', response.status);
+      return;
+    }
     
     const data = await response.json();
+    console.log('Live status update:', data);
     
     // Update market status
     if (data.marketStatus) {
+      console.log('Updating market status:', data.marketStatus);
       updateMarketStatus(data.marketStatus);
+    } else {
+      // Clear market banner if no status
+      const banner = document.querySelector('.market-status-banner');
+      if (banner) banner.remove();
     }
     
-    // Show announcement if new
-    if (data.announcement && data.announcement.id !== localStorage.getItem('lastAnnouncementId')) {
-      showAnnouncement(data.announcement);
-      localStorage.setItem('lastAnnouncementId', data.announcement.id);
+    // Show announcement if new (use timestamp instead of id)
+    if (data.announcement) {
+      const lastTimestamp = localStorage.getItem('lastAnnouncementTimestamp');
+      const currentTimestamp = data.announcement.timestamp;
+      
+      if (!lastTimestamp || currentTimestamp !== lastTimestamp) {
+        console.log('Showing announcement:', data.announcement.message);
+        showAnnouncement(data.announcement);
+        localStorage.setItem('lastAnnouncementTimestamp', currentTimestamp);
+      }
     }
     
     // Update poll if active
     if (data.poll && data.poll.active) {
+      console.log('Updating poll:', data.poll);
       updatePoll(data.poll);
     } else {
       closePoll();
