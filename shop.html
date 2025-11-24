@@ -39,48 +39,89 @@ body.winter {
   background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%);
 }
 
-/* Sticky Cart Bar */
+/* Sticky Cart Bar - Collapsible */
 .sticky-cart {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 10px;
+  right: 20px;
+  z-index: 1000;
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
-  border-bottom: 2px solid #667eea;
-  padding: 15px 20px;
-  z-index: 1000;
+  border-radius: 50px;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  padding: 0;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.cart-toggle-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 28px;
+  cursor: pointer;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.cart-toggle-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
 }
 
 .cart-summary {
+  display: none;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  min-width: 300px;
+}
+
+.sticky-cart.open .cart-summary {
   display: flex;
-  align-items: center;
-  gap: 20px;
+}
+
+.sticky-cart.open {
+  width: auto;
+  height: auto;
+  border-radius: 15px;
+  padding: 0;
+}
+
+.sticky-cart.open .cart-toggle-btn {
+  border-radius: 15px 15px 0 0;
+  width: 100%;
+  height: auto;
+  padding: 15px;
+  font-size: 18px;
 }
 
 .cart-icon {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: #667eea;
 }
 
 .cart-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 5px;
 }
 
 .cart-count {
   font-weight: bold;
   color: #333;
+  font-size: 0.95rem;
 }
 
 .cart-total {
   color: #667eea;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 
 .checkout-btn {
@@ -774,6 +815,21 @@ select:focus {
 }
 
 @media (max-width: 480px) {
+  .sticky-cart {
+    top: 10px;
+    right: 10px;
+  }
+  
+  .cart-toggle-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+  }
+  
+  .sticky-cart.open .cart-summary {
+    min-width: calc(100vw - 40px);
+  }
+  
   header h1 {
     font-size: 1.5rem;
   }
@@ -815,16 +871,19 @@ select:focus {
 </head>
 <body>
 
-<!-- Sticky Cart Bar -->
-<div class="sticky-cart">
+<!-- Sticky Cart Bar - Collapsible Trolley -->
+<div class="sticky-cart" id="stickyCart">
+  <button class="cart-toggle-btn" onclick="toggleCart()" aria-label="Toggle shopping cart">🛒</button>
   <div class="cart-summary">
-    <div class="cart-icon">🛒</div>
-    <div class="cart-info">
-      <div class="cart-count" id="cartCount">0 items</div>
-      <div class="cart-total" id="cartTotal">£0.00</div>
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <div class="cart-icon">🛒</div>
+      <div class="cart-info">
+        <div class="cart-count" id="cartCount">0 items</div>
+        <div class="cart-total" id="cartTotal">£0.00</div>
+      </div>
     </div>
+    <button class="checkout-btn" id="checkoutBtn" disabled>Checkout</button>
   </div>
-  <button class="checkout-btn" id="checkoutBtn" disabled>Checkout</button>
 </div>
 
 <header role="banner">
@@ -834,6 +893,7 @@ select:focus {
     <a href="index.html">Home</a>
     <a href="shop.html" class="active">Shop</a>
     <a href="index.html#market">Market</a>
+    <a href="reviews.html">Reviews</a>
     <a href="account.html">Account</a>
   </nav>
 </header>
@@ -1116,6 +1176,20 @@ select:focus {
 <script>
 // ✅ CORRECT BACKEND URL
 const BACKEND_BASE = 'https://sumup-backend.vercel.app';
+
+// Toggle cart visibility
+function toggleCart() {
+  const cart = document.getElementById('stickyCart');
+  cart.classList.toggle('open');
+}
+
+// Close cart when clicking outside
+document.addEventListener('click', (e) => {
+  const cart = document.getElementById('stickyCart');
+  if (cart && !cart.contains(e.target)) {
+    cart.classList.remove('open');
+  }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   // Seasonal Theme System
