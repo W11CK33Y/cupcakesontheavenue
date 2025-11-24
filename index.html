@@ -3038,10 +3038,16 @@ async function checkForLiveUpdates() {
 }
 
 function showNotification(icon, title, message, type = '') {
+  console.log('[Notification]', {icon, title, message, type});
   const notification = document.getElementById('liveNotification');
   const iconEl = document.getElementById('notificationIcon');
   const titleEl = document.getElementById('notificationTitle');
   const messageEl = document.getElementById('notificationMessage');
+  
+  if (!notification || !iconEl || !titleEl || !messageEl) {
+    console.error('[Notification] Elements not found!');
+    return;
+  }
   
   // Reset classes
   notification.className = 'live-notification';
@@ -3056,36 +3062,49 @@ function showNotification(icon, title, message, type = '') {
   
   // Show notification
   notification.classList.add('show');
+  console.log('[Notification] Displayed! Will auto-hide in 8s');
   
   // Auto hide after 8 seconds
   setTimeout(() => {
     notification.classList.remove('show');
+    console.log('[Notification] Hidden');
   }, 8000);
 }
 
 function updateMarketStatus(status) {
+  console.log('[Market Status] Updating to:', status);
   const banner = document.getElementById('marketStatusBanner');
   const text = document.getElementById('marketStatusText');
+  
+  if (!banner || !text) {
+    console.error('[Market Status] Banner elements not found!');
+    return;
+  }
   
   banner.className = 'market-status-banner';
   
   if (status === 'open') {
     banner.classList.add('open', 'show');
     text.innerHTML = '🏪 <strong>WE\'RE OPEN!</strong> Come visit us at Highworth Market - Fresh bakes available now!';
+    console.log('[Market Status] Banner set to OPEN');
     showNotification('🎉', 'Market is OPEN!', 'Come visit us for fresh baked goods!', 'market-open');
   } else if (status === 'closed') {
     banner.classList.add('closed', 'show');
     text.innerHTML = '😴 <strong>Market Closed</strong> - See you next Saturday 8am-2pm!';
+    console.log('[Market Status] Banner set to CLOSED');
   } else {
     banner.classList.remove('show');
+    console.log('[Market Status] Banner hidden');
   }
 }
 
 function showAnnouncement(announcement) {
+  console.log('[Announcement] Showing:', announcement.message);
   showNotification('📢', 'Announcement', announcement.message, 'announcement');
   
   // Also create a persistent banner for important announcements
   if (announcement.important) {
+    console.log('[Announcement] Important - adding to banner');
     const banner = document.getElementById('marketStatusBanner');
     banner.className = 'market-status-banner announcement show';
     document.getElementById('marketStatusText').innerHTML = `📢 <strong>${escapeHtml(announcement.message)}</strong>`;
@@ -3519,4 +3538,3 @@ window.selectDate = selectDate;
 
 </body>
 </html>
-
