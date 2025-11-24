@@ -3049,9 +3049,11 @@ async function checkForLiveUpdates() {
       console.log('Updating market status:', data.marketStatus);
       updateMarketStatus(data.marketStatus);
     } else {
-      // Clear market banner if no status
-      const banner = document.querySelector('.market-status-banner');
-      if (banner) banner.remove();
+      // Hide market banner if no status
+      const banner = document.getElementById('marketStatusBanner');
+      if (banner) {
+        banner.classList.remove('show');
+      }
     }
     
     // Show announcement if new (use timestamp instead of id)
