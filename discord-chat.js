@@ -303,23 +303,31 @@ class DiscordChatWidget {
       sessionId: this.sessionId,
       page: window.location.href,
       timestamp: new Date().toISOString(),
-      userAgent: navigator.userAgent
+      userAgent: navigator.userAgent,
+      webhookUrl: 'https://discord.com/api/webhooks/1443541916988866652/ofGnLULyX3tvEePFdQfMx6ACxknE5vryHxnrq6qlDRwhSsmaM9PWOUaQ5nLtTmhYBzDb'
     };
 
-    const response = await fetch(`${this.options.backendUrl}/api/send-chat-message`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
+    try {
+      const response = await fetch(`${this.options.backendUrl}/api/send-chat-message`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
 
-    if (!response.ok) {
-      throw new Error('Failed to send message to Discord');
+      if (!response.ok) {
+        console.error('Backend response not ok:', response.status, response.statusText);
+        throw new Error('Failed to send message to backend');
+      }
+
+      const data = await response.json();
+      console.log('Message sent successfully:', data);
+      return data;
+    } catch (error) {
+      console.error('Error sending to Discord:', error);
+      throw error;
     }
-
-    return response.json();
-  }
 
   addMessageToUI(text, isUser = false, timestamp = null, scroll = true) {
     const messageDiv = document.createElement('div');
