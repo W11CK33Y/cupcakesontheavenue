@@ -2400,6 +2400,14 @@ nav::after {
   <img src="pictures/logo.png" alt="Cupcakes on the Avenue">
   <h2>Where every bake feels like home</h2>
   <p>Fresh cupcakes, biscuits, and celebration cakes baked with love!</p>
+  <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 30px;">
+    <a href="shop.html" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.1rem; transition: transform 0.3s; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+      🛍️ Shop Now
+    </a>
+    <a href="#special-request" style="background: white; color: #667eea; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.1rem; transition: transform 0.3s; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); border: 2px solid #667eea;">
+      🎂 Order Custom Cake
+    </a>
+  </div>
 </div>
 
 <section id="about">
@@ -2407,6 +2415,38 @@ nav::after {
   <p style="text-align: center; font-size: 1.2rem; line-height: 1.8; max-width: 800px; margin: 0 auto; color: #666;">
     At Cupcakes on the Avenue, every bake feels like home. From our exclusive Shortbread Delight to cupcakes, biscuits, and cakes made for celebrating, everything is baked with love and a sprinkle of fun. Find us at Highworth Market every Saturday or order online for custom treats.
   </p>
+</section>
+
+<!-- Featured Products Highlight -->
+<section style="background: linear-gradient(135deg, #f5f7ff 0%, #f0e6ff 100%); padding: 50px 20px; margin: 40px 0; border-radius: 15px;">
+  <h2 style="text-align: center; color: #667eea; margin-bottom: 10px; font-size: 2rem;">✨ Our Signature Treats</h2>
+  <p style="text-align: center; color: #666; margin-bottom: 40px; font-size: 1.1rem;">Beloved by customers, perfected by us</p>
+  
+  <div class="products-grid" style="max-width: 900px; margin: 0 auto; gap: 30px;">
+    <div style="background: white; border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);">
+      <div style="font-size: 3rem; margin-bottom: 15px;">⭐</div>
+      <h3 style="color: #667eea; margin-bottom: 10px; font-size: 1.5rem;">Shortbread Delight</h3>
+      <p style="color: #666; margin-bottom: 15px;">Our exclusive signature buttery shortbread. Melt-in-your-mouth perfection with a loyal following at Highworth Market.</p>
+      <p style="color: #764ba2; font-weight: bold; font-size: 1.1rem; margin: 15px 0;">From £8.00</p>
+      <a href="shop.html" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: transform 0.3s;">Order Now</a>
+    </div>
+    
+    <div style="background: white; border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);">
+      <div style="font-size: 3rem; margin-bottom: 15px;">🎂</div>
+      <h3 style="color: #667eea; margin-bottom: 10px; font-size: 1.5rem;">Custom Celebration Cakes</h3>
+      <p style="color: #666; margin-bottom: 15px;">Bespoke designs for birthdays, anniversaries & special moments. Made with love, tailored to your vision.</p>
+      <p style="color: #764ba2; font-weight: bold; font-size: 1.1rem; margin: 15px 0;">From £30.00</p>
+      <a href="#special-request" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: transform 0.3s;">Custom Order</a>
+    </div>
+    
+    <div style="background: white; border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);">
+      <div style="font-size: 3rem; margin-bottom: 15px;">🧁</div>
+      <h3 style="color: #667eea; margin-bottom: 10px; font-size: 1.5rem;">Weekly Fresh Bakes</h3>
+      <p style="color: #666; margin-bottom: 15px;">Rotating selection of seasonal treats, cupcakes & biscuits. Available at market or online orders.</p>
+      <p style="color: #764ba2; font-weight: bold; font-size: 1.1rem; margin: 15px 0;">From £3.50</p>
+      <a href="shop.html" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: transform 0.3s;">Browse</a>
+    </div>
+  </div>
 </section>
 
 <!-- Popular Items Dashboard -->
@@ -2568,6 +2608,51 @@ nav::after {
     <textarea id="srMessage" name="srMessage" rows="5" placeholder="Describe your special request... *" required></textarea>
     <button type="submit">Send Request</button>
   </form>
+</section>
+
+<!-- Contact & Location Section -->
+<section style="background: white; padding: 50px 20px; margin: 40px 0; border-radius: 15px; max-width: 1000px; margin-left: auto; margin-right: auto;">
+  <h2 style="text-align: center; color: #667eea; margin-bottom: 40px; font-size: 2rem;">📍 Visit Us or Get in Touch</h2>
+  
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 40px;">
+    <!-- Location -->
+    <div style="text-align: center; padding: 25px; background: #f8f9fa; border-radius: 12px; border-left: 5px solid #667eea;">
+      <div style="font-size: 2.5rem; margin-bottom: 15px;">📍</div>
+      <h3 style="color: #667eea; margin-bottom: 10px;">Find Us at Market</h3>
+      <p style="color: #666; margin-bottom: 10px;"><strong>Highworth Market</strong></p>
+      <p style="color: #666; margin-bottom: 10px;">Every Saturday</p>
+      <p style="color: #764ba2; font-weight: bold; font-size: 1.1rem;">8:00 AM - 2:00 PM</p>
+      <p style="color: #666; font-size: 0.9rem; margin-top: 15px;">Fresh bakes available daily at market. Easy parking & friendly atmosphere!</p>
+    </div>
+    
+    <!-- Phone -->
+    <div style="text-align: center; padding: 25px; background: #f8f9fa; border-radius: 12px; border-left: 5px solid #667eea;">
+      <div style="font-size: 2.5rem; margin-bottom: 15px;">📱</div>
+      <h3 style="color: #667eea; margin-bottom: 10px;">Call Us</h3>
+      <p style="color: #666; margin-bottom: 15px;">Questions about orders or custom cakes?</p>
+      <a href="tel:07842817789" style="display: inline-block; color: white; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: transform 0.3s;">
+        07842 817789
+      </a>
+    </div>
+    
+    <!-- Email -->
+    <div style="text-align: center; padding: 25px; background: #f8f9fa; border-radius: 12px; border-left: 5px solid #667eea;">
+      <div style="font-size: 2.5rem; margin-bottom: 15px;">✉️</div>
+      <h3 style="color: #667eea; margin-bottom: 10px;">Email Us</h3>
+      <p style="color: #666; margin-bottom: 15px;">For custom orders & enquiries</p>
+      <a href="mailto:cupcakesontheavenue@gmail.com" style="display: inline-block; color: white; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: transform 0.3s;">
+        Get in Touch
+      </a>
+    </div>
+  </div>
+  
+  <div style="text-align: center; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
+    <h3 style="margin-bottom: 15px; font-size: 1.3rem;">💬 Need Help?</h3>
+    <p style="margin-bottom: 20px; opacity: 0.95;">Use our special request form below for custom orders, dietary requirements, or any special requests. We'll respond within 24 hours.</p>
+    <a href="#special-request" style="display: inline-block; background: white; color: #667eea; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: transform 0.3s;">
+      Go to Special Request Form
+    </a>
+  </div>
 </section>
 
 <div id="toast"></div>
