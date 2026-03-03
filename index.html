@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
 <title>Cupcakes on the Avenue - Premium Baked Goods & Custom Cakes | Highworth Market</title>
-<meta name="description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market Saturdays or order online. Fresh baked goods made with love.">
+<meta name="description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market Saturdays and Fairford Market every two weeks on Wednesdays, or order online. Fresh baked goods made with love.">
 <meta name="keywords" content="cupcakes, cakes, bakery, Highworth, custom cakes, shortbread, celebration cakes, fresh baked goods, artisan bakery">
 <meta name="author" content="Cupcakes on the Avenue">
 <meta name="robots" content="index, follow">
@@ -27,14 +27,14 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cupcakesontheavenue.co.uk">
 <meta property="og:title" content="Cupcakes on the Avenue - Premium Baked Goods & Custom Cakes">
-<meta property="og:description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market or order online.">
+<meta property="og:description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market Saturdays and Fairford Market bi‑weekly on Wednesdays, or order online.">
 <meta property="og:image" content="https://cupcakesontheavenue.co.uk/pictures/logo.png">
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
 <meta property="twitter:url" content="https://cupcakesontheavenue.co.uk">
 <meta property="twitter:title" content="Cupcakes on the Avenue - Premium Baked Goods & Custom Cakes">
-<meta property="twitter:description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market or order online.">
+<meta property="twitter:description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market Saturdays and Fairford Market bi‑weekly on Wednesdays, or order online.">
 <meta property="twitter:image" content="https://cupcakesontheavenue.co.uk/pictures/logo.png">
 
 <!-- Structured Data -->
@@ -2387,6 +2387,7 @@ nav::before, nav::after { content: none; }
   <div style="text-align: center; margin-bottom: 30px;">
     <p style="font-size: 1.3rem; font-weight: bold; color: #667eea;">Every Saturday • 8am - 2pm</p>
     <p style="font-size: 1.1rem; margin-top: 10px; color: #666;">Come visit us for fresh bakes, friendly chats, and our famous Shortbread Delight!</p>
+    <p style="font-size: 1.1rem; margin-top: 10px; color: #666;"><strong>Also at Fairford Market:</strong> every two weeks on Wednesday, 9am – 2pm, starting Wednesday 11 March.</p>
   </div>
 
   <button class="market-toggle" id="marketToggle">See This Week's Bakes</button>
@@ -2496,10 +2497,9 @@ nav::before, nav::after { content: none; }
     <div style="text-align: center; padding: 25px; background: #f8f9fa; border-radius: 12px; border-left: 5px solid #667eea;">
       <div style="font-size: 2.5rem; margin-bottom: 15px;">📍</div>
       <h3 style="color: #667eea; margin-bottom: 10px;">Find Us at Market</h3>
-      <p style="color: #666; margin-bottom: 10px;"><strong>Highworth Market</strong></p>
-      <p style="color: #666; margin-bottom: 10px;">Every Saturday</p>
-      <p style="color: #764ba2; font-weight: bold; font-size: 1.1rem;">8:00 AM - 2:00 PM</p>
-      <p style="color: #666; font-size: 0.9rem; margin-top: 15px;">Fresh bakes available every Saturday. Easy parking & friendly atmosphere!</p>
+      <p style="color: #666; margin-bottom: 10px;"><strong>Highworth Market</strong> – Saturdays 8:00 AM – 2:00 PM</p>
+      <p style="color: #666; margin-bottom: 10px;"><strong>Fairford Market</strong> – every two weeks on Wednesday 9:00 AM – 2:00 PM (starting Wednesday 11 March)</p>
+      <p style="color: #764ba2; font-weight: bold; font-size: 1.1rem;">Fresh bakes available at both markets.</p>
     </div>
     
     <!-- Phone -->
@@ -3234,6 +3234,12 @@ async function handlePlaceOrder() {
       date,
       address,
       items: cart.map(i => `${i.name} x${i.quantity}`).join(', '),
+      // Stripe-compatible line_items (used by backend if STRIPE_SECRET is set)
+      line_items: cart.map(i => ({
+        name: i.name,
+        price: i.price,
+        quantity: i.quantity
+      })),
       notes: notes || 'No special instructions'
     };
 

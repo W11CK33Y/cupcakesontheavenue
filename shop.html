@@ -1432,23 +1432,25 @@ document.addEventListener('DOMContentLoaded', () => {
         items: itemsString
       });
 
-      // ✅ Send everything through your backend API
-      submitBtn.textContent = 'Sending to Discord & Stripe...';
+      // ✅ Send everything through your backend API (emails + Stripe + Discord if configured)
+      submitBtn.textContent = 'Sending to backend...';
       
       const orderData = {
         reference: orderReference,        // Required
         total: total.toFixed(2),         // Required
         name: name,                      // Customer name
-        email: email,                    // Email for manual contact (NO AUTO-EMAILS)
+        email: email,                    // Email for manual contact
         phone: mobile,                   // Phone number
         delivery: deliveryMethodLabel,   // 'Delivery' or 'Collection'
         date: deliveryDate,              // Delivery/collection date
         address: finalAddress,           // Delivery address or 'Market Collection'
         items: itemsString,              // What they ordered
+        // Stripe line_items if you want the backend to create a session
+        line_items: cart.map(i => ({ name: i.name, price: i.price, quantity: i.quantity })),
         notes: notes || 'No special instructions' // Special instructions
       };
 
-      const response = await fetch(`${BACKEND_BASE}/api/discord-webhook`, {
+      const response = await fetch(`${BACKEND_BASE}/api/checkout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
