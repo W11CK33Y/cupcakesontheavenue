@@ -562,33 +562,8 @@ footer img {
   opacity: 1;
 }
 
-/* 🎄 WINTER CHRISTMAS THEME 🎄 */
-body {
-  position: relative;
-  overflow-x: hidden;
-}
-
-/* Snowfall overlay */
-body::before {
-  content: '❄️ ✨ 🎄 ❄️ ✨ 🎄 ❄️ ✨ 🎄 ❄️ ✨ 🎄 ❄️ ✨ 🎄 ❄️ ✨ 🎄';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 200%;
-  height: 100%;
-  font-size: 30px;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.3;
-  animation: snowfall 20s linear infinite;
-  line-height: 100px;
-  letter-spacing: 50px;
-}
-
-@keyframes snowfall {
-  0% { transform: translateY(-100%) translateX(0); }
-  100% { transform: translateY(100vh) translateX(-50px); }
-}
+/* winter decorations removed */
+body { position: relative; overflow-x: hidden; }
 
 /* Winter gradient background */
 body {
@@ -621,17 +596,8 @@ header {
   border-bottom: 3px solid #ffd700;
 }
 
-header::after {
-  content: '🔴 🟢 🔵 🟡 🔴 🟢 🔵 🟡 🔴 🟢 🔵 🟡 🔴 🟢 🔵 🟡';
-  position: absolute;
-  bottom: -15px;
-  left: 0;
-  width: 100%;
-  font-size: 20px;
-  text-align: center;
-  animation: lights-twinkle 2s infinite;
-  z-index: 100;
-}
+/* header lights removed */
+header::after { content: none; }
 
 @keyframes lights-twinkle {
   0%, 100% { opacity: 1; }
@@ -644,15 +610,7 @@ header::after {
   position: relative;
 }
 
-.product-card::before {
-  content: '✨';
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 24px;
-  opacity: 0;
-  transition: all 0.3s ease;
-}
+.product-card::before { content: none; }
 
 .product-card:hover::before {
   opacity: 1;
@@ -677,21 +635,9 @@ header::after {
 }
 
 .section-header h2::before,
-.shop-section h1::before {
-  content: '🎄';
-  position: absolute;
-  left: -40px;
-  animation: sway 3s ease-in-out infinite;
-}
-
+.shop-section h1::before,
 .section-header h2::after,
-.shop-section h1::after {
-  content: '🎄';
-  position: absolute;
-  right: -40px;
-  animation: sway 3s ease-in-out infinite;
-  animation-delay: 1.5s;
-}
+.shop-section h1::after { content: none; }
 
 @keyframes sway {
   0%, 100% { transform: rotate(-5deg); }
@@ -733,11 +679,7 @@ footer {
   color: white;
 }
 
-footer::before {
-  content: '❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️ ❄️';
-  position: absolute;
-  top: -30px;
-  left: 0;
+footer::before { content: none; position: absolute; top: -30px; left: 0; }
   width: 100%;
   font-size: 30px;
   text-align: center;
@@ -869,7 +811,7 @@ select:focus {
 }
 </style>
 </head>
-<body>
+<body class="spring">
 
 <!-- Sticky Cart Bar - Collapsible Trolley -->
 <div class="sticky-cart" id="stickyCart">

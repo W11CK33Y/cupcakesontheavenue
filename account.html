@@ -844,7 +844,7 @@ nav a.active {
 }
 </style>
 </head>
-<body>
+<body class="spring">
 
 <!-- Header -->
 <header role="banner">
@@ -944,17 +944,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Seasonal theme function
 function setSeasonalTheme() {
-  const month = new Date().getMonth() + 1; // 1-12
-  
-  if (month >= 3 && month <= 5) { // March-May
-    document.body.className = 'spring';
-  } else if (month >= 6 && month <= 8) { // June-August
-    document.body.className = 'summer';
-  } else if (month >= 9 && month <= 11) { // September-November
-    document.body.className = 'autumn';
-  } else { // December-February
-    document.body.className = 'winter';
-  }
+  // always apply spring theme
+  document.body.className = 'spring';
 }
 
 function setupEventListeners() {
