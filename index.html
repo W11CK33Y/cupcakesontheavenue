@@ -3339,46 +3339,39 @@ async function handlePlaceOrder() {
       : delivery === 'collect_market' ? 'Market Collection'
       : delivery === 'delivery' ? 'Delivery' : 'Delivery';
 
-    // Create items string for Discord
-    const itemsString = cart.map(item => `${item.name} x${item.quantity}`).join(', ');
-
     console.log('📦 Sending order to backend:', {
       reference: orderReference,
       total: total.toFixed(2),
-      customer: name,
-      items: itemsString
+      customer: name
     });
 
-    // ✅ Send everything through your backend API
-    orderBtn.textContent = 'Sending to Discord & Stripe...';
-    
+    orderBtn.textContent = 'Processing order...';
+
     const orderData = {
-      reference: orderReference,        // Required
-      total: total.toFixed(2),         // Required
-      name: name,                      // Customer name
-      email: email,                    // Email for manual contact (NO AUTO-EMAILS)
-      phone: mobile,                   // Phone number (or use 'mobile')
-      delivery: deliveryMethod,        // 'Delivery' or 'Collection'
-      date: date,                      // Delivery/collection date
-      address: address,                // Delivery address
-      items: itemsString,              // What they ordered
-      notes: notes || 'No special instructions' // Special instructions
+      reference: orderReference,
+      total: total.toFixed(2),
+      name,
+      email,
+      phone: mobile,
+      delivery: deliveryMethod,
+      date,
+      address,
+      items: cart.map(i => `${i.name} x${i.quantity}`).join(', '),
+      notes: notes || 'No special instructions'
     };
 
-    const response = await fetch(`${BACKEND_BASE}/api/discord-webhook`, {
+    const response = await fetch(`${BACKEND_BASE}/api/checkout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(orderData)
     });
-
-    // 🤖 Discord Admin Bot notifications now handled in backend automatically!
 
     console.log('📡 Backend response status:', response.status);
 
     if (response.ok) {
       const result = await response.json();
       console.log('✅ Backend processed successfully:', result);
-      
+
       // Clear cart
       cart = [];
       localStorage.setItem('cart', JSON.stringify(cart));
@@ -3388,22 +3381,20 @@ async function handlePlaceOrder() {
       // Show success and redirect to Stripe
       showToast('✅ Order sent! Redirecting to payment...');
       orderBtn.textContent = 'Redirecting to Stripe...';
-      
-      // If backend returns a Stripe URL, redirect to it
+
       if (result.stripeUrl) {
-        console.log('� Redirecting to Stripe:', result.stripeUrl);
+        console.log('⌛ Redirecting to Stripe:', result.stripeUrl);
         setTimeout(() => {
           window.location.href = result.stripeUrl;
         }, 1000);
       } else {
-        // Fallback: redirect to checkout endpoint
         const checkoutUrl = `${BACKEND_BASE}/api/checkout?total=${total.toFixed(2)}&reference=${orderReference}`;
-        console.log('� Redirecting to checkout:', checkoutUrl);
+        console.log('⌛ Redirecting to checkout:', checkoutUrl);
         setTimeout(() => {
           window.location.href = checkoutUrl;
         }, 1000);
       }
-      
+
     } else {
       const errorText = await response.text();
       console.error('❌ Backend error:', errorText);
@@ -3585,35 +3576,7 @@ window.removeFromCart = removeFromCart;
 window.selectDate = selectDate;
 </script>
 
-<!-- Discord Live Chat Widget -->
-<link rel="stylesheet" href="discord-chat.css">
-<script src="discord-chat.js"></script>
-<script>
-  // Initialize Discord chat widget after everything loads
-  window.addEventListener('load', function() {
-    // Prevent double initialization
-    if (window.discordChat) {
-      console.log('⚠️ Chat widget already initialized, skipping...');
-      return;
-    }
-    
-    console.log('🧁 Initializing chat widget...');
-    try {
-      if (typeof DiscordChatWidget === 'undefined') {
-        console.error('❌ DiscordChatWidget class not found. Check if discord-chat.js is loaded.');
-        return;
-      }
-      
-      window.discordChat = new DiscordChatWidget({
-        webhookUrl: 'https://discord.com/api/webhooks/1441917103153090671/KNupEAUqkfz0orXHbo31YH7_0ZmV8cIprHZr8rNFn1nDNfA-UUijrfUSPnzV7IYcKErB',
-        businessName: 'Cupcakes on the Avenue'
-      });
-      console.log('✅ Chat widget initialized successfully!');
-    } catch (error) {
-      console.error('❌ Error initializing chat widget:', error);
-    }
-  });
-</script>
+
 
 </body>
 </html>
