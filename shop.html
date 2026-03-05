@@ -1450,61 +1450,41 @@ document.addEventListener('DOMContentLoaded', () => {
         notes: notes || 'No special instructions' // Special instructions
       };
 
-      const response = await fetch(`${BACKEND_BASE}/api/checkout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      // Store order details for success page (before sending to backend)
+      const orderDetails = {
+        date: deliveryDate,
+        delivery: deliveryMethodLabel,
+        address: finalAddress,
+        reference: orderReference
+      };
+      localStorage.setItem('lastOrderDetails', JSON.stringify(orderDetails));
+
+      // Fetch from Stripe backend
+      fetch("https://stripe-backend-hxx2.onrender.com/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify(orderData)
-      });
-
-      // 📧 Email notifications now handled in backend automatically!
-
-      console.log('📡 Backend response status:', response.status);
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log('✅ Backend processed successfully:', result);
-        
-        // Store order details for success page
-        const orderDetails = {
-          date: deliveryDate,
-          delivery: deliveryMethodLabel,
-          address: finalAddress,
-          reference: orderReference
-        };
-        localStorage.setItem('lastOrderDetails', JSON.stringify(orderDetails));
-        
-        // Clear cart
+      })
+      .then(res => res.json())
+      .then(data => {
+        // Clear cart after successful checkout session
         cart = [];
         localStorage.setItem('cart', JSON.stringify(cart));
         updateStickyCart();
-
-        // Show success and redirect to Stripe
-        showToast('✅ Order sent! Redirecting to payment...');
-        submitBtn.textContent = 'Redirecting to Stripe...';
         
-        // Close modal
-        document.getElementById('checkoutModal').style.display = 'none';
+        // Redirect to Stripe checkout
+        window.location = data.url;
+      })
+      .catch(error => {
+        console.error('❌ Stripe session creation failed:', error);
+        showToast(`❌ Checkout failed: ${error.message}`);
         
-        // If backend returns a Stripe URL, redirect to it
-        if (result.stripeUrl) {
-          console.log('💳 Redirecting to Stripe:', result.stripeUrl);
-          setTimeout(() => {
-            window.location.href = result.stripeUrl;
-          }, 1000);
-        } else {
-          // Fallback: redirect to checkout endpoint
-          const checkoutUrl = `${BACKEND_BASE}/api/checkout?total=${total.toFixed(2)}&reference=${orderReference}`;
-          console.log('💳 Redirecting to checkout:', checkoutUrl);
-          setTimeout(() => {
-            window.location.href = checkoutUrl;
-          }, 1000);
-        }
-        
-      } else {
-        const errorText = await response.text();
-        console.error('❌ Backend error:', errorText);
-        throw new Error(`Backend returned ${response.status}: ${errorText}`);
-      }
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      });
       
     } catch (error) {
       console.error('❌ Order processing failed:', error);
