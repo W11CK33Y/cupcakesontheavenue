@@ -1,6 +1,6 @@
 /**
- * Live Status & Notifications API for Discord Bot Commands
- * Add these endpoints to your sumup-backend
+ * Live Status & Notifications API
+ * Add these endpoints to your backend for live website updates
  */
 
 const express = require('express');
@@ -36,7 +36,7 @@ router.get('/live-status', (req, res) => {
 
 /**
  * POST /api/market-status
- * Update market status (from Discord bot !market command)
+ * Update market status
  */
 router.post('/market-status', (req, res) => {
   try {
@@ -67,7 +67,7 @@ router.post('/market-status', (req, res) => {
 
 /**
  * POST /api/announcement
- * Create new announcement (from Discord bot !announce command)
+ * Create new announcement
  */
 router.post('/announcement', (req, res) => {
   try {
@@ -112,7 +112,7 @@ router.post('/announcement', (req, res) => {
 
 /**
  * POST /api/poll
- * Create or update poll (from Discord bot !poll command)
+ * Create or update poll
  */
 router.post('/poll', (req, res) => {
   try {
@@ -215,7 +215,7 @@ router.post('/poll-vote', (req, res) => {
 
 /**
  * GET /api/poll/results
- * Get poll results (for Discord bot)
+ * Get poll results
  */
 router.get('/poll/results', (req, res) => {
   try {
@@ -274,22 +274,3 @@ router.delete('/announcement', (req, res) => {
 });
 
 module.exports = router;
-
-/**
- * Discord Bot Integration Examples:
- * 
- * !market live
- * POST /api/market-status { "status": "open" }
- * 
- * !market closed
- * POST /api/market-status { "status": "closed" }
- * 
- * !announce Fresh batch ready at 2pm!
- * POST /api/announcement { "message": "Fresh batch ready at 2pm!", "important": false }
- * 
- * !poll flavors Lemon,Caramel,Strawberry
- * POST /api/poll { "question": "Vote for Next Flavor!", "options": ["Lemon", "Caramel", "Strawberry"], "active": true }
- * 
- * !poll close
- * POST /api/poll { "active": false }
- */

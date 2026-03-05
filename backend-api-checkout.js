@@ -71,24 +71,8 @@ router.post('/checkout', async (req, res) => {
       });
     }
 
-    // save order for later (webhook will send email once paid)
+    // save order for later (email will be sent once paid)
     pendingOrders.set(order.reference, order);
-
-    // optional: post a brief order summary to a Discord webhook immediately
-    if (process.env.ORDER_WEBHOOK) {
-      try {
-        const discordPayload = {
-          content: `📦 **New order placed** (awaiting payment)\nReference: ${order.reference}\nTotal: £${order.total}\nCustomer: ${order.name} <${order.email}>`,
-        };
-        await fetch(process.env.ORDER_WEBHOOK, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(discordPayload)
-        });
-      } catch (dErr) {
-        console.warn('Failed to send Discord notification:', dErr);
-      }
-    }
 
     // create stripe session if stripe is configured
     if (stripe) {
@@ -220,20 +204,6 @@ router.post('/checkout-webhook', express.raw({ type: 'application/json' }), asyn
         pendingOrders.delete(orderRef);
         console.log('Removed pending order after failed/cancelled payment', orderRef);
         // you could also notify shop of the failed payment here
-        if (process.env.ORDER_WEBHOOK) {
-          try {
-            const discordPayload = {
-              content: `⚠️ Order payment failed or cancelled\nReference: ${orderRef}\nCustomer: ${session.customer_email || 'unknown'}`
-            };
-            await fetch(process.env.ORDER_WEBHOOK, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(discordPayload)
-            });
-          } catch (dErr) {
-            console.warn('Failed to send failure notice to Discord:', dErr);
-          }
-        }
       }
       break;
     }

@@ -1352,7 +1352,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // For delivery and personal collection: any day is allowed (no day restrictions)
   });
 
-  // ✅ SIMPLIFIED CHECKOUT FUNCTION - Uses backend API for Discord & Stripe
+  // ✅ SIMPLIFIED CHECKOUT FUNCTION - Uses backend API for Stripe processing
   document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     console.log('🚀 Starting checkout process...');
@@ -1432,7 +1432,7 @@ document.addEventListener('DOMContentLoaded', () => {
         items: itemsString
       });
 
-      // ✅ Send everything through your backend API (emails + Stripe + Discord if configured)
+      // ✅ Send everything through your backend API (emails + Stripe processing)
       submitBtn.textContent = 'Sending to backend...';
       
       const orderData = {
@@ -1456,13 +1456,22 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify(orderData)
       });
 
-      // 🤖 Discord Admin Bot notifications now handled in backend automatically!
+      // 📧 Email notifications now handled in backend automatically!
 
       console.log('📡 Backend response status:', response.status);
 
       if (response.ok) {
         const result = await response.json();
         console.log('✅ Backend processed successfully:', result);
+        
+        // Store order details for success page
+        const orderDetails = {
+          date: deliveryDate,
+          delivery: deliveryMethodLabel,
+          address: finalAddress,
+          reference: orderReference
+        };
+        localStorage.setItem('lastOrderDetails', JSON.stringify(orderDetails));
         
         // Clear cart
         cart = [];
@@ -1524,18 +1533,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<!-- Discord Live Chat Widget -->
-<link rel="stylesheet" href="discord-chat.css">
-<script src="discord-chat.js?v=2"></script>
-<script>
-  // Initialize Discord chat widget
-  if (!window.discordChat) {
-    window.discordChat = new DiscordChatWidget({
-      webhookUrl: 'YOUR_DISCORD_WEBHOOK_URL_HERE', // Replace with your Discord webhook URL
-      businessName: 'Cupcakes on the Avenue'
-    });
-  }
-</script>
+
 
 </body>
 </html>
