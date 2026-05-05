@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
+<title>Whisk — Cupcakes on the Avenue</title>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#d4417e"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Whisk"/>
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧁</text></svg>"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --pink:#d4417e; --pink2:#f06292; --pink-light:#fce4ec;
+  --amber:#ff8f00; --amber2:#ffb300; --amber-light:#fff8e1;
+  --green:#2e7d32; --green2:#43a047; --green-light:#e8f5e9;
+  --blue:#1565c0; --blue2:#1976d2; --blue-light:#e3f2fd;
+  --red:#c62828; --red2:#e53935; --red-light:#ffebee;
+  --purple:#6a1b9a; --purple2:#8e24aa; --purple-light:#f3e5f5;
+  --bg:#fff8fb; --card:#ffffff; --text:#1a0010; --text2:#6d4c5e;
+  --border:rgba(212,65,126,.15); --shadow:0 4px 20px rgba(212,65,126,.12);
+}
+html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;}
+
+/* ── PIN SCREEN ── */
+#pinScreen{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(135deg,#d4417e 0%,#9c27b0 50%,#3f51b5 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;
+}
+.pin-logo{font-size:72px;margin-bottom:8px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.3));}
+.pin-title{font-size:32px;font-weight:800;color:#fff;letter-spacing:2px;text-shadow:0 2px 8px rgba(0,0,0,.3);}
+.pin-sub{font-size:14px;color:rgba(255,255,255,.75);margin:4px 0 32px;letter-spacing:1px;}
+.pin-dots{display:flex;gap:14px;margin-bottom:32px;}
+.pin-dot{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.7);background:transparent;transition:all .2s;}
+.pin-dot.filled{background:#fff;border-color:#fff;box-shadow:0 0 12px rgba(255,255,255,.6);}
+.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:240px;}
+.pin-key{height:64px;border-radius:16px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.3);
+  color:#fff;font-size:24px;font-weight:700;cursor:pointer;backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;transition:all .15s;-webkit-tap-highlight-color:transparent;
+  user-select:none;}
+.pin-key:active{background:rgba(255,255,255,.4);transform:scale(.94);}
+.pin-key.del{font-size:18px;}
+.pin-error{color:#ffcdd2;font-size:13px;margin-top:12px;font-weight:600;min-height:20px;text-align:center;}
+
+/* ── APP SHELL ── */
+#app{display:none;flex-direction:column;min-height:100vh;}
+.app-header{
+  background:linear-gradient(135deg,#d4417e,#9c27b0);
+  padding:env(safe-area-inset-top,12px) 20px 16px;
+  padding-top:max(env(safe-area-inset-top,0px),12px);
+  color:#fff;
+}
+.app-header-top{display:flex;align-items:center;justify-content:space-between;}
+.app-brand{display:flex;align-items:center;gap:10px;}
+.app-logo{font-size:28px;}
+.app-name{font-size:20px;font-weight:800;letter-spacing:1px;}
+.app-tagline{font-size:11px;opacity:.8;margin-top:1px;}
+.refresh-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);border:none;
+  color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.refresh-btn:active{background:rgba(255,255,255,.35);}
+.header-stats{display:flex;gap:12px;margin-top:14px;}
+.hstat{flex:1;background:rgba(255,255,255,.15);border-radius:12px;padding:10px;text-align:center;backdrop-filter:blur(4px);}
+.hstat-num{font-size:22px;font-weight:800;}
+.hstat-label{font-size:10px;opacity:.8;letter-spacing:.5px;margin-top:1px;}
+
+/* ── TABS ── */
+.tabs{display:flex;background:#fff;border-bottom:2px solid var(--pink-light);overflow-x:auto;
+  scrollbar-width:none;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(212,65,126,.1);}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:1;min-width:72px;padding:12px 8px 10px;text-align:center;cursor:pointer;border:none;
+  background:none;font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.5px;
+  border-bottom:3px solid transparent;transition:all .18s;-webkit-tap-highlight-color:transparent;}
+.tab.active{color:var(--pink);border-bottom-color:var(--pink);}
+.tab-icon{font-size:18px;display:block;margin-bottom:2px;}
+
+/* ── CONTENT ── */
+.content{flex:1;padding:16px;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 80px);}
+
+/* ── SECTION HEADER ── */
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.sec-title{font-size:15px;font-weight:800;color:var(--text);}
+.sec-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.badge-pink{background:var(--pink-light);color:var(--pink);}
+.badge-amber{background:var(--amber-light);color:var(--amber);}
+.badge-green{background:var(--green-light);color:var(--green);}
+
+/* ── ORDER CARD ── */
+.order-card{
+  background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px;
+  box-shadow:var(--shadow);border-left:5px solid var(--pink);
+  position:relative;overflow:hidden;
+}
+.order-card.paid{border-left-color:var(--green2);}
+.order-card.pending{border-left-color:var(--amber2);}
+.order-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.order-customer{font-size:17px;font-weight:800;color:var(--text);line-height:1.2;}
+.order-total{font-size:22px;font-weight:900;color:var(--pink);white-space:nowrap;}
+.order-total.paid{color:var(--green2);}
+.order-items{font-size:13px;color:var(--text2);margin:6px 0 4px;line-height:1.5;}
+.order-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.order-chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;
+  padding:4px 10px;border-radius:20px;}
+.chip-date{background:var(--blue-light);color:var(--blue);}
+.chip-delivery{background:var(--purple-light);color:var(--purple);}
+.chip-status-paid{background:var(--green-light);color:var(--green);}
+.chip-status-pending{background:var(--amber-light);color:var(--amber);}
+.order-contact{font-size:11px;color:var(--text2);margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;}
+.order-contact a{color:var(--pink);text-decoration:none;font-weight:600;}
+.order-notes{font-size:12px;color:#888;margin-top:6px;font-style:italic;background:#f9f9f9;
+  padding:6px 10px;border-radius:8px;}
+.order-time{font-size:10px;color:#aaa;margin-top:6px;}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:48px 24px;color:var(--text2);}
+.empty-icon{font-size:56px;display:block;margin-bottom:12px;}
+.empty-title{font-size:16px;font-weight:700;margin-bottom:6px;color:var(--text);}
+.empty-sub{font-size:13px;line-height:1.6;}
+
+/* ── LOADING ── */
+.loading{text-align:center;padding:40px 24px;color:var(--text2);}
+.spinner{width:36px;height:36px;border:3px solid var(--pink-light);border-top-color:var(--pink);
+  border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── INSIGHTS CARDS ── */
+.insights-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.ins-card{background:var(--card);border-radius:14px;padding:14px;box-shadow:var(--shadow);text-align:center;}
+.ins-card.pink{border-top:4px solid var(--pink);}
+.ins-card.amber{border-top:4px solid var(--amber2);}
+.ins-card.green{border-top:4px solid var(--green2);}
+.ins-card.blue{border-top:4px solid var(--blue2);}
+.ins-num{font-size:26px;font-weight:900;margin-bottom:2px;}
+.ins-num.pink{color:var(--pink);}
+.ins-num.amber{color:var(--amber2);}
+.ins-num.green{color:var(--green2);}
+.ins-num.blue{color:var(--blue2);}
+.ins-label{font-size:11px;color:var(--text2);font-weight:600;letter-spacing:.3px;}
+
+/* ── FILTER BAR ── */
+.filter-bar{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+.filter-bar::-webkit-scrollbar{display:none;}
+.filter-pill{white-space:nowrap;padding:7px 16px;border-radius:20px;border:2px solid var(--border);
+  background:var(--card);color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;
+  transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.filter-pill.active{background:var(--pink);color:#fff;border-color:var(--pink);}
+
+/* ── PULL TO REFRESH HINT ── */
+.pull-hint{text-align:center;font-size:11px;color:#bbb;padding:8px 0 4px;letter-spacing:.5px;}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);left:50%;transform:translateX(-50%);
+  background:#1a0010;color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:600;
+  opacity:0;transition:opacity .3s;pointer-events:none;z-index:9998;white-space:nowrap;
+  box-shadow:0 4px 20px rgba(0,0,0,.3);}
+#toast.show{opacity:1;}
+
+/* ── LOCK BTN ── */
+.lock-btn{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);right:20px;
+  width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--purple2));
+  border:none;color:#fff;font-size:18px;cursor:pointer;box-shadow:0 4px 16px rgba(212,65,126,.4);
+  display:flex;align-items:center;justify-content:center;}
+
+/* ── PRODUCT FORM ── */
+.prod-form{background:var(--card);border-radius:16px;padding:18px;box-shadow:var(--shadow);margin-bottom:14px;}
+.prod-form-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.form-field{margin-bottom:12px;}
+.form-label{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.5px;display:block;margin-bottom:5px;}
+.form-input{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:12px;
+  font-size:15px;color:var(--text);background:#fff;outline:none;transition:border-color .18s;
+  -webkit-appearance:none;font-family:inherit;}
+.form-input:focus{border-color:var(--pink);}
+textarea.form-input{resize:vertical;min-height:80px;}
+.photo-zone{border:2.5px dashed var(--border);border-radius:16px;padding:24px;text-align:center;
+  cursor:pointer;transition:all .2s;background:#fdf0f5;position:relative;}
+.photo-zone:active{background:var(--pink-light);}
+.photo-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.photo-zone-icon{font-size:40px;display:block;margin-bottom:8px;}
+.photo-zone-text{font-size:13px;color:var(--text2);font-weight:600;}
+.photo-zone-sub{font-size:11px;color:#bbb;margin-top:3px;}
+.photo-preview{width:100%;border-radius:12px;margin-top:10px;display:none;max-height:200px;object-fit:cover;}
+.submit-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--pink),var(--purple2));
+  color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;
+  box-shadow:0 4px 16px rgba(212,65,126,.3);transition:all .2s;letter-spacing:.5px;}
+.submit-btn:active{transform:scale(.97);}
+.submit-btn:disabled{opacity:.6;transform:none;}
+.cat-row{display:flex;gap:8px;flex-wrap:wrap;}
+.cat-pill{padding:7px 14px;border-radius:20px;border:2px solid var(--border);background:var(--card);
+  color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;}
+.cat-pill.active{background:var(--pink);color:#fff;border-color:var(--pink);}
+.pending-card{background:var(--card);border-radius:14px;padding:14px;margin-bottom:10px;
+  box-shadow:var(--shadow);border-left:4px solid var(--amber2);display:flex;gap:12px;align-items:flex-start;}
+.pending-thumb{width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--pink-light);}
+.pending-thumb-placeholder{width:56px;height:56px;border-radius:10px;flex-shrink:0;
+  background:var(--pink-light);display:flex;align-items:center;justify-content:center;font-size:24px;}
+.pending-info{flex:1;min-width:0;}
+.pending-name{font-size:14px;font-weight:800;color:var(--text);}
+.pending-desc{font-size:12px;color:var(--text2);margin:3px 0;}
+.pending-price{font-size:15px;font-weight:800;color:var(--pink);}
+.pending-ts{font-size:10px;color:#bbb;margin-top:4px;}
+</style>
+</head>
+<body>
+
+<!-- PIN SCREEN -->
+<div id="pinScreen">
+  <div class="pin-logo">🧁</div>
+  <div class="pin-title">WHISK</div>
+  <div class="pin-sub">CUPCAKES ON THE AVENUE</div>
+  <div class="pin-dots" id="pinDots">
+    <div class="pin-dot" id="d0"></div>
+    <div class="pin-dot" id="d1"></div>
+    <div class="pin-dot" id="d2"></div>
+    <div class="pin-dot" id="d3"></div>
+    <div class="pin-dot" id="d4"></div>
+    <div class="pin-dot" id="d5"></div>
+  </div>
+  <div class="pin-grid">
+    <button class="pin-key" onclick="pinKey('1')">1</button>
+    <button class="pin-key" onclick="pinKey('2')">2</button>
+    <button class="pin-key" onclick="pinKey('3')">3</button>
+    <button class="pin-key" onclick="pinKey('4')">4</button>
+    <button class="pin-key" onclick="pinKey('5')">5</button>
+    <button class="pin-key" onclick="pinKey('6')">6</button>
+    <button class="pin-key" onclick="pinKey('7')">7</button>
+    <button class="pin-key" onclick="pinKey('8')">8</button>
+    <button class="pin-key" onclick="pinKey('9')">9</button>
+    <button class="pin-key" style="visibility:hidden"></button>
+    <button class="pin-key" onclick="pinKey('0')">0</button>
+    <button class="pin-key del" onclick="pinDel()">⌫</button>
+  </div>
+  <div class="pin-error" id="pinError"></div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="app-header">
+    <div class="app-header-top">
+      <div class="app-brand">
+        <span class="app-logo">🧁</span>
+        <div>
+          <div class="app-name">WHISK</div>
+          <div class="app-tagline">Cupcakes on the Avenue</div>
+        </div>
+      </div>
+      <button class="refresh-btn" onclick="loadOrders(true)" title="Refresh">↻</button>
+    </div>
+    <div class="header-stats">
+      <div class="hstat"><div class="hstat-num" id="statPending">—</div><div class="hstat-label">PENDING</div></div>
+      <div class="hstat"><div class="hstat-num" id="statPaid">—</div><div class="hstat-label">PAID TODAY</div></div>
+      <div class="hstat"><div class="hstat-num" id="statRevenue">—</div><div class="hstat-label">REVENUE</div></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" id="tab-orders" onclick="showTab('orders')">
+      <span class="tab-icon">📋</span>ORDERS
+    </button>
+    <button class="tab" id="tab-today" onclick="showTab('today')">
+      <span class="tab-icon">📅</span>TODAY
+    </button>
+    <button class="tab" id="tab-paid" onclick="showTab('paid')">
+      <span class="tab-icon">✅</span>PAID
+    </button>
+    <button class="tab" id="tab-insights" onclick="showTab('insights')">
+      <span class="tab-icon">📊</span>INSIGHTS
+    </button>
+    <button class="tab" id="tab-products" onclick="showTab('products')">
+      <span class="tab-icon">🧁</span>PRODUCTS
+    </button>
+  </div>
+
+  <div class="content" id="content"></div>
+  <button class="lock-btn" onclick="lockApp()" title="Lock">🔒</button>
+</div>
+
+<div id="toast"></div>
+
+<script>
+'use strict';
+
+const CCONA_API = 'https://ccona-api.vercel.app';
+const PIN = '041215';
+const PIN_LEN = PIN.length;
+
+// ── PIN ──────────────────────────────────────────────────────────────────────
+let _pin = '';
+
+function pinKey(k) {
+  if (_pin.length >= PIN_LEN) return;
+  _pin += k;
+  updateDots();
+  if (_pin.length === PIN_LEN) {
+    setTimeout(checkPin, 120);
+  }
+}
+function pinDel() {
+  _pin = _pin.slice(0, -1);
+  updateDots();
+  document.getElementById('pinError').textContent = '';
+}
+function updateDots() {
+  for (let i = 0; i < PIN_LEN; i++) {
+    document.getElementById('d' + i).classList.toggle('filled', i < _pin.length);
+  }
+}
+function checkPin() {
+  if (_pin === PIN) {
+    document.getElementById('pinScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    loadOrders();
+  } else {
+    document.getElementById('pinError').textContent = 'Wrong PIN — try again';
+    _pin = '';
+    updateDots();
+  }
+}
+function lockApp() {
+  _pin = '';
+  updateDots();
+  document.getElementById('pinError').textContent = '';
+  document.getElementById('pinScreen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// ── DATA ─────────────────────────────────────────────────────────────────────
+let _orders = [];
+let _activeTab = 'orders';
+let _loading = false;
+
+async function loadOrders(manual = false) {
+  if (_loading) return;
+  _loading = true;
+  showContent('<div class="loading"><div class="spinner"></div><div>Loading orders…</div></div>');
+  try {
+    const r = await fetch(`${CCONA_API}/api/orders`);
+    const d = await r.json();
+    _orders = d.orders || [];
+    updateStats();
+    renderTab(_activeTab);
+    if (manual) toast('✓ Orders refreshed');
+  } catch (err) {
+    showContent(`<div class="empty"><span class="empty-icon">😕</span><div class="empty-title">Couldn't load orders</div><div class="empty-sub">Check your connection and try again.<br><br><button onclick="loadOrders(true)" style="padding:10px 24px;background:var(--pink);color:#fff;border:none;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;">Retry</button></div></div>`);
+  }
+  _loading = false;
+}
+
+function updateStats() {
+  const today = new Date().toISOString().slice(0, 10);
+  const pending = _orders.filter(o => o.status === 'pending').length;
+  const paidToday = _orders.filter(o => o.status === 'paid' && (o.paidAt || o.createdAt || '').slice(0, 10) === today).length;
+  const revenue = _orders
+    .filter(o => o.status === 'paid')
+    .reduce((s, o) => s + (parseFloat(o.total) || 0), 0);
+
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statPaid').textContent = paidToday;
+  document.getElementById('statRevenue').textContent = '£' + revenue.toFixed(0);
+}
+
+// ── TABS ─────────────────────────────────────────────────────────────────────
+function showTab(tab) {
+  _activeTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  renderTab(tab);
+}
+
+function renderTab(tab) {
+  if (tab === 'orders') renderOrders('all');
+  else if (tab === 'today') renderOrders('today');
+  else if (tab === 'paid') renderOrders('paid');
+  else if (tab === 'insights') renderInsights();
+  else if (tab === 'products') renderProducts();
+}
+
+function renderOrders(filter) {
+  const today = new Date().toISOString().slice(0, 10);
+  let list = _orders;
+
+  if (filter === 'today') {
+    list = _orders.filter(o => {
+      const d = (o.date || o.createdAt || '').slice(0, 10);
+      return d === today || (o.createdAt || '').slice(0, 10) === today;
+    });
+  } else if (filter === 'paid') {
+    list = _orders.filter(o => o.status === 'paid');
+  } else {
+    // 'all' — show pending first, then paid
+    const pending = _orders.filter(o => o.status !== 'paid');
+    const paid = _orders.filter(o => o.status === 'paid');
+    list = [...pending, ...paid];
+  }
+
+  if (!list.length) {
+    const msgs = {
+      all:   { icon: '🧁', title: 'No orders yet', sub: 'New website orders will appear here as they come in.' },
+      today: { icon: '📅', title: 'No orders today', sub: 'Today\'s orders will show up here.' },
+      paid:  { icon: '✅', title: 'No paid orders yet', sub: 'Completed payments will appear here.' },
+    };
+    const m = msgs[filter] || msgs.all;
+    showContent(`<div class="empty"><span class="empty-icon">${m.icon}</span><div class="empty-title">${m.title}</div><div class="empty-sub">${m.sub}</div></div>`);
+    return;
+  }
+
+  const pending = list.filter(o => o.status === 'pending').length;
+  const paid    = list.filter(o => o.status === 'paid').length;
+
+  let html = `<div class="pull-hint">↓ Pull to refresh or tap ↻</div>`;
+  html += `<div class="sec-hd">
+    <span class="sec-title">${filter === 'paid' ? 'Paid Orders' : filter === 'today' ? "Today's Orders" : 'All Orders'}</span>
+    <span class="sec-badge badge-${pending > 0 ? 'amber' : 'green'}">${list.length} TOTAL</span>
+  </div>`;
+
+  for (const o of list) {
+    const isPaid = o.status === 'paid';
+    const date = o.date ? new Date(o.date).toLocaleDateString('en-GB', {weekday:'short',day:'numeric',month:'short'}) : '—';
+    const created = o.createdAt ? new Date(o.createdAt).toLocaleString('en-GB', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+    const total = parseFloat(o.total || 0).toFixed(2);
+    const delivery = o.delivery || '';
+    const ref = o.reference || o.id || '';
+
+    html += `<div class="order-card ${isPaid ? 'paid' : 'pending'}">
+      <div class="order-card-top">
+        <div>
+          <div class="order-customer">${esc(o.name || 'Unknown Customer')}</div>
+          ${ref ? `<div style="font-size:10px;color:#bbb;margin-top:1px;">${esc(ref)}</div>` : ''}
+        </div>
+        <div class="order-total ${isPaid ? 'paid' : ''}">£${total}</div>
+      </div>
+      <div class="order-items">${esc(o.items || 'No item details')}</div>
+      <div class="order-meta">
+        ${o.date ? `<span class="order-chip chip-date">📅 ${date}</span>` : ''}
+        ${delivery ? `<span class="order-chip chip-delivery">🚚 ${esc(delivery)}</span>` : ''}
+        <span class="order-chip ${isPaid ? 'chip-status-paid' : 'chip-status-pending'}">${isPaid ? '✅ PAID' : '⏳ PENDING'}</span>
+      </div>
+      ${o.address && o.address !== 'Personal Collection - By Arrangement' && o.address !== 'Highworth Market - Saturday Collection'
+        ? `<div class="order-contact">📍 ${esc(o.address)}</div>` : ''}
+      ${o.email || o.phone ? `<div class="order-contact">
+        ${o.email ? `<a href="mailto:${esc(o.email)}">✉ ${esc(o.email)}</a>` : ''}
+        ${o.phone ? `<a href="tel:${esc(o.phone)}">📞 ${esc(o.phone)}</a>` : ''}
+      </div>` : ''}
+      ${o.notes && o.notes !== 'No special instructions' ? `<div class="order-notes">💬 ${esc(o.notes)}</div>` : ''}
+      ${created ? `<div class="order-time">Ordered: ${created}</div>` : ''}
+    </div>`;
+  }
+
+  showContent(html);
+}
+
+function renderInsights() {
+  const total = _orders.length;
+  const paid = _orders.filter(o => o.status === 'paid');
+  const pending = _orders.filter(o => o.status === 'pending');
+  const revenue = paid.reduce((s, o) => s + (parseFloat(o.total) || 0), 0);
+  const avg = paid.length ? revenue / paid.length : 0;
+
+  const deliveryTypes = {};
+  for (const o of _orders) {
+    const d = o.delivery || 'Unknown';
+    deliveryTypes[d] = (deliveryTypes[d] || 0) + 1;
+  }
+
+  let html = `
+    <div class="sec-hd"><span class="sec-title">Business Insights</span></div>
+    <div class="insights-grid">
+      <div class="ins-card pink"><div class="ins-num pink">${total}</div><div class="ins-label">TOTAL ORDERS</div></div>
+      <div class="ins-card amber"><div class="ins-num amber">${pending.length}</div><div class="ins-label">PENDING</div></div>
+      <div class="ins-card green"><div class="ins-num green">£${revenue.toFixed(2)}</div><div class="ins-label">TOTAL REVENUE</div></div>
+      <div class="ins-card blue"><div class="ins-num blue">£${avg.toFixed(2)}</div><div class="ins-label">AVG ORDER VALUE</div></div>
+    </div>
+    <div class="sec-hd"><span class="sec-title">Delivery Breakdown</span></div>`;
+
+  for (const [type, count] of Object.entries(deliveryTypes)) {
+    const pct = total ? Math.round(count / total * 100) : 0;
+    html += `<div style="background:var(--card);border-radius:12px;padding:12px 16px;margin-bottom:8px;box-shadow:var(--shadow);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-size:13px;font-weight:700;">${esc(type)}</span>
+        <span style="font-size:13px;color:var(--pink);font-weight:800;">${count}</span>
+      </div>
+      <div style="background:var(--pink-light);border-radius:6px;height:8px;overflow:hidden;">
+        <div style="background:var(--pink);height:100%;width:${pct}%;border-radius:6px;transition:width .5s;"></div>
+      </div>
+    </div>`;
+  }
+
+  html += `<div style="text-align:center;padding:16px;font-size:12px;color:#bbb;">Data from cupcakesontheavenue.com</div>`;
+  showContent(html);
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function showContent(html) {
+  document.getElementById('content').innerHTML = html;
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── PRODUCTS ──────────────────────────────────────────────────────────────────
+let _selectedCategory = 'Cupcakes';
+let _photoBase64 = null;
+let _photoType = 'image/jpeg';
+let _pendingProducts = [];
+
+async function loadPendingProducts() {
+  try {
+    const r = await fetch(`${CCONA_API}/api/product-update`);
+    const d = await r.json();
+    _pendingProducts = d.updates || [];
+  } catch { _pendingProducts = []; }
+}
+
+function renderProducts() {
+  loadPendingProducts().then(() => {
+    const cats = ['Cupcakes', 'Cakes', 'Shortbread', 'Seasonal', 'Other'];
+    let html = `
+    <div class="prod-form">
+      <div class="prod-form-title">🧁 Add / Update a Product</div>
+
+      <div class="form-field">
+        <label class="form-label">CATEGORY</label>
+        <div class="cat-row" id="catRow">
+          ${cats.map(c => `<div class="cat-pill${c===_selectedCategory?' active':''}" onclick="selectCat('${c}')">${c}</div>`).join('')}
+          <div class="cat-pill${_selectedCategory==='__custom__'?' active':''}" onclick="selectCat('__custom__')">✏️ Other…</div>
+        </div>
+        <input class="form-input" id="customCatInput" type="text" maxlength="40"
+          placeholder="Type your own category…"
+          style="margin-top:10px;display:${_selectedCategory==='__custom__'?'block':'none'};"/>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">PRODUCT NAME *</label>
+        <input class="form-input" id="prodName" type="text" placeholder="e.g. Lemon Drizzle Cupcake" maxlength="80"/>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">DESCRIPTION</label>
+        <textarea class="form-input" id="prodDesc" placeholder="Describe the product — flavour, ingredients, what makes it special…" rows="3"></textarea>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">PRICE (£)</label>
+        <input class="form-input" id="prodPrice" type="text" inputmode="decimal" placeholder="e.g. 3.50 or 3.50 each / £35 for 12"/>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">PHOTO</label>
+        <div class="photo-zone" id="photoZone">
+          <input type="file" accept="image/*" onchange="handlePhoto(this)"/>
+          <span class="photo-zone-icon" id="photoIcon">📷</span>
+          <div class="photo-zone-text" id="photoText">Tap to add a photo</div>
+          <div class="photo-zone-sub">JPG, PNG or HEIC — auto-compressed</div>
+          <img id="photoPreview" class="photo-preview" alt="Preview"/>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">ACTION</label>
+        <select class="form-input" id="prodAction">
+          <option value="add">➕ Add new product to the site</option>
+          <option value="update">✏️ Update existing product</option>
+          <option value="remove">🗑️ Remove product from site</option>
+          <option value="price">💰 Price change only</option>
+        </select>
+      </div>
+
+      <button class="submit-btn" id="prodSubmitBtn" onclick="submitProduct()">
+        Send to Rift for Update 🧁
+      </button>
+    </div>`;
+
+    if (_pendingProducts.length) {
+      html += `<div class="sec-hd">
+        <span class="sec-title">Pending Site Updates</span>
+        <span class="sec-badge badge-amber">${_pendingProducts.length} WAITING</span>
+      </div>`;
+      for (const p of _pendingProducts) {
+        const ts = p.createdAt ? new Date(p.createdAt).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+        html += `<div class="pending-card">
+          ${p.imageBase64
+            ? `<img class="pending-thumb" src="${p.imageBase64}" alt="${esc(p.name)}"/>`
+            : `<div class="pending-thumb-placeholder">🧁</div>`}
+          <div class="pending-info">
+            <div class="pending-name">${esc(p.name)}</div>
+            <div class="pending-desc">${esc(p.description||'').slice(0,80)}${(p.description||'').length>80?'…':''}</div>
+            <div class="pending-price">${p.price ? '£'+esc(p.price) : ''} &nbsp;<span style="font-size:10px;color:var(--amber);font-weight:600;">${esc(p.action||'add').toUpperCase()}</span></div>
+            <div class="pending-ts">Submitted ${ts} · waiting for Rift</div>
+          </div>
+        </div>`;
+      }
+    } else {
+      html += `<div style="text-align:center;padding:20px;color:var(--text2);font-size:13px;">
+        No pending updates — submit one above and Rift will update the site.
+      </div>`;
+    }
+
+    showContent(html);
+  });
+}
+
+function selectCat(cat) {
+  _selectedCategory = cat;
+  document.querySelectorAll('.cat-pill').forEach(p => {
+    const isOther = p.textContent.includes('Other');
+    p.classList.toggle('active', isOther ? cat === '__custom__' : p.textContent === cat);
+  });
+  const customInput = document.getElementById('customCatInput');
+  if (customInput) {
+    customInput.style.display = cat === '__custom__' ? 'block' : 'none';
+    if (cat === '__custom__') customInput.focus();
+  }
+}
+
+async function compressImage(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 900;
+        const ratio = Math.min(MAX / img.width, MAX / img.height, 1);
+        const canvas = document.createElement('canvas');
+        canvas.width  = Math.round(img.width  * ratio);
+        canvas.height = Math.round(img.height * ratio);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handlePhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const icon = document.getElementById('photoIcon');
+  const text = document.getElementById('photoText');
+  icon.textContent = '⏳';
+  text.textContent = 'Compressing…';
+  try {
+    _photoBase64 = await compressImage(file);
+    _photoType   = 'image/jpeg';
+    const preview = document.getElementById('photoPreview');
+    preview.src   = _photoBase64;
+    preview.style.display = 'block';
+    icon.textContent = '✅';
+    text.textContent = 'Photo ready — looks great!';
+  } catch {
+    icon.textContent = '❌';
+    text.textContent = 'Could not load photo — try another';
+  }
+}
+
+async function submitProduct() {
+  const name  = (document.getElementById('prodName').value || '').trim();
+  const desc  = (document.getElementById('prodDesc').value || '').trim();
+  const price = (document.getElementById('prodPrice').value || '').trim();
+  const action = document.getElementById('prodAction').value;
+
+  if (!name) { toast('⚠ Please enter a product name'); return; }
+
+  const btn = document.getElementById('prodSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    const r = await fetch(`${CCONA_API}/api/product-update`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name, description: desc, price, action,
+        category: _selectedCategory === '__custom__'
+          ? (document.getElementById('customCatInput')?.value.trim() || 'Other')
+          : _selectedCategory,
+        imageBase64: _photoBase64,
+        imageType: _photoType,
+      })
+    });
+    const d = await r.json();
+    if (d.success) {
+      toast('✓ Sent! Rift will update the site soon.');
+      // Reset form
+      document.getElementById('prodName').value = '';
+      document.getElementById('prodDesc').value = '';
+      document.getElementById('prodPrice').value = '';
+      document.getElementById('photoPreview').style.display = 'none';
+      document.getElementById('photoIcon').textContent = '📷';
+      document.getElementById('photoText').textContent = 'Tap to add a photo';
+      _photoBase64 = null;
+      const customCatInput = document.getElementById('customCatInput');
+      if (customCatInput) { customCatInput.value = ''; customCatInput.style.display = 'none'; }
+      _selectedCategory = 'Cupcakes';
+    } else {
+      toast('❌ ' + (d.error || 'Something went wrong'));
+    }
+  } catch {
+    toast('❌ Could not reach server — check connection');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Send to Rift for Update 🧁';
+  loadPendingProducts().then(() => renderProducts());
+}
+
+// ── AUTO-REFRESH every 2 minutes ──────────────────────────────────────────────
+setInterval(() => {
+  if (document.getElementById('app').style.display !== 'none') {
+    loadOrders().then(() => updateStats());
+  }
+}, 120000);
+</script>
+</body>
+</html>
