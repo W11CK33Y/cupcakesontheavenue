@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
 <title>Cupcakes on the Avenue - Premium Baked Goods & Custom Cakes | Highworth Market</title>
-<meta name="description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market Saturdays or order online. Fresh baked goods made with love.">
+<meta name="description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market Saturdays and Fairford Market every two weeks on Wednesdays, or order online. Fresh baked goods made with love.">
 <meta name="keywords" content="cupcakes, cakes, bakery, Highworth, custom cakes, shortbread, celebration cakes, fresh baked goods, artisan bakery">
 <meta name="author" content="Cupcakes on the Avenue">
 <meta name="robots" content="index, follow">
@@ -27,14 +27,14 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cupcakesontheavenue.co.uk">
 <meta property="og:title" content="Cupcakes on the Avenue - Premium Baked Goods & Custom Cakes">
-<meta property="og:description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market or order online.">
+<meta property="og:description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market Saturdays and Fairford Market bi‑weekly on Wednesdays, or order online.">
 <meta property="og:image" content="https://cupcakesontheavenue.co.uk/pictures/logo.png">
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
 <meta property="twitter:url" content="https://cupcakesontheavenue.co.uk">
 <meta property="twitter:title" content="Cupcakes on the Avenue - Premium Baked Goods & Custom Cakes">
-<meta property="twitter:description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market or order online.">
+<meta property="twitter:description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market Saturdays and Fairford Market bi‑weekly on Wednesdays, or order online.">
 <meta property="twitter:image" content="https://cupcakesontheavenue.co.uk/pictures/logo.png">
 
 <!-- Structured Data -->
@@ -158,75 +158,36 @@ body {
   max-width: 100vw;
 }
 
-/* Christmas Winter Theme - Falling Snow Animation */
-body::before {
-  content: '❄️';
-  position: fixed;
-  top: -50px;
-  left: 10%;
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.8);
-  animation: snowfall 10s linear infinite;
-  z-index: 1;
-  pointer-events: none;
-}
+/* winter animation disabled */
+/* removed snow/star falling effects */
 
-body::after {
-  content: '⭐';
-  position: fixed;
-  top: -50px;
-  right: 15%;
-  font-size: 18px;
-  color: rgba(255, 215, 0, 0.9);
-  animation: snowfall 12s linear infinite 2s;
-  z-index: 1;
-  pointer-events: none;
+/* Seasonal body backgrounds */
+body.spring {
+  background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%); /* fresh spring green */
+  position: relative;
 }
-
-@keyframes snowfall {
-  0% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(360deg);
-    opacity: 0.3;
-  }
+body.summer {
+  background: linear-gradient(135deg, #FFE135 0%, #FFA500 50%, #FFD700 100%); /* sunny yellow/orange */
+  position: relative;
 }
-
-/* Christmas Winter Theme - Override seasonal themes */
-body.spring,
-body.summer,
-body.autumn,
+body.autumn {
+  background: linear-gradient(135deg, #FF6B35 0%, #8B4513 50%, #FF4500 100%); /* autumnal orange/brown */
+  position: relative;
+}
 body.winter {
   /* Winter Christmas gradient with purple brand colors */
   background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #4a5d7c 100%);
   position: relative;
 }
 
-/* Add subtle snowflake pattern overlay */
-body.winter::before,
-body.spring::before,
-body.summer::before,
-body.autumn::before {
-  content: '❄️ ✨ 🎄';
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 30px;
-  opacity: 0.15;
-  animation: gentleFloat 6s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 0;
-}
+/* seasonal overlay removed */
 
 @keyframes gentleFloat {
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50% { transform: translateX(-50%) translateY(-10px); }
 }
 
-/* Header - Christmas Winter Theme */
+/* Header */
 header {
   background: rgba(255, 255, 255, 0.98);
   padding: 20px;
@@ -236,25 +197,9 @@ header {
   position: relative;
 }
 
-header::before {
-  content: '🎄';
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 40px;
-  opacity: 0.7;
-}
+/* header left decoration removed */
 
-header::after {
-  content: '🎄';
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 40px;
-  opacity: 0.7;
-}
+/* header right decoration removed */
 
 header h1 {
   color: #667eea;
@@ -263,13 +208,7 @@ header h1 {
   text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
 
-header h1::before {
-  content: '❄️ ';
-}
-
-header h1::after {
-  content: ' ❄️';
-}
+/* header h1 no emojis */
 
 header p {
   color: #666;
@@ -789,24 +728,9 @@ body.winter .product-tile:hover {
   overflow: hidden;
 }
 
-/* Christmas sparkle effect on buttons */
-.order-btn::before {
-  content: '✨';
-  position: absolute;
-  left: 10px;
-  opacity: 0.6;
-}
-
-.order-btn::after {
-  content: '✨';
-  position: absolute;
-  right: 10px;
-  opacity: 0.6;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: transform 0.2s;
-}
+/* sparkle effects removed */
+.order-btn::before,
+.order-btn::after { content: none; }
 
 .order-btn:hover {
   transform: scale(1.02);
@@ -1082,20 +1006,8 @@ footer img {
   border-top: 3px solid rgba(255, 215, 0, 0.4);
 }
 
-/* Christmas footer decorations */
-.site-footer::after {
-  content: '🎄 ❄️ ⭐ ❄️ 🎄';
-  position: absolute;
-  top: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 24px;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 5px 20px;
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  position: relative;
-}
+/* footer decorations removed */
+.site-footer::after { content: none; }
 
 .site-footer::before {
   content: '';
@@ -1338,16 +1250,9 @@ footer img {
   display: inline-block;
 }
 
-/* Add Christmas decorations to section titles */
-section h2::before {
-  content: '✨ ';
-  color: #ffd700;
-}
-
-section h2::after {
-  content: ' ✨';
-  color: #ffd700;
-
+/* section title decorations removed */
+section h2::before,
+section h2::after { content: none; }
 @keyframes shimmer {
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
@@ -1358,37 +1263,9 @@ section h2::after {
   100% { transform: rotate(360deg); }
 }
 
-/* Multiple animated snowflakes for winter wonderland effect */
-body {
-  --snowflake-1: '❄️';
-  --snowflake-2: '⭐';
-  --snowflake-3: '✨';
-}
-
-/* Create 6 snowflakes across the page */
-nav::before,
-nav::after {
-  content: '❄️';
-  position: fixed;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 16px;
-  animation: snowfall 8s linear infinite;
-  pointer-events: none;
-  z-index: 9999;
-}
-
-nav::before {
-  top: -30px;
-  left: 25%;
-  animation-delay: 1s;
-  animation-duration: 11s;
-}
-
-nav::after {
-  top: -30px;
-  right: 25%;
-  animation-delay: 3s;
-  animation-duration: 9s;
+/* winter nav effects removed */
+body { --snowflake-1: ''; --snowflake-2: ''; --snowflake-3: ''; }
+nav::before, nav::after { content: none; }
   content: '⭐';
   color: rgba(255, 215, 0, 0.8);
 }
@@ -2321,7 +2198,7 @@ nav::after {
 }
 </style>
 </head>
-<body>
+<body class="spring">
 
 <header role="banner">
   <h1>🧁 Cupcakes on the Avenue</h1>
@@ -2419,7 +2296,7 @@ nav::after {
 
 <!-- Featured Products Highlight -->
 <section style="background: linear-gradient(135deg, #f5f7ff 0%, #f0e6ff 100%); padding: 50px 20px; margin: 40px auto; border-radius: 15px; max-width: 1400px; margin-left: auto; margin-right: auto;">
-  <h2 style="text-align: center; color: #667eea; margin-bottom: 10px; font-size: 2rem;">✨ Our Signature Treats</h2>
+  <h2 style="text-align: center; color: #667eea; margin-bottom: 10px; font-size: 2rem;">Our Signature Treats</h2>
   <p style="text-align: center; color: #666; margin-bottom: 40px; font-size: 1.1rem;">Beloved by customers, perfected by us</p>
   
   <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; max-width: 1200px; margin: 0 auto;">
@@ -2510,7 +2387,7 @@ nav::after {
   <div style="text-align: center; margin-bottom: 30px;">
     <p style="font-size: 1.3rem; font-weight: bold; color: #667eea;">Every Saturday • 8am - 2pm</p>
     <p style="font-size: 1.1rem; margin-top: 10px; color: #666;">Come visit us for fresh bakes, friendly chats, and our famous Shortbread Delight!</p>
-  </div>
+</div>
 
   <button class="market-toggle" id="marketToggle">See This Week's Bakes</button>
 
@@ -2586,6 +2463,90 @@ nav::after {
   </div>
 </section>
 
+<!-- Fairford Market Section -->
+<section id="market-fairford" style="background: white; padding: 50px 20px; margin: 40px auto; border-radius: 15px; max-width: 1000px;">
+  <h2>🎪 Fairford Market</h2>
+  <div style="text-align: center; margin-bottom: 30px;">
+    <p style="font-size: 1.3rem; font-weight: bold; color: #667eea;">Every Two Weeks on Wednesday • 9am - 2pm</p>
+    <p style="font-size: 1.1rem; margin-top: 10px; color: #666;">Come visit us for fresh bakes, friendly chats, and our famous Shortbread Delight!</p>
+    <p style="font-size: 1.1rem; margin-top: 10px; color: #666;">Starting Wednesday 11 March.</p>
+  </div>
+
+  <button class="market-toggle" id="fairfordToggle">See This Week's Bakes</button>
+
+  <div class="market-bakes" id="fairfordBakes">
+    <div class="products-grid">
+      <div class="product-tile">
+        <img src="pictures/thisweekshort.jpg" alt="Shortbread Delight">
+        <div class="product-overlay">
+          <div>
+            <div class="product-title">Famous Shortbread Delight ⭐</div>
+            <div class="product-description">Our signature buttery shortbread - the star of the market!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile">
+        <img src="pictures/christmascake.jpg" alt="Brownies">
+        <div class="product-overlay">
+          <div>
+            <div class="product-title">Sliced Christmas cake</div>
+            <div class="product-description">Rich and moist, perfect for the festive season.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile">
+        <img src="pictures/caramelised.jpg" alt="Cupcakes">
+        <div class="product-overlay">
+          <div>
+            <div class="product-title">Caramelised biscuit (Biscoff-style) brownies</div>
+            <div class="product-description">Decadent brownies with a caramelised biscuit twist.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile">
+        <img src="pictures/thisweekiced.jpg" alt="Biscuits">
+        <div class="product-overlay">
+          <div>
+            <div class="product-title">Biscuit Selection</div>
+            <div class="product-description">Handmade biscuits perfect for a cosy treat.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile">
+        <img src="pictures/slicedvanilla.jpg" alt="New Market Bake">
+        <div class="product-overlay">
+          <div>
+            <div class="product-title">Weekly Special</div>
+            <div class="product-description">Vanilla sponge with apricot jam — fondant or buttercream topping</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="social-links">
+    <p style="font-size: 1.2rem; color: #667eea; font-weight: bold;">Follow us for weekly bakes & updates! 🍪</p>
+    <div class="social-icons">
+      <a href="https://instagram.com/cupcakesontheavenue" target="_blank">
+        <img src="pictures/instagram.png" alt="Instagram" width="45" height="45">
+      </a>
+      <a href="https://www.facebook.com/profile.php?id=61578246007533" target="_blank">
+        <svg width="45" height="45" viewBox="0 0 24 24" fill="#1877F2">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        </svg>
+      </a>
+      <a href="https://tiktok.com/@Cupcakesontheheaven" target="_blank">
+        <img src="pictures/tiktok.png" alt="TikTok" width="45" height="45">
+      </a>
+    </div>
+  </div>
+</section>
+
+
 <div class="calendar-overlay" id="calendarOverlay"></div>
 <div class="calendar-popup" id="calendarPopup">
   <button class="close-calendar" id="closeCalendar">×</button>
@@ -2619,10 +2580,9 @@ nav::after {
     <div style="text-align: center; padding: 25px; background: #f8f9fa; border-radius: 12px; border-left: 5px solid #667eea;">
       <div style="font-size: 2.5rem; margin-bottom: 15px;">📍</div>
       <h3 style="color: #667eea; margin-bottom: 10px;">Find Us at Market</h3>
-      <p style="color: #666; margin-bottom: 10px;"><strong>Highworth Market</strong></p>
-      <p style="color: #666; margin-bottom: 10px;">Every Saturday</p>
-      <p style="color: #764ba2; font-weight: bold; font-size: 1.1rem;">8:00 AM - 2:00 PM</p>
-      <p style="color: #666; font-size: 0.9rem; margin-top: 15px;">Fresh bakes available every Saturday. Easy parking & friendly atmosphere!</p>
+      <p style="color: #666; margin-bottom: 10px;"><strong>Highworth Market</strong> – Saturdays 8:00 AM – 2:00 PM</p>
+      <p style="color: #666; margin-bottom: 10px;"><strong>Fairford Market</strong> – every two weeks on Wednesday 9:00 AM – 2:00 PM (starting Wednesday 11 March)</p>
+      <p style="color: #764ba2; font-weight: bold; font-size: 1.1rem;">Fresh bakes available at both markets.</p>
     </div>
     
     <!-- Phone -->
@@ -2671,7 +2631,7 @@ nav::after {
 
 <script>
 // ✅ SIMPLIFIED: Just the essentials for checkout
-const BACKEND_BASE = 'https://sumup-backend.vercel.app';
+const BACKEND_BASE = 'https://stripe-backend-hxx2.onrender.com';
 
 let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 let currentMonth = new Date().getMonth();
@@ -2760,6 +2720,18 @@ let blockedDates = JSON.parse(localStorage.getItem('blockedDates') || '[]');
   if (marketToggleEl) {
     marketToggleEl.addEventListener('click', function() {
       const bakes = document.getElementById('marketBakes');
+      if (bakes) {
+        bakes.classList.toggle('show');
+        this.textContent = bakes.classList.contains('show') ? 'Hide Market Bakes' : 'See This Week\'s Bakes';
+      }
+    });
+  }
+
+  // Fairford Market toggle
+  const fairfordToggleEl = document.getElementById('fairfordToggle');
+  if (fairfordToggleEl) {
+    fairfordToggleEl.addEventListener('click', function() {
+      const bakes = document.getElementById('fairfordBakes');
       if (bakes) {
         bakes.classList.toggle('show');
         this.textContent = bakes.classList.contains('show') ? 'Hide Market Bakes' : 'See This Week\'s Bakes';
@@ -3272,7 +3244,7 @@ function closePoll() {
   container.classList.remove('show');
 }
 
-// ✅ SIMPLIFIED CHECKOUT FUNCTION - Uses backend API for Discord & Stripe
+// ✅ SIMPLIFIED CHECKOUT FUNCTION - Uses backend API for Stripe processing
 async function handlePlaceOrder() {
   console.log('🚀 Starting checkout process...');
   
@@ -3339,46 +3311,45 @@ async function handlePlaceOrder() {
       : delivery === 'collect_market' ? 'Market Collection'
       : delivery === 'delivery' ? 'Delivery' : 'Delivery';
 
-    // Create items string for Discord
-    const itemsString = cart.map(item => `${item.name} x${item.quantity}`).join(', ');
-
     console.log('📦 Sending order to backend:', {
       reference: orderReference,
       total: total.toFixed(2),
-      customer: name,
-      items: itemsString
+      customer: name
     });
 
-    // ✅ Send everything through your backend API
-    orderBtn.textContent = 'Sending to Discord & Stripe...';
-    
+    orderBtn.textContent = 'Processing order...';
+
     const orderData = {
-      reference: orderReference,        // Required
-      total: total.toFixed(2),         // Required
-      name: name,                      // Customer name
-      email: email,                    // Email for manual contact (NO AUTO-EMAILS)
-      phone: mobile,                   // Phone number (or use 'mobile')
-      delivery: deliveryMethod,        // 'Delivery' or 'Collection'
-      date: date,                      // Delivery/collection date
-      address: address,                // Delivery address
-      items: itemsString,              // What they ordered
-      notes: notes || 'No special instructions' // Special instructions
+      reference: orderReference,
+      total: total.toFixed(2),
+      name,
+      email,
+      phone: mobile,
+      delivery: deliveryMethod,
+      date,
+      address,
+      items: cart.map(i => `${i.name} x${i.quantity}`).join(', '),
+      // Stripe-compatible line_items (used by backend if STRIPE_SECRET is set)
+      line_items: cart.map(i => ({
+        name: i.name,
+        price: i.price,
+        quantity: i.quantity
+      })),
+      notes: notes || 'No special instructions'
     };
 
-    const response = await fetch(`${BACKEND_BASE}/api/discord-webhook`, {
+    const response = await fetch(`${BACKEND_BASE}/api/checkout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(orderData)
     });
-
-    // 🤖 Discord Admin Bot notifications now handled in backend automatically!
 
     console.log('📡 Backend response status:', response.status);
 
     if (response.ok) {
       const result = await response.json();
       console.log('✅ Backend processed successfully:', result);
-      
+
       // Clear cart
       cart = [];
       localStorage.setItem('cart', JSON.stringify(cart));
@@ -3388,22 +3359,20 @@ async function handlePlaceOrder() {
       // Show success and redirect to Stripe
       showToast('✅ Order sent! Redirecting to payment...');
       orderBtn.textContent = 'Redirecting to Stripe...';
-      
-      // If backend returns a Stripe URL, redirect to it
+
       if (result.stripeUrl) {
-        console.log('� Redirecting to Stripe:', result.stripeUrl);
+        console.log('⌛ Redirecting to Stripe:', result.stripeUrl);
         setTimeout(() => {
           window.location.href = result.stripeUrl;
         }, 1000);
       } else {
-        // Fallback: redirect to checkout endpoint
         const checkoutUrl = `${BACKEND_BASE}/api/checkout?total=${total.toFixed(2)}&reference=${orderReference}`;
-        console.log('� Redirecting to checkout:', checkoutUrl);
+        console.log('⌛ Redirecting to checkout:', checkoutUrl);
         setTimeout(() => {
           window.location.href = checkoutUrl;
         }, 1000);
       }
-      
+
     } else {
       const errorText = await response.text();
       console.error('❌ Backend error:', errorText);
@@ -3516,16 +3485,10 @@ function showToast(message) {
 }
 
 // Seasonal theme
+// Always use spring for the current update (override automatic detection)
 function applySeason() {
-  const month = new Date().getMonth();
-  let season = '';
-  
-  if (month >= 2 && month <= 4) season = 'spring';
-  else if (month >= 5 && month <= 7) season = 'summer';
-  else if (month >= 8 && month <= 10) season = 'autumn';
-  else season = 'winter';
-  
-  document.body.className = season;
+  // Force spring theme regardless of the date
+  document.body.className = 'spring';
 }
 
 // Christmas Light Switch-On Event Countdown Timer
@@ -3543,7 +3506,7 @@ function updateMarketCountdown() {
     // Event is happening NOW!
     document.getElementById('marketCountdown').innerHTML = `
       <div style="font-size: 1.5rem; font-weight: bold; animation: pulse 1.5s infinite;">
-        �✨ EVENT IS HAPPENING NOW! ✨�
+        EVENT IS HAPPENING NOW!
       </div>
     `;
     return;
@@ -3553,7 +3516,7 @@ function updateMarketCountdown() {
   if (timeUntil < 0) {
     document.getElementById('marketCountdown').innerHTML = `
       <div style="font-size: 1.3rem; font-weight: bold; color: rgba(255,255,255,0.9);">
-        Event has ended - See you next time! 🎄
+        Event has ended - See you next time!
       </div>
     `;
     return;
@@ -3585,35 +3548,9 @@ window.removeFromCart = removeFromCart;
 window.selectDate = selectDate;
 </script>
 
-<!-- Discord Live Chat Widget -->
-<link rel="stylesheet" href="discord-chat.css">
-<script src="discord-chat.js"></script>
-<script>
-  // Initialize Discord chat widget after everything loads
-  window.addEventListener('load', function() {
-    // Prevent double initialization
-    if (window.discordChat) {
-      console.log('⚠️ Chat widget already initialized, skipping...');
-      return;
-    }
-    
-    console.log('🧁 Initializing chat widget...');
-    try {
-      if (typeof DiscordChatWidget === 'undefined') {
-        console.error('❌ DiscordChatWidget class not found. Check if discord-chat.js is loaded.');
-        return;
-      }
-      
-      window.discordChat = new DiscordChatWidget({
-        webhookUrl: 'https://discord.com/api/webhooks/1441917103153090671/KNupEAUqkfz0orXHbo31YH7_0ZmV8cIprHZr8rNFn1nDNfA-UUijrfUSPnzV7IYcKErB',
-        businessName: 'Cupcakes on the Avenue'
-      });
-      console.log('✅ Chat widget initialized successfully!');
-    } catch (error) {
-      console.error('❌ Error initializing chat widget:', error);
-    }
-  });
-</script>
+
 
 </body>
 </html>
+
+

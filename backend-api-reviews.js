@@ -136,8 +136,7 @@ router.post('/reviews', async (req, res) => {
     // Add to storage (in production, save to database)
     reviews.push(newReview);
     
-    // Optional: Send notification to Discord
-    await notifyNewReview(newReview);
+    // Optional: send notification removed; no external webhooks needed
     
     res.status(201).json({
       success: true,
@@ -241,44 +240,6 @@ router.get('/reviews/pending', (req, res) => {
     });
   }
 });
-
-/**
- * Send Discord notification for new review
- */
-async function notifyNewReview(review) {
-  try {
-    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
-    if (!webhookUrl) return;
-    
-    const stars = '⭐'.repeat(review.rating);
-    
-    const embed = {
-      title: '📝 New Review Submitted',
-      color: 0x667eea,
-      fields: [
-        { name: '👤 Name', value: review.name, inline: true },
-        { name: '⭐ Rating', value: stars, inline: true },
-        { name: '📦 Product', value: review.product || 'General', inline: true },
-        { name: '💬 Review', value: review.reviewText.substring(0, 1000) },
-        { name: '📧 Email', value: review.email },
-        { name: '🔗 Review ID', value: review.id }
-      ],
-      footer: { text: 'Click approve to publish this review' },
-      timestamp: review.createdAt
-    };
-    
-    await fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        content: '⚠️ New review needs approval!',
-        embeds: [embed]
-      })
-    });
-  } catch (error) {
-    console.error('Failed to send Discord notification:', error);
-  }
-}
 
 module.exports = router;
 

@@ -1,160 +1,94 @@
-# Quick Fix: Live Notifications Not Showing
+# Live Status API Documentation
 
-## ✅ What's Done
-1. **Backend API Created**: `api/live-status.js` deployed to Vercel
-2. **Frontend Updated**: Website polls for updates every 5 seconds
-3. **API Working**: https://sumup-backend-ffjh8xkwc-jack-wicks-projects.vercel.app/api/live-status
+## Overview
+The live status API provides real-time updates for market status, announcements, and polls on the website. The website polls this API every 5 seconds to display live updates.
 
-## 🔧 Next Steps
+## ✅ Current Status
+- **Backend API**: `api/live-status.js` deployed to Vercel
+- **Frontend Integration**: Website automatically polls for updates
+- **API Endpoint**: https://sumup-backend-ffjh8xkwc-jack-wicks-projects.vercel.app/api/live-status
 
-### Step 1: Update Discord Bot (5 minutes)
+## Features
 
-Open `C:\Users\jack\Downloads\sumup-backend\discord-bot\bot.js` and:
+### 1. Market Status Banner
+- **Display**: Fixed banner at top of page showing market status
+- **Styles**: Green gradient for OPEN, gray for CLOSED
+- **API Action**: `market` with data `{ status: 'open' | 'closed' }`
 
-**Add this helper function after `postState()` (around line 45):**
+### 2. Announcements
+- **Display**: Toast notification that slides from top
+- **Duration**: Shows for 8 seconds, then auto-hides
+- **API Action**: `announcement` with data `{ message: string, important: boolean }`
 
-```javascript
-// Helper to update live website notifications
-async function updateLiveStatus(action, data) {
-  try {
-    const res = await fetch(`${BACKEND_URL}/api/live-status`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action, data })
-    });
-    if (!res.ok) {
-      console.error('Live status API error:', res.status);
-      return { error: `Failed to update live status (${res.status})` };
-    }
-    return await res.json();
-  } catch (e) {
-    console.error('Live status update error:', e);
-    return { error: e.message };
-  }
+### 3. Flavor Polls
+- **Display**: Fixed poll widget in bottom-right corner
+- **Features**:
+  - Users click to vote
+  - Real-time vote counts and percentages
+  - Progress bars
+  - One vote per user (stored in localStorage)
+- **API Actions**:
+  - Create: `poll` with data `{ question: string, options: string[], active: true }`
+  - Close: `poll` with data `{ active: false }`
+  - Vote: `vote` with data `{ optionIndex: number }`
+
+## API Usage
+
+### GET /api/live-status
+Returns current live status data:
+```json
+{
+  "success": true,
+  "marketStatus": "open" | "closed" | null,
+  "announcement": { "message": "string", "timestamp": number, "important": boolean } | null,
+  "poll": {
+    "question": "string",
+    "options": ["Option 1", "Option 2", "Option 3"],
+    "votes": [5, 3, 2],
+    "active": true,
+    "userVoted": false
+  } | null
 }
 ```
 
-**Update `handleMarket()` function (around line 461):**
-
-Add this after the existing `postState` call:
-
-```javascript
-// Update live-status API (for website notifications)
-const liveResult = await updateLiveStatus('market', { 
-  status: arg === 'live' ? 'open' : 'closed' 
-});
-if (liveResult.error) {
-  console.error('Warning: Failed to update website live status:', liveResult.error);
+### POST /api/live-status
+Update live status (requires authentication in production):
+```json
+{
+  "action": "market" | "announcement" | "poll" | "vote",
+  "data": { /* action-specific data */ }
 }
 ```
 
-**Update `handleAnnounce()` function (around line 486):**
+## Testing the API
 
-Add this after the existing `postState` call:
-
-```javascript
-// Update live-status API (for website notifications)
-const liveResult = await updateLiveStatus('announcement', { 
-  message: text,
-  important: false
-});
-if (liveResult.error) {
-  console.error('Warning: Failed to update website live status:', liveResult.error);
-}
-```
-
-**Update `handleFlavorPoll()` function (around line 508):**
-
-Add this after the existing `postState` call:
-
-```javascript
-// Update live-status API (for website notifications)
-const liveResult = await updateLiveStatus('poll', {
-  question: 'Vote for Next Flavor!',
-  options: options,
-  active: true
-});
-if (liveResult.error) {
-  console.error('Warning: Failed to update website live status:', liveResult.error);
-}
-```
-
-**Update `handlePollClose()` function (around line 545):**
-
-Add this after the existing `postState` call:
-
-```javascript
-// Close poll on live-status API (for website)
-const liveResult = await updateLiveStatus('poll', { active: false });
-if (liveResult.error) {
-  console.error('Warning: Failed to close website poll:', liveResult.error);
-}
-```
-
-### Step 2: Restart Discord Bot
-
+### Verify API is working:
 ```bash
-cd C:\Users\jack\Downloads\sumup-backend\discord-bot
-node bot.js
+curl https://sumup-backend.vercel.app/api/live-status
 ```
 
-### Step 3: Test Commands
+Should return initial state with null values.
 
-In Discord bot-commands channel:
+### Manual testing (development only):
+You can test updates by making POST requests to the API endpoint with the appropriate action and data.
 
-```
-!market live
-```
+## Troubleshooting
 
-Then check your website - you should see a green "WE'RE OPEN!" banner!
-
-```
-!announce Fresh batch ready at 2pm!
-```
-
-You should see a toast notification slide down!
-
-```
-!poll flavors Vanilla,Chocolate,Strawberry
-```
-
-You should see a poll widget in the bottom-right corner!
-
-## 🐛 Troubleshooting
-
-### If notifications still don't show:
-
+### If notifications don't show:
 1. **Check browser console** (F12):
-   - Look for errors in console
+   - Look for errors
    - Should see polls every 5 seconds: `Checking for live updates...`
 
-2. **Check bot console**:
-   - Should see "Live status updated" messages
-   - If you see errors, check `BACKEND_URL` is correct
-
-3. **Verify API works**:
+2. **Verify API works**:
    ```bash
    curl https://sumup-backend.vercel.app/api/live-status
    ```
-   
-   Should return:
-   ```json
-   {"success":true,"marketStatus":null,"announcement":null,"poll":null}
-   ```
 
-4. **Clear browser cache**: Ctrl+Shift+Delete
+3. **Clear browser cache**: Ctrl+Shift+Delete
 
 ### Common Issues
 
-**"The page could not be found"**
-- Vercel domain might be caching. Wait 2-3 minutes and try again.
-- Or use direct deployment URL temporarily in bot.js:
-  ```javascript
-  const BACKEND_URL = 'https://sumup-backend-ffjh8xkwc-jack-wicks-projects.vercel.app';
-  ```
-
 **"No notifications appearing"**
-- Check bot is actually calling the API (console.log in bot)
 - Check website is polling (F12 > Network tab > should see requests every 5s)
 - Make sure you're on the live site, not local file
 
@@ -162,27 +96,13 @@ You should see a poll widget in the bottom-right corner!
 - Votes go through `/api/live-status` with action "vote"
 - Check localStorage for previous votes: F12 > Application > Local Storage
 
-## 📊 What Each Command Does
+## Success Checklist
 
-| Command | Discord Channel | Website Effect |
-|---------|----------------|----------------|
-| `!market live` | #market | Green "WE'RE OPEN!" banner at top |
-| `!market closed` | #market | Gray "CURRENTLY CLOSED" banner |
-| `!announce [msg]` | #announcements | Orange toast notification (8s) |
-| `!poll flavors a,b,c` | #polls | Poll widget bottom-right with voting |
-| `!poll close` | #polls | Closes poll on website |
+- [ ] API endpoint responding correctly
+- [ ] Website polling every 5 seconds
+- [ ] Market status banner working
+- [ ] Announcement toasts working
+- [ ] Poll widget functional
+- [ ] Voting system working
 
-## 🎯 Success Checklist
-
-- [ ] Added `updateLiveStatus()` helper function to bot
-- [ ] Updated all 4 handler functions (market, announce, poll, poll close)
-- [ ] Restarted Discord bot
-- [ ] Tested `!market live` - saw banner on website
-- [ ] Tested `!announce` - saw toast notification
-- [ ] Tested `!poll flavors` - saw poll widget
-- [ ] Voted on poll - vote counted
-- [ ] Tested `!poll close` - poll closed on site
-
-All working? Congratulations! 🎉
-
-If you see **bot-live-status-updates.txt** in your workspace, that has the full updated functions ready to copy/paste!
+The live status API is now standalone and can be updated programmatically or through a web interface.

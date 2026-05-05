@@ -75,7 +75,7 @@ The review system now integrates with your backend at `https://sumup-backend.ver
 2. **Verification**: `verified` badge shows for customers who made a purchase
 3. **Email Validation**: Backend should validate email format
 4. **Rate Limiting**: Consider implementing rate limiting (e.g., 1 review per email per day)
-5. **Moderation**: Admin should be able to approve/reject reviews via Discord or admin panel
+5. **Moderation**: Admin should be able to approve/reject reviews via admin panel
 
 ## Security Considerations
 

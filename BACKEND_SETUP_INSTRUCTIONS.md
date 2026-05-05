@@ -64,7 +64,7 @@ app.listen(PORT, () => {
 
 Add to your `.env` file:
 ```
-DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/1441917103153090671/KNupEAUqkfz0orXHbo31YH7_0ZmV8cIprHZr8rNFn1nDNfA-UUijrfUSPnzV7IYcKErB
+# Add your environment variables here as needed
 ```
 
 ### 5. Database Setup (Recommended)

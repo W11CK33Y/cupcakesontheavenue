@@ -123,7 +123,7 @@
     }
   </style>
 </head>
-<body>
+<body class="spring">
   <div class="container">
     <h1>📋 Terms & Conditions</h1>
 
@@ -181,21 +181,7 @@
 
   <script>
     function setSeasonalTheme() {
-      const now = new Date();
-      const month = now.getMonth() + 1;
-      const day = now.getDate();
-      
-      document.body.classList.remove('spring', 'summer', 'autumn', 'winter');
-      
-      if ((month === 3 && day >= 20) || month === 4 || month === 5 || (month === 6 && day < 21)) {
-        document.body.classList.add('spring');
-      } else if ((month === 6 && day >= 21) || month === 7 || month === 8 || (month === 9 && day < 22)) {
-        document.body.classList.add('summer');
-      } else if ((month === 9 && day >= 22) || month === 10 || month === 11 || (month === 12 && day < 21)) {
-        document.body.classList.add('autumn');
-      } else {
-        document.body.classList.add('winter');
-      }
+      document.body.classList.add('spring');
     }
     
     setSeasonalTheme();
