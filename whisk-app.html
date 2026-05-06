@@ -4,12 +4,12 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
 <title>Whisk — Cupcakes on the Avenue</title>
-<link rel="manifest" href="manifest.json"/>
+<link rel="manifest" href="whisk-manifest.json"/>
 <meta name="theme-color" content="#d4417e"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Whisk"/>
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧁</text></svg>"/>
+<link rel="apple-touch-icon" href="pictures/logo.png"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -47,7 +47,7 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 .pin-error{color:#ffcdd2;font-size:13px;margin-top:12px;font-weight:600;min-height:20px;text-align:center;}
 
 /* ── APP SHELL ── */
-#app{display:none;flex-direction:column;min-height:100vh;}
+#app{display:none;flex-direction:column;min-height:100vh;position:relative;}
 .app-header{
   background:linear-gradient(135deg,#d4417e,#9c27b0);
   padding:env(safe-area-inset-top,12px) 20px 16px;
@@ -201,13 +201,206 @@ textarea.form-input{resize:vertical;min-height:80px;}
 .pending-desc{font-size:12px;color:var(--text2);margin:3px 0;}
 .pending-price{font-size:15px;font-weight:800;color:var(--pink);}
 .pending-ts{font-size:10px;color:#bbb;margin-top:4px;}
+
+/* ── AI CHAT SCREEN ── */
+#aiScreen{
+  display:none;flex-direction:column;
+  position:absolute;inset:0;
+  background:#f4eef9;
+  z-index:50;
+}
+#aiScreen.open{display:flex;}
+
+/* Header */
+.ai-hdr{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;
+  background:#fff;
+  border-bottom:1px solid rgba(212,65,126,.12);
+  box-shadow:0 2px 12px rgba(212,65,126,.08);
+  flex-shrink:0;position:relative;z-index:1;
+}
+.ai-hdr-avatar{
+  width:42px;height:42px;border-radius:50%;object-fit:cover;
+  border:2.5px solid var(--pink-light);flex-shrink:0;
+}
+.ai-hdr-name{font-size:16px;font-weight:900;color:var(--text);line-height:1.1;}
+.ai-hdr-status{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);margin-top:2px;}
+.ai-status-dot{width:7px;height:7px;border-radius:50%;background:var(--amber2);flex-shrink:0;}
+.ai-hdr-btn{
+  margin-left:auto;background:rgba(212,65,126,.08);border:none;
+  width:36px;height:36px;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  color:var(--pink);transition:background .18s;flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.ai-hdr-btn:active{background:var(--pink-light);}
+
+/* Settings drawer */
+.ai-settings{
+  background:#fff;border-bottom:1px solid rgba(212,65,126,.1);
+  padding:14px 16px;flex-shrink:0;
+  animation:slideDown .22s ease;
+}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+
+/* Messages */
+.ai-msgs{
+  flex:1;overflow-y:auto;
+  padding:16px 14px 12px;
+  display:flex;flex-direction:column;
+  gap:10px;
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
+}
+.ai-msgs::-webkit-scrollbar{width:3px;}
+.ai-msgs::-webkit-scrollbar-thumb{background:rgba(212,65,126,.25);border-radius:4px;}
+
+/* Date divider */
+.msg-date{
+  text-align:center;font-size:11px;color:#aaa;font-weight:600;
+  letter-spacing:.3px;margin:4px 0;
+}
+
+/* User bubble */
+.msg-user{
+  align-self:flex-end;max-width:82%;
+  background:linear-gradient(135deg,var(--pink),var(--purple2));
+  color:#fff;
+  padding:11px 15px;
+  border-radius:20px;border-bottom-right-radius:5px;
+  font-size:15px;line-height:1.5;word-break:break-word;
+  box-shadow:0 4px 14px rgba(212,65,126,.3);
+}
+
+/* AI bubble row */
+.msg-ai-row{
+  display:flex;align-items:flex-end;gap:8px;max-width:88%;
+}
+.msg-ai-thumb{
+  width:30px;height:30px;border-radius:50%;object-fit:cover;
+  border:1.5px solid var(--pink-light);flex-shrink:0;
+}
+.msg-ai-bubble{
+  background:#fff;color:var(--text);
+  padding:11px 15px;
+  border-radius:20px;border-bottom-left-radius:5px;
+  font-size:15px;line-height:1.6;word-break:break-word;
+  box-shadow:0 2px 10px rgba(0,0,0,0.08);
+  border:1px solid rgba(212,65,126,.1);
+}
+.msg-ai-label{
+  font-size:10px;font-weight:800;color:var(--pink);
+  letter-spacing:.5px;margin-bottom:4px;
+}
+
+/* Typing indicator */
+.msg-typing{
+  display:flex;align-items:center;gap:8px;max-width:88%;
+}
+.typing-bubble{
+  background:#fff;padding:14px 18px;border-radius:20px;border-bottom-left-radius:5px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.08);border:1px solid rgba(212,65,126,.1);
+  display:flex;gap:5px;align-items:center;
+}
+.typing-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--pink);opacity:.5;
+  animation:typingBounce 1.3s ease-in-out infinite;
+}
+.typing-dot:nth-child(2){animation-delay:.2s;}
+.typing-dot:nth-child(3){animation-delay:.4s;}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.5;}30%{transform:translateY(-7px);opacity:1;}}
+
+/* Input bar */
+.ai-input-bar{
+  display:flex;align-items:flex-end;gap:9px;
+  padding:10px 14px;
+  padding-bottom:max(10px,env(safe-area-inset-bottom,10px));
+  background:#fff;
+  border-top:1px solid rgba(212,65,126,.1);
+  box-shadow:0 -2px 12px rgba(0,0,0,0.05);
+  flex-shrink:0;
+}
+.ai-input{
+  flex:1;padding:11px 16px;
+  border:1.5px solid rgba(212,65,126,.2);
+  border-radius:24px;
+  font-size:15px;color:var(--text);
+  background:#faf4fc;outline:none;resize:none;
+  font-family:inherit;max-height:100px;
+  transition:border-color .2s,background .2s;
+  line-height:1.45;-webkit-appearance:none;
+}
+.ai-input:focus{border-color:var(--pink);background:#fff;}
+.ai-input::placeholder{color:#c4a0c8;}
+.mic-btn{
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(212,65,126,.08);border:1.5px solid rgba(212,65,126,.2);
+  font-size:20px;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;-webkit-tap-highlight-color:transparent;color:var(--pink);
+}
+.mic-btn.listening{background:var(--red-light);border-color:var(--red2);animation:mic-pulse .8s ease-in-out infinite;}
+@keyframes mic-pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
+.ai-send-btn{
+  width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),var(--purple2));
+  border:none;color:#fff;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(212,65,126,.4);
+  transition:all .18s;-webkit-tap-highlight-color:transparent;
+}
+.ai-send-btn:active{transform:scale(.9);box-shadow:0 2px 8px rgba(212,65,126,.3);}
+.ai-send-btn svg{width:20px;height:20px;}
+
+/* ── LOGO IMAGES ── */
+.pin-logo-img{
+  width:110px;height:110px;border-radius:50%;object-fit:cover;
+  border:4px solid rgba(255,255,255,0.5);
+  box-shadow:0 8px 32px rgba(0,0,0,0.35),0 0 0 8px rgba(255,255,255,0.12);
+  margin-bottom:14px;display:block;
+}
+.app-logo-img{
+  width:42px;height:42px;border-radius:50%;object-fit:cover;
+  border:2.5px solid rgba(255,255,255,0.45);
+  box-shadow:0 3px 10px rgba(0,0,0,0.25);
+  flex-shrink:0;
+}
+
+/* ── ACCOUNT TAB ── */
+.acct-hero{text-align:center;padding:28px 20px 16px;}
+.acct-logo{width:100px;height:100px;border-radius:50%;object-fit:cover;
+  border:4px solid var(--pink-light);box-shadow:var(--shadow);margin-bottom:14px;}
+.acct-name{font-size:22px;font-weight:900;color:var(--text);}
+.acct-tag{font-size:13px;color:var(--text2);margin-top:4px;}
+.acct-panel{background:var(--card);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow);}
+.acct-panel-title{font-size:13px;font-weight:800;color:var(--text);margin-bottom:14px;letter-spacing:.3px;}
+.acct-link{display:flex;align-items:center;gap:14px;padding:13px 14px;background:var(--pink-light);border-radius:14px;
+  text-decoration:none;color:var(--text);margin-bottom:8px;transition:all .18s;-webkit-tap-highlight-color:transparent;}
+.acct-link:active{opacity:.75;transform:scale(.98);}
+.acct-link:last-child{margin-bottom:0;}
+.acct-link-icon{font-size:20px;flex-shrink:0;}
+.acct-link-name{font-size:13px;font-weight:700;}
+.acct-link-sub{font-size:11px;color:var(--text2);}
+.acct-link-arr{margin-left:auto;color:var(--pink);font-size:18px;font-weight:700;}
+.acct-info-row{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:8px;padding:6px 0;}
+.notif-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--pink),var(--purple2));
+  color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;}
+.lock-full-btn{width:100%;padding:14px;background:linear-gradient(135deg,#ef5350,#c62828);
+  color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:24px;}
+
+/* ── NOTIFICATION BADGE on tab ── */
+.tab-badge{display:inline-block;background:var(--red2);color:#fff;font-size:9px;font-weight:800;
+  min-width:16px;height:16px;border-radius:8px;padding:0 3px;line-height:16px;
+  vertical-align:top;margin-left:2px;margin-top:-2px;}
 </style>
 </head>
 <body>
 
 <!-- PIN SCREEN -->
 <div id="pinScreen">
-  <div class="pin-logo">🧁</div>
+  <img src="pictures/logo.png" alt="Cupcakes on the Avenue" class="pin-logo-img">
   <div class="pin-title">WHISK</div>
   <div class="pin-sub">CUPCAKES ON THE AVENUE</div>
   <div class="pin-dots" id="pinDots">
@@ -240,7 +433,7 @@ textarea.form-input{resize:vertical;min-height:80px;}
   <div class="app-header">
     <div class="app-header-top">
       <div class="app-brand">
-        <span class="app-logo">🧁</span>
+        <img src="pictures/logo.png" alt="CCOTA" class="app-logo-img">
         <div>
           <div class="app-name">WHISK</div>
           <div class="app-tagline">Cupcakes on the Avenue</div>
@@ -271,10 +464,51 @@ textarea.form-input{resize:vertical;min-height:80px;}
     <button class="tab" id="tab-products" onclick="showTab('products')">
       <span class="tab-icon">🧁</span>PRODUCTS
     </button>
+    <button class="tab" id="tab-ai" onclick="showTab('ai')">
+      <span class="tab-icon">🤖</span>AI
+    </button>
+    <button class="tab" id="tab-account" onclick="showTab('account')">
+      <span class="tab-icon">👤</span>ACCOUNT
+    </button>
   </div>
 
   <div class="content" id="content"></div>
   <button class="lock-btn" onclick="lockApp()" title="Lock">🔒</button>
+
+  <!-- ── AI CHAT SCREEN (full-screen overlay inside app) ── -->
+  <div id="aiScreen">
+    <!-- Header -->
+    <div class="ai-hdr">
+      <img src="pictures/logo.png" alt="Whisk AI" class="ai-hdr-avatar">
+      <div>
+        <div class="ai-hdr-name">Whisk AI</div>
+        <div class="ai-hdr-status">
+          <span class="ai-status-dot" id="aiDot"></span>
+          <span id="aiStatusTxt">Ready</span>
+        </div>
+      </div>
+      <button class="ai-hdr-btn" id="aiSettingsToggle" onclick="toggleAiSettings()" title="Settings">⚙️</button>
+    </div>
+
+    <!-- Collapsible settings -->
+    <div class="ai-settings" id="aiSettingsDrawer" style="display:none"></div>
+
+    <!-- Messages -->
+    <div class="ai-msgs" id="chatMsgs"></div>
+
+    <!-- Input bar -->
+    <div class="ai-input-bar">
+      <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎤</button>
+      <textarea id="chatInput" class="ai-input" placeholder="Message Whisk…" rows="1"
+        oninput="this.style.height='';this.style.height=Math.min(this.scrollHeight,100)+'px'"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
+      <button class="ai-send-btn" onclick="sendChat()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
 </div>
 
 <div id="toast"></div>
@@ -282,7 +516,7 @@ textarea.form-input{resize:vertical;min-height:80px;}
 <script>
 'use strict';
 
-const CCONA_API = 'https://ccona-api.vercel.app';
+const CCONA_API = 'https://stripe-backend-hxx2.onrender.com';
 const PIN = '041215';
 const PIN_LEN = PIN.length;
 
@@ -311,6 +545,8 @@ function checkPin() {
   if (_pin === PIN) {
     document.getElementById('pinScreen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
+    requestNotifPermission();
+    initVoice();
     loadOrders();
   } else {
     document.getElementById('pinError').textContent = 'Wrong PIN — try again';
@@ -339,8 +575,9 @@ async function loadOrders(manual = false) {
     const r = await fetch(`${CCONA_API}/api/orders`);
     const d = await r.json();
     _orders = d.orders || [];
+    checkForNewOrders(_orders);
     updateStats();
-    renderTab(_activeTab);
+    if (_activeTab !== 'ai') renderTab(_activeTab);
     if (manual) toast('✓ Orders refreshed');
   } catch (err) {
     showContent(`<div class="empty"><span class="empty-icon">😕</span><div class="empty-title">Couldn't load orders</div><div class="empty-sub">Check your connection and try again.<br><br><button onclick="loadOrders(true)" style="padding:10px 24px;background:var(--pink);color:#fff;border:none;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;">Retry</button></div></div>`);
@@ -366,7 +603,22 @@ function showTab(tab) {
   _activeTab = tab;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
-  renderTab(tab);
+
+  const aiScreen = document.getElementById('aiScreen');
+  const content  = document.getElementById('content');
+  const lockBtn  = document.querySelector('.lock-btn');
+
+  if (tab === 'ai') {
+    aiScreen.classList.add('open');
+    content.style.display  = 'none';
+    if (lockBtn) lockBtn.style.display = 'none';
+    renderTab(tab);
+  } else {
+    aiScreen.classList.remove('open');
+    content.style.display  = 'block';
+    if (lockBtn) lockBtn.style.display = 'flex';
+    renderTab(tab);
+  }
 }
 
 function renderTab(tab) {
@@ -375,6 +627,8 @@ function renderTab(tab) {
   else if (tab === 'paid') renderOrders('paid');
   else if (tab === 'insights') renderInsights();
   else if (tab === 'products') renderProducts();
+  else if (tab === 'ai') renderAI();
+  else if (tab === 'account') renderAccount();
 }
 
 function renderOrders(filter) {
@@ -714,12 +968,483 @@ async function submitProduct() {
   loadPendingProducts().then(() => renderProducts());
 }
 
+// ── NOTIFICATIONS ─────────────────────────────────────────────────────────────
+function requestNotifPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+}
+
+function checkForNewOrders(orders) {
+  const KEY = 'whisk_seen_ids';
+  const stored = localStorage.getItem(KEY);
+  const ids = orders.map(o => o.reference || o.id || o.createdAt).filter(Boolean);
+  if (!stored) { localStorage.setItem(KEY, JSON.stringify(ids)); return; }
+  const seen = new Set(JSON.parse(stored));
+  const newOnes = orders.filter(o => {
+    const id = o.reference || o.id || o.createdAt;
+    return id && !seen.has(id);
+  });
+  if (newOnes.length) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      newOnes.slice(0, 3).forEach(o => {
+        const total = parseFloat(o.total || 0).toFixed(2);
+        new Notification('New Order! 🧁', {
+          body: `${o.name || 'Customer'} — £${total}`,
+          tag: o.reference || o.id || 'whisk-order',
+        });
+      });
+    }
+    toast(`🧁 ${newOnes.length} new order${newOnes.length > 1 ? 's' : ''}!`);
+  }
+  localStorage.setItem(KEY, JSON.stringify(ids));
+}
+
+// ── VOICE (Web Speech API) ─────────────────────────────────────────────────────
+let _ttsVoice = null;
+
+function initVoice() {
+  function pick() {
+    const vs = speechSynthesis.getVoices();
+    if (!vs.length) return;
+    _ttsVoice =
+      vs.find(v => /en.GB/i.test(v.lang) && /female|woman|karen|serena|stephanie/i.test(v.name)) ||
+      vs.find(v => /en.GB/i.test(v.lang)) ||
+      vs.find(v => /en/i.test(v.lang) && /female|woman|samantha|karen|victoria|moira|tessa|ava/i.test(v.name)) ||
+      vs.find(v => /en/i.test(v.lang)) || vs[0] || null;
+  }
+  pick();
+  if ('onvoiceschanged' in speechSynthesis) speechSynthesis.onvoiceschanged = pick;
+}
+
+function speakBrowser(text) {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text.replace(/[🧁🎂🍰✅⏳📋📅🚚]/g, ''));
+  if (_ttsVoice) utt.voice = _ttsVoice;
+  utt.rate = 0.95; utt.pitch = 1.05;
+  speechSynthesis.speak(utt);
+}
+
+// ── AI CHAT ────────────────────────────────────────────────────────────────────
+let _chatHistory = [];
+let _aiWorking   = false;
+let _recognition = null;
+let _listening   = false;
+let _aiInited    = false;
+let _nexusUrl    = window._NEXUS_MODE
+  ? window.location.origin
+  : (localStorage.getItem('whisk_nexus_url') || '');
+
+function renderAI() {
+  if (!_aiInited) {
+    _aiInited = true;
+    // Show the welcome bubble
+    appendAIBubble("Hey! I'm Whisk — your bakery assistant. 🧁<br>Ask me about your orders, recipes, pricing, or anything you need.");
+  }
+  updateAiDot();
+  populateAiSettings();
+}
+
+/* Append a user message bubble */
+function appendUserBubble(text) {
+  const msgs = document.getElementById('chatMsgs');
+  if (!msgs) return;
+  const div = document.createElement('div');
+  div.className = 'msg-user';
+  div.textContent = text;
+  msgs.appendChild(div);
+  scrollChat();
+}
+
+/* Append an AI message bubble */
+function appendAIBubble(html) {
+  const msgs = document.getElementById('chatMsgs');
+  if (!msgs) return;
+  const row = document.createElement('div');
+  row.className = 'msg-ai-row';
+  row.innerHTML = `
+    <img src="pictures/logo.png" class="msg-ai-thumb" alt="Whisk">
+    <div class="msg-ai-bubble">
+      <div class="msg-ai-label">WHISK AI</div>
+      ${html}
+    </div>`;
+  msgs.appendChild(row);
+  scrollChat();
+}
+
+/* Show animated typing indicator */
+function showTyping() {
+  const msgs = document.getElementById('chatMsgs');
+  if (!msgs) return;
+  const row = document.createElement('div');
+  row.className = 'msg-typing';
+  row.id = 'typingIndicator';
+  row.innerHTML = `
+    <img src="pictures/logo.png" class="msg-ai-thumb" alt="Whisk">
+    <div class="typing-bubble">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>`;
+  msgs.appendChild(row);
+  scrollChat();
+}
+
+function removeTyping() {
+  const t = document.getElementById('typingIndicator');
+  if (t) t.remove();
+}
+
+function scrollChat() {
+  setTimeout(() => {
+    const e = document.getElementById('chatMsgs');
+    if (e) e.scrollTop = e.scrollHeight;
+  }, 40);
+}
+
+/* Settings drawer */
+function populateAiSettings() {
+  const drawer = document.getElementById('aiSettingsDrawer');
+  if (!drawer) return;
+  const notifGranted = 'Notification' in window && Notification.permission === 'granted';
+  const notifDenied  = 'Notification' in window && Notification.permission === 'denied';
+  let notifHtml = '';
+  if (!notifGranted && !notifDenied && 'Notification' in window) {
+    notifHtml = `<div style="display:flex;align-items:center;justify-content:space-between;background:var(--amber-light);border-radius:10px;padding:9px 12px;margin-bottom:10px;font-size:12px;color:var(--amber);font-weight:600;">
+      🔔 Enable order alerts
+      <button onclick="Notification.requestPermission().then(()=>populateAiSettings())" style="padding:5px 12px;background:var(--amber2);color:#fff;border:none;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;">Enable</button>
+    </div>`;
+  } else if (notifDenied) {
+    notifHtml = `<div style="background:var(--red-light);border-radius:10px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:var(--red);font-weight:600;">🔕 Notifications blocked in browser settings</div>`;
+  } else {
+    notifHtml = `<div style="background:var(--green-light);border-radius:10px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:var(--green);font-weight:600;">✅ Notifications active</div>`;
+  }
+  const nexusCfg = window._NEXUS_MODE
+    ? `<div style="background:var(--green-light);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--green);font-weight:600;">🖥️ Nexus AI home mode active</div>`
+    : `<div style="display:flex;gap:8px;margin-top:4px;">
+        <input id="nexusUrlInput" type="text" placeholder="http://192.168.1.x:8765" value="${esc(_nexusUrl)}"
+          style="flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;color:var(--text);outline:none;font-family:inherit;background:#faf4fc;"/>
+        <button onclick="saveNexusUrl()" style="padding:9px 14px;background:var(--pink);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">Save</button>
+      </div>
+      <div style="font-size:10px;color:var(--text2);margin-top:5px;">Home PC IP for Kokoro voice (optional)</div>`;
+
+  drawer.innerHTML = notifHtml +
+    `<div style="font-size:11px;font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:.3px;">🖥️ NEXUS AI</div>` +
+    nexusCfg;
+}
+
+function toggleAiSettings() {
+  const drawer = document.getElementById('aiSettingsDrawer');
+  if (!drawer) return;
+  if (drawer.style.display === 'none') {
+    drawer.style.display = 'block';
+  } else {
+    drawer.style.display = 'none';
+  }
+}
+
+function saveNexusUrl() {
+  const v = (document.getElementById('nexusUrlInput')?.value || '').trim().replace(/\/$/, '');
+  _nexusUrl = v;
+  localStorage.setItem('whisk_nexus_url', v);
+  toast(v ? '✓ Nexus URL saved' : '✓ Cleared');
+  updateAiDot();
+}
+
+async function updateAiDot() {
+  const dot = document.getElementById('aiDot');
+  const txt = document.getElementById('aiStatusTxt');
+  if (!dot || !txt) return;
+  if (_nexusUrl) {
+    try {
+      const r = await fetch(`${_nexusUrl}/api/status`, { signal: AbortSignal.timeout(2000) });
+      if (r.ok) {
+        dot.style.background = 'var(--green2)';
+        txt.textContent = 'Nexus AI · home mode';
+        return;
+      }
+    } catch {}
+    dot.style.background = 'var(--red2)';
+    txt.textContent = 'Nexus offline · Cloud AI';
+  } else {
+    dot.style.background = 'var(--amber2)';
+    txt.textContent = 'Cloud AI · ready';
+  }
+}
+
+function buildOrderCtx() {
+  if (!_orders.length) return '';
+  const today = new Date().toISOString().slice(0, 10);
+  const pending = _orders.filter(o => o.status === 'pending');
+  const paid    = _orders.filter(o => o.status === 'paid');
+  const todayOrders = _orders.filter(o => (o.createdAt || '').slice(0, 10) === today);
+  const revenue = paid.reduce((s, o) => s + (parseFloat(o.total) || 0), 0);
+  let ctx = `Orders: ${_orders.length} total, ${pending.length} pending, ${paid.length} paid. Today: ${todayOrders.length}. Revenue: £${revenue.toFixed(2)}.`;
+  if (pending.length) {
+    ctx += ' Pending: ' + pending.slice(0, 5).map(o =>
+      `${o.name || '?'} £${parseFloat(o.total || 0).toFixed(2)} due ${o.date || 'TBD'}`
+    ).join(', ');
+  }
+  return ctx;
+}
+
+async function sendChat() {
+  if (_aiWorking) return;
+  const inp = document.getElementById('chatInput');
+  if (!inp) return;
+  const text = inp.value.trim();
+  if (!text) return;
+
+  // Clear + reset input immediately
+  inp.value = '';
+  inp.style.height = '';
+
+  // Push to history & render user bubble immediately
+  _chatHistory.push({ role: 'user', content: text });
+  appendUserBubble(text);
+  _aiWorking = true;
+
+  // Show typing animation
+  showTyping();
+
+  let reply = '';
+
+  // Try Nexus backend first (home WiFi, free Ollama + Kokoro voice)
+  if (_nexusUrl) {
+    try {
+      const r = await fetch(`${_nexusUrl}/api/whisk/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text, order_context: buildOrderCtx() }),
+        signal: AbortSignal.timeout(30000),
+      });
+      if (r.ok) {
+        const d = await r.json();
+        reply = d.reply || '';
+        if (reply) {
+          fetch(`${_nexusUrl}/api/tts`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: reply.slice(0, 400), voice: 'af_bella' }),
+          }).then(tr => tr.blob()).then(blob => {
+            const u = URL.createObjectURL(blob);
+            const a = new Audio(u);
+            a.onended = () => URL.revokeObjectURL(u);
+            a.play().catch(() => speakBrowser(reply));
+          }).catch(() => speakBrowser(reply));
+        }
+      }
+    } catch {}
+  }
+
+  // Cloud AI fallback
+  if (!reply) {
+    try {
+      const r = await fetch(`${CCONA_API}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: _chatHistory.slice(-12), orderContext: buildOrderCtx() }),
+      });
+      const d = await r.json();
+      reply = d.reply || "Sorry, I couldn't get a response — try again.";
+      speakBrowser(reply);
+    } catch {
+      reply = "Can't reach the AI right now — check your connection.";
+    }
+  }
+
+  // Remove typing, append real reply
+  removeTyping();
+  _chatHistory.push({ role: 'assistant', content: reply });
+  _aiWorking = false;
+  appendAIBubble(esc(reply).replace(/\n/g, '<br>'));
+}
+
+function toggleMic() {
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    toast('Voice input not supported in this browser'); return;
+  }
+  if (_listening) { _recognition?.stop(); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  _recognition = new SR();
+  _recognition.lang = 'en-GB'; _recognition.interimResults = false;
+  _recognition.onstart = () => {
+    _listening = true;
+    const b = document.getElementById('micBtn');
+    if (b) { b.classList.add('listening'); b.textContent = '🔴'; }
+  };
+  _recognition.onresult = e => {
+    const i = document.getElementById('chatInput');
+    if (i) i.value = e.results[0][0].transcript;
+  };
+  _recognition.onend = () => {
+    _listening = false;
+    const b = document.getElementById('micBtn');
+    if (b) { b.classList.remove('listening'); b.textContent = '🎤'; }
+    setTimeout(() => { const i = document.getElementById('chatInput'); if (i?.value.trim()) sendChat(); }, 250);
+  };
+  _recognition.onerror = () => {
+    _listening = false;
+    const b = document.getElementById('micBtn');
+    if (b) { b.classList.remove('listening'); b.textContent = '🎤'; }
+  };
+  _recognition.start();
+}
+
 // ── AUTO-REFRESH every 2 minutes ──────────────────────────────────────────────
 setInterval(() => {
   if (document.getElementById('app').style.display !== 'none') {
     loadOrders().then(() => updateStats());
   }
 }, 120000);
+
+// ── NOTIFICATION SOUND (Web Audio — no external file needed) ─────────────────
+let _audioCtx = null;
+
+function getAudioCtx() {
+  if (!_audioCtx) {
+    _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  // Resume if suspended (browser autoplay policy)
+  if (_audioCtx.state === 'suspended') _audioCtx.resume();
+  return _audioCtx;
+}
+
+function playNotificationSound() {
+  try {
+    const ctx = getAudioCtx();
+    // Pleasant ascending chime: C5 → E5 → G5 → C6
+    const notes = [523.25, 659.25, 783.99, 1046.5];
+    notes.forEach((freq, i) => {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      const t = ctx.currentTime + i * 0.18;
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.38, t + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.9);
+      osc.start(t);
+      osc.stop(t + 0.9);
+    });
+  } catch (e) {
+    console.log('Audio unavailable:', e);
+  }
+}
+
+// Override checkForNewOrders to include sound
+const _origCheckOrders = checkForNewOrders;
+function checkForNewOrders(orders) {
+  const KEY = 'whisk_seen_ids';
+  const stored = localStorage.getItem(KEY);
+  const ids = orders.map(o => o.reference || o.id || o.createdAt).filter(Boolean);
+  if (!stored) { localStorage.setItem(KEY, JSON.stringify(ids)); return; }
+  const seen = new Set(JSON.parse(stored));
+  const newOnes = orders.filter(o => {
+    const id = o.reference || o.id || o.createdAt;
+    return id && !seen.has(id);
+  });
+  if (newOnes.length) {
+    // Play sound first
+    playNotificationSound();
+
+    if ('Notification' in window && Notification.permission === 'granted') {
+      newOnes.slice(0, 3).forEach(o => {
+        const total = parseFloat(o.total || 0).toFixed(2);
+        new Notification('New Order! 🧁', {
+          body: `${o.name || 'Customer'} — £${total}`,
+          icon: 'pictures/logo.png',
+          tag: o.reference || o.id || 'whisk-order',
+        });
+      });
+    }
+    toast(`🧁 ${newOnes.length} new order${newOnes.length > 1 ? 's' : ''}!`);
+  }
+  localStorage.setItem(KEY, JSON.stringify(ids));
+}
+
+// ── ACCOUNT TAB ────────────────────────────────────────────────────────────────
+function renderAccount() {
+  const notifPermission = 'Notification' in window ? Notification.permission : 'unavailable';
+  const notifText = {
+    granted:     '✅ Order notifications are ON — you\'ll be alerted & hear a chime.',
+    denied:      '🔕 Notifications blocked — enable them in your browser/phone settings.',
+    default:     '🔔 Enable notifications to get instant alerts when a new order arrives.',
+    unavailable: '⚠️ Notifications not supported in this browser.',
+  }[notifPermission] || '';
+
+  const showEnableBtn = notifPermission === 'default';
+
+  showContent(`
+    <div class="acct-hero">
+      <img src="pictures/logo.png" alt="Cupcakes on the Avenue" class="acct-logo">
+      <div class="acct-name">Cupcakes on the Avenue</div>
+      <div class="acct-tag">Home of the Shortbread Delight</div>
+      <div class="acct-tag" style="margin-top:3px;font-size:11px;">Highworth Market · Every Saturday</div>
+    </div>
+
+    <div class="acct-panel">
+      <div class="acct-panel-title">🔗 Main Site</div>
+      <a href="index.html" class="acct-link">
+        <span class="acct-link-icon">🏠</span>
+        <div><div class="acct-link-name">Home Page</div><div class="acct-link-sub">cupcakesontheavenue.co.uk</div></div>
+        <span class="acct-link-arr">›</span>
+      </a>
+      <a href="shop.html" class="acct-link">
+        <span class="acct-link-icon">🛍️</span>
+        <div><div class="acct-link-name">Shop</div><div class="acct-link-sub">Browse all products</div></div>
+        <span class="acct-link-arr">›</span>
+      </a>
+      <a href="reviews.html" class="acct-link">
+        <span class="acct-link-icon">⭐</span>
+        <div><div class="acct-link-name">Customer Reviews</div><div class="acct-link-sub">See what customers are saying</div></div>
+        <span class="acct-link-arr">›</span>
+      </a>
+      <a href="account.html" class="acct-link">
+        <span class="acct-link-icon">👤</span>
+        <div><div class="acct-link-name">Customer Account</div><div class="acct-link-sub">View customer-facing login</div></div>
+        <span class="acct-link-arr">›</span>
+      </a>
+    </div>
+
+    <div class="acct-panel">
+      <div class="acct-panel-title">📞 Business Contact</div>
+      <a href="tel:07842817789" class="acct-info-row" style="text-decoration:none;color:inherit;">
+        <span>📱</span><span style="color:var(--pink);font-weight:600;">07842 817789</span>
+      </a>
+      <a href="mailto:cupcakesontheavenue@gmail.com" class="acct-info-row" style="text-decoration:none;color:inherit;">
+        <span>✉️</span><span style="color:var(--pink);font-weight:600;">cupcakesontheavenue@gmail.com</span>
+      </a>
+      <div class="acct-info-row"><span>📍</span><span>Highworth Market, Wiltshire</span></div>
+    </div>
+
+    <div class="acct-panel">
+      <div class="acct-panel-title">🔔 Notifications &amp; Sound</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;">${notifText}</div>
+      ${showEnableBtn ? `<button class="notif-btn" onclick="Notification.requestPermission().then(()=>{ playNotificationSound(); renderAccount(); })">Enable Order Notifications &amp; Sound</button>` : ''}
+      ${notifPermission === 'granted' ? `<button class="notif-btn" style="background:linear-gradient(135deg,var(--green2),var(--green));" onclick="playNotificationSound()">🔊 Test Notification Sound</button>` : ''}
+    </div>
+
+    <div class="acct-panel">
+      <div class="acct-panel-title">🌐 Social Media</div>
+      <a href="https://instagram.com/cupcakesontheavenue" target="_blank" class="acct-link">
+        <span class="acct-link-icon">📸</span>
+        <div><div class="acct-link-name">Instagram</div><div class="acct-link-sub">@cupcakesontheavenue</div></div>
+        <span class="acct-link-arr">›</span>
+      </a>
+      <a href="https://www.facebook.com/profile.php?id=61578246007533" target="_blank" class="acct-link">
+        <span class="acct-link-icon">👥</span>
+        <div><div class="acct-link-name">Facebook</div><div class="acct-link-sub">Cupcakes on the Avenue</div></div>
+        <span class="acct-link-arr">›</span>
+      </a>
+    </div>
+
+    <button class="lock-full-btn" onclick="lockApp()">🔒 Lock Whisk</button>
+  `);
+}
 </script>
 </body>
 </html>

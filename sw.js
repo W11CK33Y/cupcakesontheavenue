@@ -1,13 +1,13 @@
 // Service Worker for Cupcakes on the Avenue PWA
-const CACHE_NAME = 'cupcakes-v1';
+const CACHE_NAME = 'cupcakes-v3';
 const urlsToCache = [
   '/',
   '/index.html',
   '/shop.html',
+  '/shared.css',
+  '/shared.js',
   '/manifest.json',
-  '/pictures/shortbread delight.jpg',
-  '/pictures/brownies.jpg',
-  '/pictures/vaniliacupcakes.jpg'
+  '/pictures/logo.png'
 ];
 
 // Install Service Worker
@@ -36,8 +36,8 @@ self.addEventListener('fetch', event => {
 self.addEventListener('push', event => {
   const options = {
     body: event.data ? event.data.text() : 'New update from Cupcakes on the Avenue! 🧁',
-    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🧁</text></svg>',
-    badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🧁</text></svg>',
+    icon: '/pictures/logo.png',
+    badge: '/pictures/logo.png',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
@@ -47,12 +47,12 @@ self.addEventListener('push', event => {
       {
         action: 'view',
         title: 'View Shop',
-        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🛍️</text></svg>'
+        icon: '/pictures/logo.png'
       },
       {
         action: 'close',
         title: 'Close',
-        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">❌</text></svg>'
+        icon: '/pictures/logo.png'
       }
     ]
   };

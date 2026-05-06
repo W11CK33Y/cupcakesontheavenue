@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
 <title>Cupcakes on the Avenue - Premium Baked Goods & Custom Cakes | Highworth Market</title>
-<meta name="description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market Saturdays and Fairford Market every two weeks on Wednesdays, or order online. Fresh baked goods made with love.">
+<meta name="description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market every Saturday, or order online. Fresh baked goods made with love.">
 <meta name="keywords" content="cupcakes, cakes, bakery, Highworth, custom cakes, shortbread, celebration cakes, fresh baked goods, artisan bakery">
 <meta name="author" content="Cupcakes on the Avenue">
 <meta name="robots" content="index, follow">
@@ -27,14 +27,14 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cupcakesontheavenue.co.uk">
 <meta property="og:title" content="Cupcakes on the Avenue - Premium Baked Goods & Custom Cakes">
-<meta property="og:description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market Saturdays and Fairford Market bi‑weekly on Wednesdays, or order online.">
+<meta property="og:description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market every Saturday, or order online.">
 <meta property="og:image" content="https://cupcakesontheavenue.co.uk/pictures/logo.png">
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
 <meta property="twitter:url" content="https://cupcakesontheavenue.co.uk">
 <meta property="twitter:title" content="Cupcakes on the Avenue - Premium Baked Goods & Custom Cakes">
-<meta property="twitter:description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market Saturdays and Fairford Market bi‑weekly on Wednesdays, or order online.">
+<meta property="twitter:description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market every Saturday, or order online.">
 <meta property="twitter:image" content="https://cupcakesontheavenue.co.uk/pictures/logo.png">
 
 <!-- Structured Data -->
@@ -136,6 +136,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="pictures/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="pictures/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="pictures/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -2196,18 +2200,790 @@ nav::before, nav::after { content: none; }
     margin-bottom: 3px !important;
   }
 }
+
+/* ════════════════════════════════════════════════════════════
+   CUPCAKES ON THE AVENUE — PREMIUM ARTISAN BAKERY THEME
+   Warm cream · caramel gold · rich brown
+   Inspired by littlecake.co.uk / originalcake.co.uk
+   ════════════════════════════════════════════════════════════ */
+
+:root {
+  --cream:      #FDFAF5;
+  --warm-white: #FFFFFF;
+  --gold:       #B8854F;
+  --gold-dark:  #96693A;
+  --gold-light: #E8C49A;
+  --gold-pale:  #FDF0E0;
+  --brown:      #2C1810;
+  --brown-mid:  #5C3D2E;
+  --brown-lt:   #8A6352;
+  --border:     #EDE3D8;
+  --shadow:     rgba(44,24,16,0.08);
+  --font-head:  'Playfair Display', Georgia, serif;
+  --font-body:  'Lato', 'Segoe UI', Tahoma, sans-serif;
+}
+
+/* Body: clean warm cream on all seasons */
+body,
+body.spring,
+body.summer,
+body.autumn,
+body.winter {
+  background: var(--cream) !important;
+  font-family: var(--font-body) !important;
+  color: var(--brown) !important;
+}
+
+body::after { display: none !important; }
+
+/* ── Header ─────────────────────────────────── */
+header.site-header {
+  background: #fff !important;
+  border-bottom: 1px solid var(--border) !important;
+  box-shadow: 0 2px 12px var(--shadow) !important;
+}
+
+.hdr-brand-name { color: var(--brown)     !important; font-family: var(--font-head) !important; }
+.hdr-brand-tag  { color: var(--gold)      !important; }
+.hdr-nav        { background: #FFFCF8     !important; border-top-color: var(--border) !important; }
+.hdr-nav a      { color: var(--brown-mid) !important; }
+.hdr-nav a:hover, .hdr-nav a.active { color: var(--gold) !important; border-bottom-color: var(--gold) !important; }
+.hdr-icon-btn         { color: var(--brown-mid) !important; }
+.hdr-icon-btn:hover   { background: var(--gold-pale) !important; color: var(--gold) !important; }
+.hdr-search           { background: #FDF8F3 !important; border-color: var(--border) !important; }
+.hdr-search:focus-within { border-color: var(--gold) !important; box-shadow: 0 0 0 3px rgba(184,133,79,0.15) !important; }
+.hdr-search-btn       { color: var(--gold) !important; }
+.hdr-cart-badge       { background: var(--gold) !important; }
+
+/* ── Hero: two-column premium layout ─────────── */
+.hero {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 60px !important;
+  max-width: 1400px !important;
+  margin: 0 auto !important;
+  padding: 80px 48px 90px !important;
+  background: linear-gradient(120deg, var(--cream) 0%, #FBE8CC 60%, var(--cream) 100%) !important;
+  flex-wrap: wrap !important;
+  text-align: left !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: 8%;
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(184,133,79,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-content {
+  flex: 1;
+  min-width: 280px;
+  max-width: 560px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  background: var(--gold-pale);
+  color: var(--gold-dark);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 7px 18px;
+  border-radius: 50px;
+  margin-bottom: 22px;
+  border: 1px solid rgba(184,133,79,0.3);
+}
+
+.hero h2 {
+  font-family: var(--font-head) !important;
+  font-size: 3.6rem !important;
+  font-weight: 700 !important;
+  line-height: 1.13 !important;
+  color: var(--brown) !important;
+  text-shadow: none !important;
+  margin: 0 0 20px !important;
+}
+
+.hero > p, .hero-content > p {
+  font-size: 1.15rem !important;
+  color: var(--brown-mid) !important;
+  text-shadow: none !important;
+  line-height: 1.75 !important;
+  max-width: 480px;
+  margin-bottom: 34px !important;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 34px;
+}
+
+.hero-cta-primary {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  color: #fff !important;
+  padding: 15px 40px;
+  border-radius: 50px;
+  text-decoration: none !important;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.3px;
+  box-shadow: 0 6px 22px rgba(184,133,79,0.42);
+  transition: all 0.3s ease;
+  font-family: var(--font-body);
+}
+
+.hero-cta-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(184,133,79,0.58);
+}
+
+.hero-cta-secondary {
+  display: inline-block;
+  background: #fff;
+  color: var(--gold-dark) !important;
+  padding: 14px 38px;
+  border-radius: 50px;
+  text-decoration: none !important;
+  font-weight: 700;
+  font-size: 1rem;
+  border: 2px solid var(--gold);
+  transition: all 0.3s ease;
+  font-family: var(--font-body);
+}
+
+.hero-cta-secondary:hover {
+  background: var(--gold-pale);
+  transform: translateY(-3px);
+}
+
+.hero-trust {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.hero-trust span {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--brown-lt);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hero img {
+  width: 300px !important;
+  max-width: 100% !important;
+  border-radius: 50% !important;
+  box-shadow: 0 24px 65px rgba(44,24,16,0.2) !important;
+  border: 7px solid rgba(184,133,79,0.22) !important;
+  animation: heroFloat 7s ease-in-out infinite;
+  filter: none !important;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-18px); }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column !important;
+    text-align: center !important;
+    padding: 50px 20px 60px !important;
+    gap: 36px !important;
+  }
+  .hero img    { width: 200px !important; }
+  .hero h2     { font-size: 2.4rem !important; }
+  .hero-ctas, .hero-trust { justify-content: center !important; }
+}
+
+@media (max-width: 480px) {
+  .hero h2 { font-size: 2rem !important; }
+  .hero-cta-primary, .hero-cta-secondary { padding: 13px 28px !important; }
+}
+
+/* ── Sections: white cards on cream background ─ */
+section,
+body.spring section,
+body.summer section,
+body.autumn section,
+body.winter section {
+  background: #FFFFFF !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 4px 24px var(--shadow) !important;
+  backdrop-filter: none !important;
+  color: var(--brown) !important;
+}
+
+section::before,
+body.spring section::before,
+body.summer section::before,
+body.autumn section::before,
+body.winter section::before {
+  background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold)) !important;
+  background-size: 200% 100% !important;
+}
+
+section::after { display: none !important; }
+
+section h2 {
+  font-family: var(--font-head) !important;
+  color: var(--brown) !important;
+  text-shadow: none !important;
+  font-size: 2.2rem !important;
+}
+
+section p, section li, section label {
+  text-shadow: none !important;
+  color: var(--brown-mid) !important;
+}
+
+section:hover {
+  background: #FFFCF9 !important;
+  transform: translateY(-5px) !important;
+  box-shadow: 0 12px 40px rgba(44,24,16,0.12) !important;
+}
+
+/* ── Product Tiles: white cards, elegant ──────── */
+.product-tile,
+body.spring .product-tile,
+body.summer .product-tile,
+body.autumn .product-tile,
+body.winter .product-tile {
+  background: #FFFFFF !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 4px 16px var(--shadow) !important;
+  border-radius: 18px !important;
+}
+
+.product-tile::before { display: none !important; }
+
+.product-tile:hover,
+body.spring .product-tile:hover,
+body.summer .product-tile:hover,
+body.autumn .product-tile:hover,
+body.winter .product-tile:hover {
+  transform: translateY(-14px) scale(1.02) !important;
+  box-shadow: 0 22px 52px rgba(44,24,16,0.16) !important;
+  border-color: var(--gold-light) !important;
+}
+
+.product-overlay {
+  background: rgba(255,255,255,0.98) !important;
+  transform: translateY(100%) !important;
+  opacity: 1 !important;
+  transition: transform 0.42s cubic-bezier(0.23,1,0.32,1) !important;
+}
+
+.product-tile:hover .product-overlay { transform: translateY(0%) !important; }
+
+.product-title {
+  font-family: var(--font-head) !important;
+  color: var(--brown) !important;
+  font-size: 1.3rem !important;
+}
+
+.product-description { color: var(--brown-mid) !important; }
+
+/* ── Buttons: warm gold ──────────────────────── */
+.add-btn,
+.order-btn,
+.write-review-btn,
+.checkout-btn {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%) !important;
+  box-shadow: 0 4px 14px rgba(184,133,79,0.38) !important;
+  color: #fff !important;
+  transition: all 0.3s ease !important;
+}
+
+.add-btn:hover,
+.order-btn:hover,
+.write-review-btn:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow: 0 10px 28px rgba(184,133,79,0.55) !important;
+}
+
+.market-toggle,
+.cart-toggle-btn {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%) !important;
+  transition: all 0.3s ease !important;
+}
+
+.market-toggle:hover {
+  background: var(--gold-dark) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ── Cart ────────────────────────────────────── */
+.cart-section {
+  background: #fff !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 4px 20px var(--shadow) !important;
+}
+
+.cart-section::before {
+  background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold)) !important;
+  background-size: 200% 100% !important;
+}
+
+.cart-header h2 { color: var(--brown) !important; font-family: var(--font-head) !important; }
+#itemCount       { background: var(--gold) !important; }
+.cart-btn        { border-color: var(--gold) !important; color: var(--gold) !important; }
+.cart-btn:hover  { background: var(--gold) !important; color: #fff !important; border-color: var(--gold) !important; }
+
+/* ── Popular Dashboard ────────────────────────── */
+.popular-dashboard {
+  background: linear-gradient(135deg, var(--brown) 0%, #4A2C1A 100%) !important;
+  box-shadow: 0 10px 40px rgba(44,24,16,0.25) !important;
+}
+.stat-card { background: rgba(255,255,255,0.09) !important; }
+
+/* ── Countdown ────────────────────────────────── */
+.countdown-banner:not(.winter-special) {
+  background: linear-gradient(135deg, var(--brown) 0%, #4A2C1A 100%) !important;
+}
+
+/* ── Reviews ─────────────────────────────────── */
+.reviews-section { background: var(--cream) !important; border-color: var(--border) !important; }
+.review-card     { background: #fff !important; border-color: var(--border) !important; }
+.review-card:hover { box-shadow: 0 6px 20px rgba(184,133,79,0.15) !important; }
+
+/* ── Toast ───────────────────────────────────── */
+#toast { background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%) !important; }
+
+/* ── Calendar ────────────────────────────────── */
+#calendar th          { background: var(--gold) !important; }
+.calendar-nav button  { background: var(--gold) !important; }
+.calendar-nav span    { color: var(--brown) !important; }
+.close-calendar       { color: var(--gold) !important; }
+#calendar td.weekend  { background: #FDF5EC !important; }
+#calendar td:hover:not(.disabled) { background: #FDE8CC !important; }
+
+/* ── Forms ───────────────────────────────────── */
+.product-select { border-color: var(--gold) !important; }
+.customer-form input:focus,
+.customer-form select:focus,
+.customer-form textarea:focus {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 3px rgba(184,133,79,0.18) !important;
+}
+
+/* ── Poll ────────────────────────────────────── */
+.poll-container    { border-color: var(--gold) !important; }
+.poll-title        { color: var(--gold-dark) !important; }
+.poll-progress     { background: var(--gold) !important; }
+.poll-option:hover { border-color: var(--gold) !important; }
+.poll-option.voted { background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%) !important; }
+
+/* ── Footer ──────────────────────────────────── */
+.site-footer {
+  background: var(--brown) !important;
+  border-top-color: var(--gold) !important;
+  border-top-width: 2px !important;
+  border-radius: 0 !important;
+  margin-top: 80px !important;
+}
+.site-footer nav a       { color: rgba(255,220,185,0.92) !important; }
+.site-footer nav a:hover { color: var(--gold-light) !important; text-decoration: underline !important; }
+.site-footer p           { color: rgba(255,210,175,0.75) !important; }
+
+/* ── Badges & misc ───────────────────────────── */
+.popular-badge { background: linear-gradient(45deg, var(--gold), var(--gold-light)) !important; }
+.wishlist-heart:hover, .wishlist-heart.loved { color: var(--gold) !important; }
+.sticky-cart { box-shadow: 0 4px 24px rgba(44,24,16,0.18) !important; }
+.live-notification { background: linear-gradient(135deg, var(--brown) 0%, #4A2C1A 100%) !important; }
+.market-status-banner.open { background: linear-gradient(135deg, #2D6A4F 0%, #40916C 100%) !important; }
+
+/* ── Scroll Reveal ───────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(35px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-d1      { transition-delay: 0.1s !important; }
+.reveal-d2      { transition-delay: 0.22s !important; }
+.reveal-d3      { transition-delay: 0.34s !important; }
+
+/* ── Floating Sprinkle Particles ──────────────── */
+.sprinkle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  animation: sprinkleRise linear infinite;
+}
+
+@keyframes sprinkleRise {
+  0%   { transform: translateY(105vh) rotate(0deg);   opacity: 0; }
+  6%   { opacity: 0.5; }
+  90%  { opacity: 0.3; }
+  100% { transform: translateY(-12vh) rotate(700deg); opacity: 0; }
+}
+
+/* ── Signature Treats — premium cards ────────── */
+.sig-treats-section {
+  max-width: 1400px;
+  margin: 40px auto !important;
+  padding: 60px 40px !important;
+  background: var(--gold-pale) !important;
+  border: 1px solid var(--border) !important;
+  text-align: center;
+}
+
+.sig-treats-eyebrow {
+  display: inline-block;
+  background: #fff;
+  color: var(--gold-dark);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 7px 20px;
+  border-radius: 50px;
+  border: 1px solid rgba(184,133,79,0.3);
+  margin-bottom: 18px;
+}
+
+.sig-treats-section h2 {
+  color: var(--brown) !important;
+  font-family: var(--font-head) !important;
+  font-size: 2.4rem !important;
+  margin-bottom: 12px !important;
+  text-shadow: none !important;
+}
+
+.sig-treats-sub {
+  color: var(--brown-lt) !important;
+  font-size: 1.05rem !important;
+  margin-bottom: 48px !important;
+  text-shadow: none !important;
+}
+
+.sig-treats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 28px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.sig-card {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px var(--shadow);
+  transition: all 0.35s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.sig-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 18px 45px rgba(44,24,16,0.14);
+}
+
+.sig-card-top {
+  height: 5px;
+  width: 100%;
+}
+
+.sig-card-top.gold   { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+.sig-card-top.brown  { background: linear-gradient(90deg, var(--brown), var(--brown-mid)); }
+.sig-card-top.cream  { background: linear-gradient(90deg, var(--gold-light), var(--gold-pale)); }
+
+.sig-card-body {
+  padding: 32px 28px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sig-card-icon {
+  font-size: 2.8rem;
+  margin-bottom: 16px;
+}
+
+.sig-card h3 {
+  font-family: var(--font-head);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--brown);
+  margin-bottom: 12px;
+}
+
+.sig-card p {
+  color: var(--brown-mid);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  flex: 1;
+  margin-bottom: 24px;
+}
+
+.sig-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  margin-top: auto;
+}
+
+.sig-price {
+  font-family: var(--font-head);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--brown);
+}
+
+.sig-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.3px;
+  box-shadow: 0 3px 12px rgba(184,133,79,0.35);
+  transition: all 0.3s ease;
+  font-family: var(--font-body);
+}
+
+.sig-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(184,133,79,0.52);
+}
+
+/* ── Market section — info pills + always-open grid ── */
+.market-info-bar {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.market-info-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--gold-pale);
+  color: var(--gold-dark);
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 9px 20px;
+  border-radius: 50px;
+  border: 1px solid rgba(184,133,79,0.3);
+  letter-spacing: 0.2px;
+}
+
+.market-info-pill svg { flex-shrink: 0; }
+
+/* Market bakes always visible */
+.market-bakes.show { display: block !important; }
+
+/* Hide old market toggle */
+.market-toggle { display: none !important; }
+
+/* Market section h2 — no emoji clutter */
+#market h2 {
+  font-size: 2.4rem !important;
+  margin-bottom: 24px !important;
+}
+
+/* ── Contact section — premium cards ────────── */
+.contact-section-inner {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+.contact-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 0 4px 18px var(--shadow);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contact-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 38px rgba(44,24,16,0.12);
+}
+
+.contact-card-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--gold-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  margin-bottom: 16px;
+  border: 2px solid rgba(184,133,79,0.2);
+}
+
+.contact-card h3 {
+  font-family: var(--font-head);
+  font-size: 1.2rem;
+  color: var(--brown);
+  margin-bottom: 10px;
+}
+
+.contact-card p {
+  color: var(--brown-mid);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.contact-link {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  box-shadow: 0 3px 12px rgba(184,133,79,0.35);
+  transition: all 0.3s ease;
+  margin-top: auto;
+}
+
+.contact-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(184,133,79,0.52);
+}
+
+/* Social links — premium icon row */
+.social-links p {
+  font-family: var(--font-head) !important;
+  font-size: 1.1rem !important;
+  color: var(--brown) !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
+}
+
+.social-icons {
+  gap: 28px !important;
+  margin-top: 20px !important;
+}
+
+.social-icons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--gold-pale);
+  border: 1px solid rgba(184,133,79,0.25);
+  transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+  transform: translateY(-4px) scale(1.1);
+  background: var(--gold-light);
+  box-shadow: 0 8px 20px rgba(184,133,79,0.35);
+}
+
+/* ── About section ───────────────────────────── */
+#about {
+  max-width: 900px !important;
+}
+
+#about p {
+  font-family: var(--font-head) !important;
+  font-size: 1.15rem !important;
+  line-height: 1.85 !important;
+  color: var(--brown-mid) !important;
+  font-style: italic;
+}
+
+/* ── Reviews section ─────────────────────────── */
+.review-stars { color: var(--gold) !important; }
+
+/* ── Shop CTA section ────────────────────────── */
+section[style*="text-align: center"][style*="800px"] {
+  max-width: 800px !important;
+  background: var(--gold-pale) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 4px 24px var(--shadow) !important;
+}
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 768px) {
+  .sig-treats-section { padding: 40px 20px !important; }
+  .sig-treats-section h2 { font-size: 2rem !important; }
+  .sig-treats-grid { gap: 20px; }
+  .sig-card-body { padding: 24px 20px; }
+  .market-info-bar { gap: 10px; }
+}
 </style>
 </head>
 <body class="spring">
 
-<header role="banner">
-  <h1>🧁 Cupcakes on the Avenue</h1>
-  <p>Home of the exclusive Shortbread Delight & cosy bakes!</p>
-  <nav role="navigation" aria-label="Main navigation">
-    <a href="#about" aria-label="Learn about us">About</a>
-    <a href="shop.html" aria-label="Browse our shop">Shop</a>
-    <a href="#market" aria-label="Visit us at market">Market</a>
-    <a href="reviews.html" aria-label="Read and write reviews">Reviews</a>
+<header class="site-header" role="banner">
+  <div class="hdr-top">
+    <a href="index.html" class="hdr-brand">
+      <span class="hdr-brand-icon">🧁</span>
+      <div class="hdr-brand-text">
+        <span class="hdr-brand-name">Cupcakes on the Avenue</span>
+        <span class="hdr-brand-tag">Home of the Shortbread Delight</span>
+      </div>
+    </a>
+    <div class="hdr-actions">
+      <div class="hdr-search">
+        <input type="text" id="hdrSearchInput" placeholder="Search bakes…" autocomplete="off" aria-label="Search">
+        <button class="hdr-search-btn" aria-label="Search">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <div id="hdrSearchDrop" class="hdr-search-drop"></div>
+      </div>
+      <a href="account.html" class="hdr-icon-btn" title="My Account">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="hdr-icon-lbl">Account</span>
+      </a>
+      <button class="hdr-icon-btn" id="hdrCartBtn" title="Cart" onclick="typeof toggleCart==='function'?toggleCart():(window.location='shop.html')">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="hdr-icon-lbl">Cart</span>
+        <span class="hdr-cart-badge hidden" id="hdrCartBadge">0</span>
+      </button>
+    </div>
+  </div>
+  <nav class="hdr-nav" role="navigation" aria-label="Main navigation">
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="index.html#market">Market</a>
+    <a href="reviews.html">Reviews</a>
+    <a href="account.html">Account</a>
   </nav>
 </header>
 
@@ -2274,17 +3050,21 @@ nav::before, nav::after { content: none; }
 </div>
 
 <div class="hero">
-  <img src="pictures/logo.png" alt="Cupcakes on the Avenue">
-  <h2>Where every bake feels like home</h2>
-  <p>Fresh cupcakes, biscuits, and celebration cakes baked with love!</p>
-  <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 30px;">
-    <a href="shop.html" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.1rem; transition: transform 0.3s; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
-      🛍️ Shop Now
-    </a>
-    <a href="#special-request" style="background: white; color: #667eea; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.1rem; transition: transform 0.3s; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); border: 2px solid #667eea;">
-      🎂 Order Custom Cake
-    </a>
+  <div class="hero-content">
+    <span class="hero-eyebrow">Highworth Market · Every Saturday · Fresh Baked</span>
+    <h2>Where Every Bake<br>Feels Like Home</h2>
+    <p>Artisan cupcakes, custom celebration cakes & our exclusive Shortbread Delight — handcrafted with love in the heart of Highworth.</p>
+    <div class="hero-ctas">
+      <a href="shop.html" class="hero-cta-primary">Shop Now</a>
+      <a href="#special-request" class="hero-cta-secondary">Custom Cake</a>
+    </div>
+    <div class="hero-trust">
+      <span>⭐ 5-Star Rated</span>
+      <span>🧁 Fresh Every Week</span>
+      <span>💕 Made with Love</span>
+    </div>
   </div>
+  <img src="pictures/logo.png" alt="Cupcakes on the Avenue">
 </div>
 
 <section id="about">
@@ -2294,62 +3074,52 @@ nav::before, nav::after { content: none; }
   </p>
 </section>
 
-<!-- Featured Products Highlight -->
-<section style="background: linear-gradient(135deg, #f5f7ff 0%, #f0e6ff 100%); padding: 50px 20px; margin: 40px auto; border-radius: 15px; max-width: 1400px; margin-left: auto; margin-right: auto;">
-  <h2 style="text-align: center; color: #667eea; margin-bottom: 10px; font-size: 2rem;">Our Signature Treats</h2>
-  <p style="text-align: center; color: #666; margin-bottom: 40px; font-size: 1.1rem;">Beloved by customers, perfected by us</p>
-  
-  <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; max-width: 1200px; margin: 0 auto;">
-    <div style="background: white; border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1); flex: 1; min-width: 250px; max-width: 300px;">
-      <div style="font-size: 3rem; margin-bottom: 15px;">⭐</div>
-      <h3 style="color: #667eea; margin-bottom: 10px; font-size: 1.5rem;">Shortbread Delight</h3>
-      <p style="color: #666; margin-bottom: 15px;">Our exclusive signature buttery shortbread. Melt-in-your-mouth perfection with a loyal following at Highworth Market.</p>
-      <p style="color: #764ba2; font-weight: bold; font-size: 1.1rem; margin: 15px 0;">From £20.00</p>
-      <a href="shop.html" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: transform 0.3s;">Order Now</a>
+<!-- Signature Treats -->
+<section class="sig-treats-section">
+  <div class="sig-treats-header">
+    <span class="sig-treats-eyebrow">Handcrafted with Love</span>
+    <h2>Our Signature Treats</h2>
+    <p class="sig-treats-sub">Every item baked fresh — never mass-produced, always made to order.</p>
+  </div>
+  <div class="sig-treats-grid">
+    <div class="sig-card">
+      <div class="sig-card-top gold"></div>
+      <div class="sig-card-body">
+        <div class="sig-card-icon">⭐</div>
+        <h3>Shortbread Delight</h3>
+        <p>Our exclusive signature buttery shortbread. Melt-in-your-mouth perfection — the star of Highworth Market.</p>
+        <div class="sig-card-footer">
+          <span class="sig-price">From £20</span>
+          <a href="shop.html" class="sig-btn">Order Now</a>
+        </div>
+      </div>
     </div>
-    
-    <div style="background: white; border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1); flex: 1; min-width: 250px; max-width: 300px;">
-      <div style="font-size: 3rem; margin-bottom: 15px;">🎂</div>
-      <h3 style="color: #667eea; margin-bottom: 10px; font-size: 1.5rem;">Custom Celebration Cakes</h3>
-      <p style="color: #666; margin-bottom: 15px;">Bespoke designs for birthdays, anniversaries & special moments. Made with love, tailored to your vision.</p>
-      <p style="color: #764ba2; font-weight: bold; font-size: 1.1rem; margin: 15px 0;">From £35.00</p>
-      <a href="#special-request" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: transform 0.3s;">Custom Order</a>
+    <div class="sig-card">
+      <div class="sig-card-top brown"></div>
+      <div class="sig-card-body">
+        <div class="sig-card-icon">🎂</div>
+        <h3>Custom Celebration Cakes</h3>
+        <p>Bespoke designs for birthdays, anniversaries & special occasions. Made with love, tailored to your vision.</p>
+        <div class="sig-card-footer">
+          <span class="sig-price">From £35</span>
+          <a href="#special-request" class="sig-btn">Custom Order</a>
+        </div>
+      </div>
     </div>
-    
-    <div style="background: white; border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1); flex: 1; min-width: 250px; max-width: 300px;">
-      <div style="font-size: 3rem; margin-bottom: 15px;">🧁</div>
-      <h3 style="color: #667eea; margin-bottom: 10px; font-size: 1.5rem;">Weekly Fresh Bakes</h3>
-      <p style="color: #666; margin-bottom: 15px;">Rotating selection of seasonal treats, cupcakes & biscuits. Available at market or online orders.</p>
-      <p style="color: #764ba2; font-weight: bold; font-size: 1.1rem; margin: 15px 0;">From £10.00</p>
-      <a href="shop.html" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: transform 0.3s;">Browse</a>
+    <div class="sig-card">
+      <div class="sig-card-top cream"></div>
+      <div class="sig-card-body">
+        <div class="sig-card-icon">🧁</div>
+        <h3>Weekly Fresh Bakes</h3>
+        <p>A rotating selection of seasonal cupcakes, biscuits & brownies — fresh every Saturday at market.</p>
+        <div class="sig-card-footer">
+          <span class="sig-price">From £10</span>
+          <a href="shop.html" class="sig-btn">Browse All</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
-
-<!-- Popular Items Dashboard -->
-<div class="popular-dashboard">
-  <h2>📊 Popular This Week</h2>
-  <p>See what everyone's loving right now!</p>
-  
-  <div class="popular-stats">
-    <div class="stat-card">
-      <div class="stat-number" id="totalOrders">47</div>
-      <div>Orders This Week</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number" id="popularItem">Shortbread Delight</div>
-      <div>Most Popular Item</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number" id="trendingItem">Cupcakes</div>
-      <div>Trending Now</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number" id="avgRating">5.0★</div>
-      <div>Average Rating</div>
-    </div>
-  </div>
-</div>
 
 <!-- Customer Reviews -->
 <section class="reviews-section">
@@ -2381,17 +3151,20 @@ nav::before, nav::after { content: none; }
   </a>
 </section>
 
-<!-- Move Market Section here, after cart -->
 <section id="market">
-  <h2>🎪 Highworth Market</h2>
-  <div style="text-align: center; margin-bottom: 30px;">
-    <p style="font-size: 1.3rem; font-weight: bold; color: #667eea;">Every Saturday • 8am - 2pm</p>
-    <p style="font-size: 1.1rem; margin-top: 10px; color: #666;">Come visit us for fresh bakes, friendly chats, and our famous Shortbread Delight!</p>
-</div>
+  <h2>Highworth Market</h2>
+  <div class="market-info-bar">
+    <span class="market-info-pill">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Every Saturday · 8am – 2pm
+    </span>
+    <span class="market-info-pill">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Highworth Market, Wiltshire
+    </span>
+  </div>
 
-  <button class="market-toggle" id="marketToggle">See This Week's Bakes</button>
-
-  <div class="market-bakes" id="marketBakes">
+  <div class="market-bakes show" id="marketBakes">
     <div class="products-grid">
       <div class="product-tile">
         <img src="pictures/thisweekshort.jpg" alt="Shortbread Delight">
@@ -2463,8 +3236,8 @@ nav::before, nav::after { content: none; }
   </div>
 </section>
 
-<!-- Fairford Market Section -->
-<section id="market-fairford" style="background: white; padding: 50px 20px; margin: 40px auto; border-radius: 15px; max-width: 1000px;">
+<!-- Fairford Market removed -->
+<section id="market-fairford" style="display:none">
   <h2>🎪 Fairford Market</h2>
   <div style="text-align: center; margin-bottom: 30px;">
     <p style="font-size: 1.3rem; font-weight: bold; color: #667eea;">Every Two Weeks on Wednesday • 9am - 2pm</p>
@@ -2572,47 +3345,35 @@ nav::before, nav::after { content: none; }
 </section>
 
 <!-- Contact & Location Section -->
-<section style="background: white; padding: 50px 20px; margin: 40px 0; border-radius: 15px; max-width: 1000px; margin-left: auto; margin-right: auto;">
-  <h2 style="text-align: center; color: #667eea; margin-bottom: 40px; font-size: 2rem;">📍 Visit Us or Get in Touch</h2>
-  
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 40px;">
-    <!-- Location -->
-    <div style="text-align: center; padding: 25px; background: #f8f9fa; border-radius: 12px; border-left: 5px solid #667eea;">
-      <div style="font-size: 2.5rem; margin-bottom: 15px;">📍</div>
-      <h3 style="color: #667eea; margin-bottom: 10px;">Find Us at Market</h3>
-      <p style="color: #666; margin-bottom: 10px;"><strong>Highworth Market</strong> – Saturdays 8:00 AM – 2:00 PM</p>
-      <p style="color: #666; margin-bottom: 10px;"><strong>Fairford Market</strong> – every two weeks on Wednesday 9:00 AM – 2:00 PM (starting Wednesday 11 March)</p>
-      <p style="color: #764ba2; font-weight: bold; font-size: 1.1rem;">Fresh bakes available at both markets.</p>
+<section style="max-width: 1100px; margin-left: auto; margin-right: auto;">
+  <h2 style="text-align: center; margin-bottom: 10px;">Visit Us or Get in Touch</h2>
+  <p style="text-align: center; color: var(--brown-lt); margin-bottom: 48px; font-size: 1rem;">We'd love to hear from you — pop over to market or drop us a message.</p>
+
+  <div class="contact-section-inner">
+    <div class="contact-card">
+      <div class="contact-card-icon">📍</div>
+      <h3>Find Us at Market</h3>
+      <p><strong>Highworth Market</strong><br>Every Saturday · 8:00 AM – 2:00 PM<br>Wiltshire</p>
+      <a href="index.html#market" class="contact-link">See This Week's Bakes</a>
     </div>
-    
-    <!-- Phone -->
-    <div style="text-align: center; padding: 25px; background: #f8f9fa; border-radius: 12px; border-left: 5px solid #667eea;">
-      <div style="font-size: 2.5rem; margin-bottom: 15px;">📱</div>
-      <h3 style="color: #667eea; margin-bottom: 10px;">Call Us</h3>
-      <p style="color: #666; margin-bottom: 15px;">Questions about orders or custom cakes?</p>
-      <a href="tel:07842817789" style="display: inline-block; color: white; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: transform 0.3s;">
-        07842 817789
-      </a>
+    <div class="contact-card">
+      <div class="contact-card-icon">📞</div>
+      <h3>Call Us</h3>
+      <p>Questions about orders or custom cakes? We're happy to chat.</p>
+      <a href="tel:07842817789" class="contact-link">07842 817789</a>
     </div>
-    
-    <!-- Email -->
-    <div style="text-align: center; padding: 25px; background: #f8f9fa; border-radius: 12px; border-left: 5px solid #667eea;">
-      <div style="font-size: 2.5rem; margin-bottom: 15px;">✉️</div>
-      <h3 style="color: #667eea; margin-bottom: 10px;">Email Us</h3>
-      <p style="color: #666; margin-bottom: 10px;">For custom orders & enquiries</p>
-      <p style="color: #667eea; font-weight: bold; margin-bottom: 15px;">cupcakesontheavenue@gmail.com</p>
-      <a href="mailto:cupcakesontheavenue@gmail.com" style="display: inline-block; color: white; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: transform 0.3s;">
-        Send Email
-      </a>
+    <div class="contact-card">
+      <div class="contact-card-icon">✉️</div>
+      <h3>Email Us</h3>
+      <p>For custom orders, dietary requirements & enquiries — we reply within 24 hours.</p>
+      <a href="mailto:cupcakesontheavenue@gmail.com" class="contact-link">Send a Message</a>
     </div>
   </div>
-  
-  <div style="text-align: center; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
-    <h3 style="margin-bottom: 15px; font-size: 1.3rem;">💬 Need Help?</h3>
-    <p style="margin-bottom: 20px; opacity: 0.95;">Use our special request form below for custom orders, dietary requirements, or any special requests. We'll respond within 24 hours.</p>
-    <a href="#special-request" style="display: inline-block; background: white; color: #667eea; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: transform 0.3s;">
-      Go to Special Request Form
-    </a>
+
+  <div style="text-align: center; padding: 32px; background: var(--gold-pale); border-radius: 16px; border: 1px solid rgba(184,133,79,0.25);">
+    <h3 style="font-family: var(--font-head); font-size: 1.3rem; color: var(--brown); margin-bottom: 10px;">Need Something Special?</h3>
+    <p style="color: var(--brown-mid); margin-bottom: 24px; max-width: 480px; margin-left: auto; margin-right: auto;">Use our custom request form for bespoke cakes, special dietary needs, or any unique request.</p>
+    <a href="#special-request" class="contact-link" style="display: inline-block;">Custom Request Form</a>
   </div>
 </section>
 
@@ -2727,10 +3488,6 @@ let blockedDates = JSON.parse(localStorage.getItem('blockedDates') || '[]');
     });
   }
 
-  // Fairford Market toggle
-  const fairfordToggleEl = document.getElementById('fairfordToggle');
-  if (fairfordToggleEl) {
-    fairfordToggleEl.addEventListener('click', function() {
       const bakes = document.getElementById('fairfordBakes');
       if (bakes) {
         bakes.classList.toggle('show');
@@ -3546,9 +4303,68 @@ function loadRecentlyViewed() {
 window.changeQuantity = changeQuantity;
 window.removeFromCart = removeFromCart;
 window.selectDate = selectDate;
+
+// ── Inline-style color warm-up ─────────────────────────────────────────
+// Replaces the old blue-purple palette in inline styles with warm rose/gold
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('[style]').forEach(function(el) {
+    var s = el.getAttribute('style') || '';
+    s = s
+      .replace(/#667eea/gi,  '#D4667A')
+      .replace(/#764ba2/gi,  '#B8455C')
+      .replace(/rgba\(102,\s*126,\s*234/gi, 'rgba(212,102,122')
+      .replace(/rgba\(118,\s*75,\s*162/gi,  'rgba(184,69,92')
+      .replace(/#f5f7ff/gi,  '#FFF0EB')
+      .replace(/#f0e6ff/gi,  '#FFE4D9')
+      .replace(/#0b66c3/gi,  '#9E3A52');
+    el.setAttribute('style', s);
+  });
+});
+
+// ── Scroll Reveal ──────────────────────────────────────────────────────
+(function() {
+  var targets = 'section, .product-tile, .stat-card, .review-card, .popular-dashboard, .cart-section';
+  document.querySelectorAll(targets).forEach(function(el, i) {
+    el.classList.add('reveal');
+    var mod = i % 3;
+    if (mod === 1) el.classList.add('reveal-d1');
+    if (mod === 2) el.classList.add('reveal-d2');
+  });
+
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+})();
+
+// ── Floating Sprinkle Particles ────────────────────────────────────────
+(function() {
+  var palette = ['#F5A8B5','#EDD48A','#D4667A','#F7C5CC','#FFB3BA','#FFDDE2','#C9944A','#FFC0CB'];
+  var radii   = ['50%','3px','50%','6px','50%'];
+  for (var i = 0; i < 20; i++) {
+    var sp   = document.createElement('div');
+    sp.className = 'sprinkle';
+    var size = (Math.random() * 9 + 4).toFixed(1);
+    sp.style.cssText = [
+      'left:'               + (Math.random() * 100).toFixed(1) + 'vw',
+      'width:'              + size + 'px',
+      'height:'             + size + 'px',
+      'border-radius:'      + radii[Math.floor(Math.random() * radii.length)],
+      'background:'         + palette[Math.floor(Math.random() * palette.length)],
+      'animation-duration:' + (Math.random() * 18 + 10).toFixed(1) + 's',
+      'animation-delay:'    + (Math.random() * -30).toFixed(1) + 's'
+    ].join(';');
+    document.body.appendChild(sp);
+  }
+})();
 </script>
-
-
+<script src="shared.js"></script>
 
 </body>
 </html>
