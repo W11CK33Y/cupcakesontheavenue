@@ -384,8 +384,428 @@ footer.site-footer p {
   100% { transform: translateY(-12vh) rotate(700deg); opacity: 0; }
 }
 
+/* ══════════════════════════════════════════════
+   WHATSAPP BUTTON
+   ══════════════════════════════════════════════ */
+.wa-float {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #25D366;
+  color: #fff;
+  border-radius: 50px;
+  padding: 13px 20px 13px 15px;
+  box-shadow: 0 6px 24px rgba(37,211,102,.42);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: .88rem;
+  letter-spacing: .2px;
+  transition: all .3s ease;
+  white-space: nowrap;
+}
+.wa-float:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 12px 36px rgba(37,211,102,.58);
+  color: #fff;
+}
+.wa-float svg { width: 22px; height: 22px; flex-shrink: 0; }
+
+/* ══════════════════════════════════════════════
+   PRE-ORDER CARD (market section)
+   ══════════════════════════════════════════════ */
+.preorder-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(135deg, var(--gold-pale) 0%, #fff 100%);
+  border: 1.5px solid rgba(184,133,79,.25);
+  border-radius: 20px;
+  padding: 24px 28px;
+  margin-top: 32px;
+  box-shadow: 0 4px 20px rgba(44,24,16,.06);
+  flex-wrap: wrap;
+}
+.preorder-icon {
+  font-size: 2.4rem;
+  flex-shrink: 0;
+}
+.preorder-text { flex: 1; min-width: 200px; }
+.preorder-text h3 {
+  font-family: var(--font-head);
+  font-size: 1.2rem;
+  color: var(--brown);
+  margin-bottom: 5px;
+}
+.preorder-text p {
+  color: var(--brown-mid);
+  font-size: .88rem;
+  line-height: 1.6;
+  text-shadow: none !important;
+}
+.preorder-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #25D366;
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: .88rem;
+  box-shadow: 0 4px 14px rgba(37,211,102,.4);
+  transition: all .3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.preorder-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(37,211,102,.55);
+  color: #fff;
+}
+
+/* ══════════════════════════════════════════════
+   INSTAGRAM SECTION
+   ══════════════════════════════════════════════ */
+.ig-section {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 48px 40px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 4px 24px var(--shadow);
+}
+.ig-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.ig-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.ig-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid transparent;
+  background: linear-gradient(#fff,#fff) padding-box,
+              linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888) border-box;
+}
+.ig-handle {
+  font-family: var(--font-head);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--brown);
+}
+.ig-handle span {
+  display: block;
+  font-family: var(--font-body);
+  font-size: .8rem;
+  font-weight: 400;
+  color: var(--brown-lt);
+  margin-top: 2px;
+}
+.ig-follow-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 50px;
+  background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  color: #fff;
+  font-weight: 700;
+  font-size: .85rem;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(220,39,67,.3);
+  transition: all .3s ease;
+}
+.ig-follow-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(220,39,67,.45);
+  color: #fff;
+}
+.ig-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.ig-cell {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background: var(--gold-pale);
+}
+.ig-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .4s ease;
+  display: block;
+}
+.ig-cell:hover img { transform: scale(1.06); }
+.ig-cell-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(44,24,16,0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .3s ease;
+}
+.ig-cell:hover .ig-cell-overlay { background: rgba(44,24,16,.32); }
+.ig-cell-overlay svg {
+  width: 28px; height: 28px;
+  color: #fff;
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.ig-cell:hover .ig-cell-overlay svg { opacity: 1; }
+
+/* ══════════════════════════════════════════════
+   FLAVOUR QUIZ
+   ══════════════════════════════════════════════ */
+.quiz-trigger-wrap {
+  text-align: center;
+  margin: 48px auto;
+  max-width: 600px;
+  padding: 0 20px;
+}
+.quiz-trigger-eyebrow {
+  display: inline-block;
+  background: var(--gold-pale);
+  color: var(--gold-dark);
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 18px;
+  border-radius: 50px;
+  border: 1px solid rgba(184,133,79,.3);
+  margin-bottom: 14px;
+}
+.quiz-trigger-title {
+  font-family: var(--font-head);
+  font-size: 2rem;
+  color: var(--brown);
+  margin-bottom: 10px;
+}
+.quiz-trigger-sub {
+  color: var(--brown-mid);
+  font-size: .95rem;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+.quiz-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  color: #fff;
+  padding: 15px 36px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0 6px 22px rgba(184,133,79,.42);
+  transition: all .3s ease;
+}
+.quiz-trigger-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(184,133,79,.58);
+}
+
+/* Quiz drawer */
+.quiz-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(44,24,16,.5);
+  z-index: 8000;
+  backdrop-filter: blur(4px);
+}
+.quiz-overlay.open { display: block; }
+
+.quiz-drawer {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: min(480px, 100vw);
+  background: #fff;
+  z-index: 8001;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform .4s cubic-bezier(.23,1,.32,1);
+  box-shadow: -8px 0 40px rgba(44,24,16,.18);
+}
+.quiz-drawer.open { transform: translateX(0); }
+
+.quiz-drawer-hdr {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.quiz-drawer-title {
+  font-family: var(--font-head);
+  font-size: 1.3rem;
+  color: var(--brown);
+}
+.quiz-close {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  color: var(--brown-lt);
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+}
+
+.quiz-progress-bar {
+  height: 4px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+.quiz-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+  transition: width .4s ease;
+  border-radius: 0 4px 4px 0;
+}
+
+.quiz-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 24px;
+}
+.quiz-step { display: none; }
+.quiz-step.active { display: block; }
+
+.quiz-q {
+  font-family: var(--font-head);
+  font-size: 1.3rem;
+  color: var(--brown);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.quiz-q-sub {
+  color: var(--brown-lt);
+  font-size: .85rem;
+  margin-bottom: 22px;
+}
+
+.quiz-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.quiz-opt {
+  border: 2px solid var(--border);
+  background: var(--gold-pale);
+  border-radius: 16px;
+  padding: 18px 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .22s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.quiz-opt:hover { border-color: var(--gold); background: #fff; }
+.quiz-opt.selected {
+  border-color: var(--gold);
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(184,133,79,.2);
+}
+.quiz-opt-icon { font-size: 2rem; display: block; margin-bottom: 8px; }
+.quiz-opt-label {
+  font-weight: 700;
+  font-size: .85rem;
+  color: var(--brown);
+  display: block;
+}
+
+/* Quiz result */
+.quiz-result { text-align: center; padding: 8px 0; }
+.quiz-result-icon { font-size: 3.5rem; margin-bottom: 16px; display: block; }
+.quiz-result-title {
+  font-family: var(--font-head);
+  font-size: 1.5rem;
+  color: var(--brown);
+  margin-bottom: 8px;
+}
+.quiz-result-desc {
+  color: var(--brown-mid);
+  font-size: .92rem;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+.quiz-result-price {
+  font-family: var(--font-head);
+  font-size: 1.3rem;
+  color: var(--gold-dark);
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+.quiz-shop-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  color: #fff;
+  padding: 14px 36px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: .95rem;
+  box-shadow: 0 6px 20px rgba(184,133,79,.4);
+  transition: all .3s ease;
+  margin-bottom: 14px;
+  display: block;
+  text-align: center;
+}
+.quiz-shop-btn:hover { transform: translateY(-2px); color: #fff; }
+.quiz-restart-btn {
+  background: none;
+  border: none;
+  color: var(--brown-lt);
+  font-size: .85rem;
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: var(--font-body);
+  margin-top: 4px;
+}
+
 /* ── Mobile ─────────────────────────────────── */
 @media (max-width: 768px) {
+  /* WhatsApp */
+  .wa-float span { display: none; }
+  .wa-float { padding: 13px; border-radius: 50%; }
+
+  /* Instagram grid */
+  .ig-grid { grid-template-columns: repeat(2, 1fr); }
+  .ig-section { padding: 32px 20px; }
+  .ig-header { flex-direction: column; align-items: flex-start; }
+
+  /* Quiz */
+  .quiz-options { grid-template-columns: 1fr 1fr; }
+  .quiz-drawer { width: 100vw; }
+
+  /* Pre-order */
+  .preorder-card { flex-direction: column; text-align: center; }
+
   .hdr-top { padding: 12px 16px; gap: 10px; }
   .hdr-brand-name { font-size: 1.1rem; }
   .hdr-brand-tag  { display: none; }

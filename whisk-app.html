@@ -1292,6 +1292,50 @@ function toggleMic() {
   _recognition.start();
 }
 
+// ── ONESIGNAL PUSH SENDER ─────────────────────────────────────────────────────
+function saveOsKey() {
+  var v = (document.getElementById('osApiKey')?.value || '').trim();
+  localStorage.setItem('whisk_os_key', v);
+  toast(v ? '✓ API key saved' : '✓ Key cleared');
+}
+
+async function sendMarketNotif() {
+  var msg  = (document.getElementById('notifMsg')?.value || '').trim();
+  var key  = localStorage.getItem('whisk_os_key') || '';
+  if (!msg) { toast('⚠ Enter a message first'); return; }
+  if (!key) { toast('⚠ Paste your OneSignal REST API key first'); return; }
+
+  var btn = document.querySelector('.acct-panel .notif-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+  try {
+    var r = await fetch('https://onesignal.com/api/v1/notifications', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Basic ' + key },
+      body: JSON.stringify({
+        app_id: '38003574-2a43-4e93-b3e3-d44e2b2e0adf',
+        included_segments: ['All'],
+        headings: { en: 'Cupcakes on the Avenue 🧁' },
+        contents: { en: msg },
+        url: 'https://www.cupcakesontheavenue.com',
+        chrome_web_icon: 'https://www.cupcakesontheavenue.com/pictures/logo.png',
+      })
+    });
+    var d = await r.json();
+    if (d.id) {
+      toast('✓ Sent to all subscribers!');
+      var el = document.getElementById('notifMsg');
+      if (el) el.value = '';
+    } else {
+      toast('❌ ' + (JSON.stringify(d.errors || d) || 'Failed'));
+    }
+  } catch (e) {
+    toast('❌ Network error — check connection');
+  }
+
+  if (btn) { btn.disabled = false; btn.textContent = 'Send to All Subscribers'; }
+}
+
 // ── AUTO-REFRESH every 2 minutes ──────────────────────────────────────────────
 setInterval(() => {
   if (document.getElementById('app').style.display !== 'none') {
@@ -1412,8 +1456,8 @@ function renderAccount() {
 
     <div class="acct-panel">
       <div class="acct-panel-title">📞 Business Contact</div>
-      <a href="tel:07842817789" class="acct-info-row" style="text-decoration:none;color:inherit;">
-        <span>📱</span><span style="color:var(--pink);font-weight:600;">07842 817789</span>
+      <a href="tel:07818187840" class="acct-info-row" style="text-decoration:none;color:inherit;">
+        <span>📱</span><span style="color:var(--pink);font-weight:600;">07818 187840</span>
       </a>
       <a href="mailto:cupcakesontheavenue@gmail.com" class="acct-info-row" style="text-decoration:none;color:inherit;">
         <span>✉️</span><span style="color:var(--pink);font-weight:600;">cupcakesontheavenue@gmail.com</span>
@@ -1442,8 +1486,24 @@ function renderAccount() {
       </a>
     </div>
 
+    <div class="acct-panel">
+      <div class="acct-panel-title">📣 Send Market Notification</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">Send a push to all subscribers — perfect for Friday evening previews.</div>
+      <textarea id="notifMsg" placeholder="e.g. We're at Highworth Market tomorrow 8am! This week: Shortbread Delights, Cookies & Brownies 🧁" style="width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:12px;font-size:13px;font-family:inherit;color:var(--text);resize:vertical;min-height:80px;outline:none;background:#faf5fb;margin-bottom:10px;box-sizing:border-box;"></textarea>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:8px;">REST API Key — OneSignal dashboard → Settings → Keys &amp; IDs</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <input id="osApiKey" type="password" placeholder="Paste REST API Key…" style="flex:1;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;color:var(--text);outline:none;background:#faf5fb;">
+        <button onclick="saveOsKey()" style="padding:10px 14px;background:var(--pink);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">Save</button>
+      </div>
+      <button class="notif-btn" onclick="sendMarketNotif()">Send to All Subscribers</button>
+    </div>
+
     <button class="lock-full-btn" onclick="lockApp()">🔒 Lock Whisk</button>
   `);
+  // restore saved API key
+  var savedKey = localStorage.getItem('whisk_os_key') || '';
+  var keyEl = document.getElementById('osApiKey');
+  if (keyEl) keyEl.value = savedKey;
 }
 </script>
 </body>
