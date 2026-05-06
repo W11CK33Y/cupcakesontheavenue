@@ -809,6 +809,17 @@ select:focus {
   }
 }
 </style>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "38003574-2a43-4e93-b3e3-d44e2b2e0adf",
+      safari_web_id: "web.onesignal.auto.0d123f70-12e5-49b1-a758-f1abcc853120",
+      notifyButton: { enable: true },
+    });
+  });
+</script>
 </head>
 <body class="spring">
 
