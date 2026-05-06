@@ -261,7 +261,43 @@ p {
     await OneSignal.init({
       appId: "38003574-2a43-4e93-b3e3-d44e2b2e0adf",
       safari_web_id: "web.onesignal.auto.0d123f70-12e5-49b1-a758-f1abcc853120",
-      notifyButton: { enable: true },
+      notifyButton: {
+        enable: true,
+        size: 'large',
+        position: 'bottom-left',
+        offset: { bottom: '20px', left: '20px' },
+        prenotify: true,
+        showCredit: false,
+        text: {
+          'tip.state.unsubscribed': 'Get updates from us!',
+          'tip.state.subscribed': 'Notifications on',
+          'tip.state.blocked': 'Notifications blocked',
+          'message.prenotify': 'Click to subscribe to bakery updates',
+          'dialog.main.title': 'Cupcakes on the Avenue',
+          'dialog.main.button.subscribe': 'YES PLEASE',
+          'dialog.main.button.unsubscribe': 'No thanks',
+          'dialog.blocked.title': 'Unblock Notifications',
+          'dialog.blocked.message': 'Enable notifications in your browser settings',
+        }
+      },
+      welcomeNotification: {
+        title: 'Cupcakes on the Avenue',
+        message: 'Thanks for subscribing! We'll let you know about fresh bakes & market days.',
+      },
+      promptOptions: {
+        slidedown: {
+          prompts: [{
+            type: 'push',
+            autoPrompt: true,
+            text: {
+              actionMessage: 'Get notified about fresh bakes and market days!',
+              acceptButton: 'Allow',
+              cancelButton: 'Not now',
+            },
+            delay: { pageViews: 1, timeDelay: 5 },
+          }]
+        }
+      },
     });
   });
 </script>

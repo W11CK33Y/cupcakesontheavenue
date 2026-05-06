@@ -25,6 +25,19 @@
 /* ── Reset ──────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── OneSignal bell — never hidden ──────────── */
+#onesignal-bell-container,
+#onesignal-bell-container *,
+.onesignal-bell-container,
+#onesignal-slidedown-container,
+#onesignal-slidedown-container * {
+  z-index: 99999 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
 /* ── Body ───────────────────────────────────── */
 body,
 body.spring,
