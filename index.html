@@ -3029,8 +3029,8 @@ section[style*="text-align: center"][style*="800px"] {
     <a href="index.html">Home</a>
     <a href="shop.html">Shop</a>
     <a href="index.html#market">Market</a>
+    <a href="about.html">About</a>
     <a href="reviews.html">Reviews</a>
-    <a href="account.html">Account</a>
   </nav>
 </header>
 
@@ -3103,9 +3103,10 @@ section[style*="text-align: center"][style*="800px"] {
     <p>Artisan cupcakes, custom celebration cakes & our exclusive Shortbread Delight — handcrafted with love in the heart of Highworth.</p>
     <div class="hero-ctas">
       <a href="shop.html" class="hero-cta-primary">Shop Now</a>
-      <a href="#special-request" class="hero-cta-secondary">Custom Cake</a>
+      <a href="https://wa.me/447818187840?text=Hi!%20I'd%20love%20a%20custom%20cake%20%F0%9F%8E%82%20Can%20you%20help?" target="_blank" rel="noopener" class="hero-cta-secondary">Custom Cake</a>
     </div>
-    <div class="hero-trust">
+    <div style="margin-bottom:22px;"><a href="#" onclick="openQuiz();return false;" style="font-size:0.82rem;color:rgba(255,255,255,0.75);text-decoration:underline;font-family:var(--font-body);">✨ Not sure what to order? Take our 3-question quiz</a></div>
+  <div class="hero-trust">
       <span>⭐ 5-Star Rated</span>
       <span>🧁 Fresh Every Week</span>
       <span>💕 Made with Love</span>
@@ -3114,12 +3115,6 @@ section[style*="text-align: center"][style*="800px"] {
   <img src="pictures/logo.png" alt="Cupcakes on the Avenue">
 </div>
 
-<section id="about">
-  <h2>About Us</h2>
-  <p style="text-align: center; font-size: 1.2rem; line-height: 1.8; max-width: 800px; margin: 0 auto; color: #666;">
-    At Cupcakes on the Avenue, every bake feels like home. From our exclusive Shortbread Delight to cupcakes, biscuits, and cakes made for celebrating, everything is baked with love and a sprinkle of fun. Find us at Highworth Market every Saturday or order online for custom treats.
-  </p>
-</section>
 
 <!-- Signature Treats -->
 <section class="sig-treats-section">
@@ -3168,15 +3163,6 @@ section[style*="text-align: center"][style*="800px"] {
   </div>
 </section>
 
-<!-- Flavour Quiz trigger -->
-<div class="quiz-trigger-wrap">
-  <span class="quiz-trigger-eyebrow">Not sure what to order?</span>
-  <h2 class="quiz-trigger-title">Find Your Perfect Bake</h2>
-  <p class="quiz-trigger-sub">Answer 3 quick questions and we'll tell you exactly what to order.</p>
-  <button class="quiz-trigger-btn" onclick="openQuiz()">
-    <span>✨</span> Take the Quiz
-  </button>
-</div>
 
 <!-- Instagram section -->
 <section class="ig-section">
@@ -3270,16 +3256,6 @@ section[style*="text-align: center"][style*="800px"] {
   </div>
 </section>
 
-<!-- Shop Call-to-Action -->
-<section style="text-align: center; background: white; margin: 40px auto; max-width: 800px; padding: 60px 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-  <h2 style="color: #667eea; font-size: 2.5rem; margin-bottom: 20px;">🛍️ Browse Our Full Menu</h2>
-  <p style="font-size: 1.3rem; color: #666; margin-bottom: 30px; line-height: 1.6;">
-    Discover our complete range of artisan baked goods, from signature shortbreads to custom celebration cakes.
-  </p>
-  <a href="shop.html" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 40px; border-radius: 30px; text-decoration: none; font-size: 1.2rem; font-weight: bold; display: inline-block; transition: transform 0.3s; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);">
-    Visit Our Shop →
-  </a>
-</section>
 
 <section id="market">
   <h2>Highworth Market</h2>
@@ -3420,49 +3396,15 @@ section[style*="text-align: center"][style*="800px"] {
   <div id="calendar"></div>
 </div>
 
-<section id="special-request">
-  <h2>💌 Special Request</h2>
-  <p style="text-align: center; margin-bottom: 25px; color: #666; font-size: 1.1rem;">
-    Have a custom order or special requirement? Let us know!
-  </p>
-  <form id="specialForm">
-    <input type="text" id="srName" name="srName" placeholder="Your Name *" autocomplete="name" required>
-    <input type="email" id="srEmail" name="srEmail" placeholder="Your Email *" autocomplete="email" required>
-    <textarea id="srMessage" name="srMessage" rows="5" placeholder="Describe your special request... *" required></textarea>
-    <button type="submit">Send Request</button>
-  </form>
-</section>
 
-<!-- Contact & Location Section -->
-<section style="max-width: 1100px; margin-left: auto; margin-right: auto;">
-  <h2 style="text-align: center; margin-bottom: 10px;">Visit Us or Get in Touch</h2>
-  <p style="text-align: center; color: var(--brown-lt); margin-bottom: 48px; font-size: 1rem;">We'd love to hear from you — pop over to market or drop us a message.</p>
-
-  <div class="contact-section-inner">
-    <div class="contact-card">
-      <div class="contact-card-icon">📍</div>
-      <h3>Find Us at Market</h3>
-      <p><strong>Highworth Market</strong><br>Every Saturday · 8:00 AM – 2:00 PM<br>Wiltshire</p>
-      <a href="index.html#market" class="contact-link">See This Week's Bakes</a>
-    </div>
-    <div class="contact-card">
-      <div class="contact-card-icon">📞</div>
-      <h3>Call Us</h3>
-      <p>Questions about orders or custom cakes? We're happy to chat.</p>
-      <a href="tel:07818187840" class="contact-link">07818 187840</a>
-    </div>
-    <div class="contact-card">
-      <div class="contact-card-icon">✉️</div>
-      <h3>Email Us</h3>
-      <p>For custom orders, dietary requirements & enquiries — we reply within 24 hours.</p>
-      <a href="mailto:cupcakesontheavenue@gmail.com" class="contact-link">Send a Message</a>
-    </div>
-  </div>
-
-  <div style="text-align: center; padding: 32px; background: var(--gold-pale); border-radius: 16px; border: 1px solid rgba(184,133,79,0.25);">
-    <h3 style="font-family: var(--font-head); font-size: 1.3rem; color: var(--brown); margin-bottom: 10px;">Need Something Special?</h3>
-    <p style="color: var(--brown-mid); margin-bottom: 24px; max-width: 480px; margin-left: auto; margin-right: auto;">Use our custom request form for bespoke cakes, special dietary needs, or any unique request.</p>
-    <a href="#special-request" class="contact-link" style="display: inline-block;">Custom Request Form</a>
+<!-- Contact strip -->
+<section style="max-width:900px;margin-left:auto;margin-right:auto;text-align:center;padding:48px 20px;">
+  <h2 style="font-family:var(--font-head);color:var(--brown);font-size:2rem;margin-bottom:10px;">Get in Touch</h2>
+  <p style="color:var(--brown-mid);margin-bottom:28px;font-size:1rem;">We'd love to hear from you — tap the WhatsApp button or reach us below.</p>
+  <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+    <a href="tel:07818187840" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:50px;background:var(--gold-pale);color:var(--brown);font-weight:700;text-decoration:none;border:1px solid rgba(184,133,79,0.3);font-size:0.9rem;transition:all 0.2s;">📞 07818 187840</a>
+    <a href="mailto:cupcakesontheavenue@gmail.com" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:50px;background:var(--gold-pale);color:var(--brown);font-weight:700;text-decoration:none;border:1px solid rgba(184,133,79,0.3);font-size:0.9rem;transition:all 0.2s;">✉️ Email Us</a>
+    <a href="about.html" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:50px;background:var(--gold-pale);color:var(--brown);font-weight:700;text-decoration:none;border:1px solid rgba(184,133,79,0.3);font-size:0.9rem;transition:all 0.2s;">🧁 Our Story</a>
   </div>
 </section>
 

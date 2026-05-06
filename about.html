@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us - Cupcakes on the Avenue</title>
+  <meta name="description" content="The story behind Cupcakes on the Avenue — artisan bakes handcrafted with love in Highworth, Wiltshire. Meet the baker behind the Shortbread Delight.">
+  <link rel="icon" type="image/x-icon" href="pictures/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    body { padding-bottom: 0; }
+
+    .about-hero {
+      background: linear-gradient(120deg, var(--cream) 0%, #FBE8CC 100%);
+      padding: 80px 40px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: 10%;
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(184,133,79,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .about-hero-logo {
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid rgba(184,133,79,0.25);
+      box-shadow: 0 20px 50px rgba(44,24,16,0.18);
+      margin-bottom: 28px;
+      animation: heroFloat 7s ease-in-out infinite;
+    }
+    @keyframes heroFloat {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+    .about-eyebrow {
+      display: inline-block;
+      background: #fff;
+      color: var(--gold-dark);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 7px 20px;
+      border-radius: 50px;
+      border: 1px solid rgba(184,133,79,0.3);
+      margin-bottom: 18px;
+    }
+    .about-hero h1 {
+      font-family: var(--font-head);
+      font-size: 3rem;
+      color: var(--brown);
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .about-hero-sub {
+      font-size: 1.1rem;
+      color: var(--brown-mid);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* Story sections */
+    .about-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+    .story-block {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px 44px;
+      margin: 32px 0;
+      box-shadow: 0 4px 24px var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .story-block::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+      background-size: 200% 100%;
+      animation: gradShift 3s ease-in-out infinite;
+    }
+    @keyframes gradShift {
+      0%, 100% { background-position: 0%; }
+      50%       { background-position: 100%; }
+    }
+    .story-block-icon {
+      font-size: 2.4rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .story-block h2 {
+      font-family: var(--font-head);
+      font-size: 1.8rem;
+      color: var(--brown);
+      margin-bottom: 16px;
+    }
+    .story-block p {
+      color: var(--brown-mid);
+      font-size: 1rem;
+      line-height: 1.85;
+      margin-bottom: 14px;
+    }
+    .story-block p:last-child { margin-bottom: 0; }
+    .story-block strong { color: var(--brown); }
+
+    /* Values grid */
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 28px;
+    }
+    .value-card {
+      background: var(--gold-pale);
+      border: 1px solid rgba(184,133,79,0.2);
+      border-radius: 18px;
+      padding: 28px 22px;
+      text-align: center;
+    }
+    .value-card-icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+    .value-card h3 {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      color: var(--brown);
+      margin-bottom: 8px;
+    }
+    .value-card p {
+      font-size: 0.88rem;
+      color: var(--brown-mid);
+      line-height: 1.6;
+    }
+
+    /* Photo grid */
+    .about-photos {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .about-photos img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 4px 14px var(--shadow);
+      transition: transform 0.3s ease;
+    }
+    .about-photos img:hover { transform: scale(1.03); }
+
+    /* CTA band */
+    .about-cta {
+      background: linear-gradient(135deg, var(--brown) 0%, #4A2C1A 100%);
+      border-radius: 24px;
+      padding: 48px 40px;
+      text-align: center;
+      margin: 32px 0 0;
+      color: #fff;
+    }
+    .about-cta h2 {
+      font-family: var(--font-head);
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+    .about-cta p {
+      color: rgba(255,220,185,0.85);
+      margin-bottom: 28px;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+    .about-cta-btns {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .about-cta-primary {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      box-shadow: 0 6px 20px rgba(184,133,79,0.4);
+      transition: all 0.3s ease;
+    }
+    .about-cta-primary:hover { transform: translateY(-3px); color: #fff; }
+    .about-cta-secondary {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,220,185,0.95);
+      padding: 14px 32px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: 1.5px solid rgba(255,220,185,0.3);
+      transition: all 0.3s ease;
+    }
+    .about-cta-secondary:hover {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      transform: translateY(-3px);
+    }
+
+    @media (max-width: 768px) {
+      .about-hero { padding: 60px 24px 48px; }
+      .about-hero h1 { font-size: 2.2rem; }
+      .story-block { padding: 32px 24px; }
+      .about-photos { grid-template-columns: repeat(2, 1fr); }
+      .about-cta { padding: 36px 24px; }
+    }
+  </style>
+
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "38003574-2a43-4e93-b3e3-d44e2b2e0adf",
+      safari_web_id: "web.onesignal.auto.0d123f70-12e5-49b1-a758-f1abcc853120",
+      notifyButton: {
+        enable: true,
+        size: 'large',
+        position: 'bottom-left',
+        offset: { bottom: '20px', left: '20px' },
+        prenotify: true,
+        showCredit: false,
+      },
+      welcomeNotification: {
+        title: 'Cupcakes on the Avenue',
+        message: "Thanks for subscribing! We'll let you know about fresh bakes & market days.",
+      },
+    });
+  });
+</script>
+</head>
+<body class="spring">
+
+<header class="site-header" role="banner">
+  <div class="hdr-top">
+    <a href="index.html" class="hdr-brand">
+      <span class="hdr-brand-icon">🧁</span>
+      <div class="hdr-brand-text">
+        <span class="hdr-brand-name">Cupcakes on the Avenue</span>
+        <span class="hdr-brand-tag">Home of the Shortbread Delight</span>
+      </div>
+    </a>
+    <div class="hdr-actions">
+      <div class="hdr-search">
+        <input type="text" id="hdrSearchInput" placeholder="Search bakes…" autocomplete="off" aria-label="Search">
+        <button class="hdr-search-btn" aria-label="Search">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <div id="hdrSearchDrop" class="hdr-search-drop"></div>
+      </div>
+      <a href="account.html" class="hdr-icon-btn" title="My Account">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="hdr-icon-lbl">Account</span>
+      </a>
+      <button class="hdr-icon-btn" id="hdrCartBtn" title="Cart" onclick="window.location='shop.html'">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="hdr-icon-lbl">Cart</span>
+        <span class="hdr-cart-badge hidden" id="hdrCartBadge">0</span>
+      </button>
+    </div>
+  </div>
+  <nav class="hdr-nav" role="navigation" aria-label="Main navigation">
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="index.html#market">Market</a>
+    <a href="about.html">About</a>
+    <a href="reviews.html">Reviews</a>
+  </nav>
+</header>
+
+<!-- Hero -->
+<div class="about-hero">
+  <img src="pictures/logo.png" alt="Cupcakes on the Avenue" class="about-hero-logo">
+  <span class="about-eyebrow">Highworth · Wiltshire · Est. with Love</span>
+  <h1>Made with Love,<br>Baked with Soul</h1>
+  <p class="about-hero-sub">We're a small artisan bakery bringing handcrafted cakes, biscuits and bakes to Highworth Market every Saturday — and to your door by order.</p>
+</div>
+
+<div class="about-wrap">
+
+  <!-- Our story -->
+  <div class="story-block">
+    <span class="story-block-icon">🧁</span>
+    <h2>Our Story</h2>
+    <p>Cupcakes on the Avenue started the way most great things do — with a love of baking and a desire to share it. What began as making treats for friends and family quickly grew into something much bigger, fuelled by the incredible response from the Highworth community.</p>
+    <p>Every Saturday at Highworth Market you'll find us behind a stall piled high with fresh bakes — and every week the regulars come back. That means the world to us. It's not just about the cakes; it's about the smiles, the conversations, and the little moments that make a market morning special.</p>
+    <p>We believe that food made with care tastes different. That's why <strong>everything is handmade, fresh, and baked with love</strong> — never mass-produced, never from a packet.</p>
+  </div>
+
+  <!-- The Shortbread Delight -->
+  <div class="story-block">
+    <span class="story-block-icon">⭐</span>
+    <h2>The Famous Shortbread Delight</h2>
+    <p>Our <strong>Shortbread Delight</strong> has become something of a legend at Highworth Market. Buttery, crumbly, melt-in-your-mouth perfection — it's the bake that started the loyal following and the one customers message us about most.</p>
+    <p>It's exclusive to us. You won't find it anywhere else. And every batch is made the same way it always has been — by hand, with the best ingredients, and with the same care as the very first one.</p>
+  </div>
+
+  <!-- What we make -->
+  <div class="story-block">
+    <span class="story-block-icon">🎂</span>
+    <h2>What We Bake</h2>
+    <p>Alongside our signature Shortbread Delight, we offer a rotating selection of fresh bakes at market each week — cupcakes, brownies, cookies, cookie pies and more. What's available changes with the seasons and our inspiration, so every Saturday is a little different.</p>
+    <p>For <strong>custom celebration cakes</strong>, we work closely with each customer to bring their vision to life — birthdays, weddings, anniversaries, baby showers. If you can imagine it, we'll do our best to bake it.</p>
+
+    <!-- Photo grid -->
+    <div class="about-photos">
+      <img src="pictures/oreo-cake.jpg.jpeg" alt="Oreo Drip Cake" loading="lazy">
+      <img src="pictures/cookie-pie.jpeg" alt="Cookie Pie" loading="lazy">
+      <img src="pictures/errero-brownies.jpeg" alt="Brownies" loading="lazy">
+    </div>
+  </div>
+
+  <!-- Values -->
+  <div class="story-block">
+    <span class="story-block-icon">💕</span>
+    <h2>What We Stand For</h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <span class="value-card-icon">🙌</span>
+        <h3>Handmade Always</h3>
+        <p>Every single item is made by hand. No shortcuts, no factory batches — just proper baking.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-card-icon">🌿</span>
+        <h3>Fresh Every Week</h3>
+        <p>Nothing sits on a shelf. Bakes are made fresh for market each Saturday and to order throughout the week.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-card-icon">💬</span>
+        <h3>Personal Service</h3>
+        <p>We're a small business — when you message us, you're talking to the person who bakes your order.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-card-icon">📍</span>
+        <h3>Local at Heart</h3>
+        <p>Proud to be part of the Highworth community every Saturday morning, rain or shine.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="about-cta">
+    <h2>Come Find Us Saturday</h2>
+    <p>Highworth Market · Every Saturday · 8am – 2pm<br>Or order online any day of the week.</p>
+    <div class="about-cta-btns">
+      <a href="shop.html" class="about-cta-primary">Browse the Shop</a>
+      <a href="https://wa.me/447818187840?text=Hi!%20I%27d%20like%20to%20place%20an%20order%20%F0%9F%A7%81" target="_blank" rel="noopener" class="about-cta-secondary">WhatsApp Us</a>
+    </div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  <nav>
+    <a href="terms.html" rel="noopener">Terms & Conditions</a>
+    <a href="privacy.html" rel="noopener">Privacy Policy</a>
+    <a href="refunds.html" rel="noopener">Refunds & Cancellations</a>
+    <a href="delivery.html" rel="noopener">Delivery & Collection</a>
+  </nav>
+  <p>© Cupcakes on the Avenue</p>
+</footer>
+
+<script src="shared.js"></script>
+</body>
+</html>
