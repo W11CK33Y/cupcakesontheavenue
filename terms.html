@@ -10,122 +10,110 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="shared.css">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      color: #333;
-      transition: background 1s ease-in-out;
-      padding: 40px 20px;
-    }
-
-    /* Seasonal Theme Variables */
-    body.spring { background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%); }
-    body.summer { background: linear-gradient(135deg, #FFE135 0%, #FFA500 100%); }
-    body.autumn { background: linear-gradient(135deg, #FF6B35 0%, #8B4513 100%); }
-    body.winter { background: linear-gradient(135deg, #B0E0E6 0%, #4682B4 100%); }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 40px 30px;
-      background: rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(15px);
-      border-radius: 25px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.08);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      color: #2c3e50;
-    }
-
-    .container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
-      background-size: 200% 100%;
-      animation: gradientShift 3s ease-in-out infinite;
-    }
-
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    h1 {
-      color: #667eea;
-      font-size: 2.5rem;
-      margin-bottom: 30px;
-      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
-      font-weight: 700;
-      text-align: center;
-    }
-
-    h2 {
-      color: #667eea;
-      font-size: 1.5rem;
-      margin: 30px 0 15px 0;
-      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
-      font-weight: 600;
-    }
-
-    p, li {
-      color: #2c3e50;
-      line-height: 1.6;
-      margin-bottom: 15px;
-      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
-    }
-
-    ul, ol { margin-left: 20px; margin-bottom: 20px; }
-    li { margin-bottom: 8px; }
-
-    .note {
-      background: rgba(238, 247, 255, 0.4);
-      border: 1px solid rgba(205, 227, 255, 0.5);
-      padding: 20px;
-      border-radius: 15px;
-      margin: 20px 0;
-      backdrop-filter: blur(5px);
-    }
-
-    a {
-      color: #667eea;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-
-    a:hover {
-      color: #764ba2;
-      text-decoration: underline;
-    }
-
-    .back-btn {
-      display: inline-block;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 12px 25px;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: bold;
-      margin-top: 30px;
-      transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-    }
-
-    .back-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-      color: white;
-    }
-  </style>
+  body { padding: 0 0 80px; }
+  .policy-hero {
+    background: linear-gradient(120deg, #FDFAF5 0%, #FBE8CC 100%);
+    padding: 60px 40px 52px;
+    text-align: center;
+  }
+  .policy-eyebrow {
+    display: inline-block;
+    background: #fff;
+    color: #96693A;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 50px;
+    border: 1px solid rgba(184,133,79,.3);
+    margin-bottom: 16px;
+  }
+  .policy-hero h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.6rem;
+    color: #2C1810;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .policy-hero-sub {
+    color: #5C3D2E;
+    font-size: .95rem;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  .policy-wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 32px 24px 0;
+  }
+  .policy-card {
+    background: #fff;
+    border: 1px solid #EDE3D8;
+    border-radius: 20px;
+    padding: 36px 40px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(44,24,16,0.06);
+    position: relative;
+    overflow: hidden;
+  }
+  .policy-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #B8854F, #E8C49A, #B8854F);
+    background-size: 200% 100%;
+    animation: pc-shift 3s ease-in-out infinite;
+  }
+  @keyframes pc-shift { 0%,100%{background-position:0%} 50%{background-position:100%} }
+  .policy-card h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.25rem;
+    color: #2C1810;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .policy-card p { color: #5C3D2E; line-height: 1.8; margin-bottom: 12px; font-size: .95rem; }
+  .policy-card p:last-child { margin-bottom: 0; }
+  .policy-card ul, .policy-card ol { margin-left: 22px; margin-bottom: 12px; color: #5C3D2E; }
+  .policy-card li { margin-bottom: 8px; line-height: 1.75; font-size: .95rem; }
+  .policy-card a { color: #96693A; font-weight: 600; text-decoration: none; }
+  .policy-card a:hover { text-decoration: underline; }
+  .policy-card strong { color: #2C1810; }
+  .policy-note {
+    background: #FDF0E0;
+    border: 1px solid rgba(184,133,79,.25);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: .9rem;
+    color: #5C3D2E;
+    line-height: 1.7;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #B8854F 0%, #96693A 100%);
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: .88rem;
+    margin-top: 8px;
+    transition: all .3s ease;
+    box-shadow: 0 4px 14px rgba(184,133,79,.35);
+  }
+  .back-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(184,133,79,.52); color:#fff; }
+  @media (max-width: 768px) {
+    .policy-hero { padding: 48px 24px 40px; }
+    .policy-hero h1 { font-size: 1.9rem; }
+    .policy-card { padding: 26px 20px; }
+  }
+</style>
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -198,50 +186,48 @@
     <a href="index.html">Home</a><a href="shop.html">Shop</a><a href="index.html#market">Market</a><a href="about.html">About</a><a href="reviews.html">Reviews</a>
   </nav>
 </header>
-  <div class="container">
-    <h1>Terms &amp; Conditions</h1>
-    <p style="text-align:center;color:#888;font-size:0.9rem;margin-bottom:30px;">Cupcakes on the Avenue — please read before placing your order</p>
 
+<div class="policy-hero">
+  <span class="policy-eyebrow">Cupcakes on the Avenue</span>
+  <h1>Terms &amp; Conditions</h1>
+  <p class="policy-hero-sub">Please read before placing your order.</p>
+</div>
+<div class="policy-wrap">
+  <div class="policy-card">
     <h2>1. Deposit &amp; Payment</h2>
-    <p>A minimum <strong>25% non-refundable deposit</strong> (or a fixed £ amount as agreed) is required to secure your booking. Full payment is due <strong>no later than 24 hours</strong> before your scheduled collection or delivery.</p>
-
-    <h2>2. Cancellations</h2>
-    <p>Cancellations made <strong>within 3 days</strong> of your collection or delivery date will not be refunded. Cancellations made prior to that period may be refunded, minus the non-refundable deposit.</p>
-
-    <h2>3. Changes to Order</h2>
-    <p>Any changes to design, flavour or other order details must be requested <strong>at least 48 hours before collection or delivery</strong>. After this point, changes may not be possible and cannot be guaranteed.</p>
-
-    <h2>4. Allergens &amp; Food Safety</h2>
-    <p>Your order may contain — or have come into contact with — allergens including <strong>gluten, dairy, eggs and soy</strong>. Orders are made in a kitchen that also handles <strong>nuts</strong>. It is the customer's responsibility to inform all guests of potential allergens before consumption.</p>
-
-    <h2>5. Collection &amp; Storage</h2>
-    <p>Once your order has been collected or delivered, responsibility passes entirely to the customer. Please follow the storage guidance below:</p>
-    <ul>
-      <li>Keep cupcakes and cakes in a <strong>cool, dry place</strong>, away from direct sunlight.</li>
-      <li>Biscuits should be stored in an <strong>airtight container</strong>.</li>
-      <li>Keep items <strong>refrigerated</strong> unless advised otherwise at the time of collection.</li>
-    </ul>
-
-    <h2>6. Design Disclaimer</h2>
-    <p>Every effort will be made to match your requested design, colours and style as closely as possible. However, <strong>slight variations may occur</strong> as all items are entirely handmade. This does not constitute a fault with the order.</p>
-
-    <h2>7. Photography</h2>
-    <p>We may photograph your order for use on our social media and website. If you would prefer we did not, please let us know at the time of ordering and we will fully respect your wishes.</p>
-
-    <h2>Contact</h2>
-    <p>Any questions about these terms? Get in touch — we're happy to help.</p>
-    <p><a href="tel:07818187840">📞 07818 187840</a> &nbsp;|&nbsp; <a href="mailto:cupcakesontheavenue@gmail.com">✉️ cupcakesontheavenue@gmail.com</a></p>
-
-    <a href="index.html" class="back-btn">← Back to Home</a>
+    <p>A minimum <strong>25% non-refundable deposit</strong> (or a fixed amount as agreed) is required to secure your booking. Full payment is due <strong>no later than 24 hours</strong> before collection or delivery.</p>
   </div>
+  <div class="policy-card">
+    <h2>2. Cancellations</h2>
+    <p>Cancellations made <strong>within 3 days</strong> of your collection or delivery date will not be refunded. Cancellations prior to that period may be refunded minus the non-refundable deposit.</p>
+  </div>
+  <div class="policy-card">
+    <h2>3. Changes to Order</h2>
+    <p>Design, flavour or other changes must be requested <strong>at least 48 hours before collection or delivery</strong>. After this point, changes may not be possible.</p>
+  </div>
+  <div class="policy-card">
+    <h2>4. Allergens &amp; Food Safety</h2>
+    <p>Your order may contain allergens including <strong>gluten, dairy, eggs and soy</strong> and is made in a kitchen that handles <strong>nuts</strong>. It is the customer's responsibility to inform guests of potential allergens.</p>
+  </div>
+  <div class="policy-card">
+    <h2>5. Collection &amp; Storage</h2>
+    <p>Once collected or delivered, responsibility passes to the customer. Keep cupcakes and cakes in a cool, dry place. Store biscuits in an airtight container. Keep refrigerated unless advised otherwise.</p>
+  </div>
+  <div class="policy-card">
+    <h2>6. Design Disclaimer</h2>
+    <p>Every effort is made to match requested designs. However <strong>slight variations may occur</strong> as all items are entirely handmade.</p>
+  </div>
+  <div class="policy-card">
+    <h2>7. Photography</h2>
+    <p>We may photograph your order for social media and our website. Please let us know at the time of ordering if you would prefer we did not.</p>
+  </div>
+  <div class="policy-card">
+    <h2>Questions?</h2>
+    <p><a href="tel:07818187840">07818 187840</a> &nbsp;&middot;&nbsp; <a href="mailto:cupcakesontheavenue@gmail.com">cupcakesontheavenue@gmail.com</a></p>
+  </div>
+  <a href="index.html" class="back-btn">&#8592; Back to Home</a>
+</div>
 
-  <script>
-    function setSeasonalTheme() {
-      document.body.classList.add('spring');
-    }
-    
-    setSeasonalTheme();
-  </script>
 <script src="shared.js"></script>
 </body>
 </html>
