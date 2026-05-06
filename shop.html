@@ -9,6 +9,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="pictures/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="pictures/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="pictures/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
 <style>
 /* Import shared styles */
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -567,7 +571,7 @@ body { position: relative; overflow-x: hidden; }
 
 /* Winter gradient background */
 body {
-  background: linear-gradient(180deg, 
+  background: linear-gradient(180deg,
     #1a0a2e 0%,
     #2d1b4e 20%,
     #3d2963 40%,
@@ -679,12 +683,7 @@ footer {
   color: white;
 }
 
-footer::before { content: none; position: absolute; top: -30px; left: 0; }
-  width: 100%;
-  font-size: 30px;
-  text-align: center;
-  animation: gentle-snow 15s linear infinite;
-}
+footer::before { content: none; }
 
 @keyframes gentle-snow {
   0% { transform: translateY(0) translateX(0); }
@@ -736,12 +735,12 @@ select:focus {
     font-size: 20px;
     line-height: 80px;
   }
-  
+
   header::after {
     font-size: 16px;
     bottom: -12px;
   }
-  
+
   .section-header h2::before,
   .section-header h2::after {
     display: none;
@@ -761,21 +760,21 @@ select:focus {
     top: 10px;
     right: 10px;
   }
-  
+
   .cart-toggle-btn {
     width: 50px;
     height: 50px;
     font-size: 24px;
   }
-  
+
   .sticky-cart.open .cart-summary {
     min-width: calc(100vw - 40px);
   }
-  
+
   header h1 {
     font-size: 1.5rem;
   }
-  
+
   nav a {
     font-size: 0.75rem;
     padding: 6px 8px;
@@ -828,12 +827,37 @@ select:focus {
   </div>
 </div>
 
-<header role="banner">
-  <h1>🛍️ Shop - Cupcakes on the Avenue</h1>
-  <p>Browse our full range of premium baked goods</p>
-  <nav role="navigation" aria-label="Main navigation">
+<header class="site-header" role="banner">
+  <div class="hdr-top">
+    <a href="index.html" class="hdr-brand">
+      <span class="hdr-brand-icon">🧁</span>
+      <div class="hdr-brand-text">
+        <span class="hdr-brand-name">Cupcakes on the Avenue</span>
+        <span class="hdr-brand-tag">Home of the Shortbread Delight</span>
+      </div>
+    </a>
+    <div class="hdr-actions">
+      <div class="hdr-search">
+        <input type="text" id="hdrSearchInput" placeholder="Search bakes…" autocomplete="off" aria-label="Search">
+        <button class="hdr-search-btn" aria-label="Search">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <div id="hdrSearchDrop" class="hdr-search-drop"></div>
+      </div>
+      <a href="account.html" class="hdr-icon-btn" title="My Account">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="hdr-icon-lbl">Account</span>
+      </a>
+      <button class="hdr-icon-btn" id="hdrCartBtn" title="Cart" onclick="typeof toggleCart==='function'?toggleCart():(window.location='shop.html')">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="hdr-icon-lbl">Cart</span>
+        <span class="hdr-cart-badge hidden" id="hdrCartBadge">0</span>
+      </button>
+    </div>
+  </div>
+  <nav class="hdr-nav" role="navigation" aria-label="Main navigation">
     <a href="index.html">Home</a>
-    <a href="shop.html" class="active">Shop</a>
+    <a href="shop.html">Shop</a>
     <a href="index.html#market">Market</a>
     <a href="reviews.html">Reviews</a>
     <a href="account.html">Account</a>
@@ -1002,7 +1026,7 @@ select:focus {
         <div>
           <select class="product-select" data-id="regular-8" aria-label="Select Classic Shortbread options">
             <option value="Pack of 10|10">Pack of 10 - £10</option>
-            <option value="Pack of 20|20">Pack of 20 - £18</option>
+            <option value="Pack of 20|18">Pack of 20 - £18</option>
           </select>
           <button class="add-btn" data-name="Classic Shortbread " data-id="regular-8" aria-label="Add Classic Shortbread Bites to cart">Add to Cart</button>
         </div>
@@ -1019,8 +1043,8 @@ select:focus {
         </div>
         <div>
           <select class="product-select" data-id="regular-9" aria-label="Select Old School Cakes options">
-            <option value="Single tray |1">Single tray - £5</option>
-        
+            <option value="Single tray|5">Single tray - £5</option>
+
           </select>
           <button class="add-btn" data-name="Old School Cakes" data-id="regular-9" aria-label="Add Old School Cakes to cart">Add to Cart</button>
         </div>
@@ -1034,9 +1058,9 @@ select:focus {
 <div id="checkoutModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 10000;">
   <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 20px; max-width: 600px; width: 90%; max-height: 90%; overflow-y: auto;">
     <h2 style="color: #667eea; margin-bottom: 20px;">Complete Your Order</h2>
-    
+
     <div id="checkoutItems" style="margin-bottom: 20px;"></div>
-    
+
     <div style="border-top: 2px solid #f0f0f0; padding-top: 20px; margin-bottom: 20px;">
       <div id="checkoutSummary">
         <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
@@ -1060,9 +1084,9 @@ select:focus {
       <input type="email" id="customerEmail" name="customerEmail" placeholder="Email Address *" autocomplete="email" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
       <input type="tel" id="customerMobile" name="customerMobile" placeholder="Mobile Number *" autocomplete="tel" required style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
       <input type="text" id="customerAddress" name="customerAddress" placeholder="Delivery Address (if delivery selected)" autocomplete="street-address" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;">
-      
+
       <h3 style="color: #667eea; margin: 20px 0 15px 0;">Delivery & Collection</h3>
-      
+
       <div style="margin-bottom: 15px;">
         <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #555;">Delivery Method *</label>
         <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -1469,11 +1493,22 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .then(res => res.json())
       .then(data => {
+        if (!data.url) {
+          throw new Error(data.error || 'No checkout URL returned from server');
+        }
+
+        // Save order to Nexus tracking (fire-and-forget — does not block checkout)
+        fetch('https://stripe-backend-hxx2.onrender.com/api/order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData)
+        }).catch(() => {});
+
         // Clear cart after successful checkout session
         cart = [];
         localStorage.setItem('cart', JSON.stringify(cart));
         updateStickyCart();
-        
+
         // Redirect to Stripe checkout
         window.location = data.url;
       })
@@ -1506,14 +1541,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
   }
 
-
-
   // Initialize cart display
   updateStickyCart();
 });
 </script>
-
-
+<script src="shared.js"></script>
 
 </body>
 </html>

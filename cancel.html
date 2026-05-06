@@ -49,6 +49,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="pictures/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="pictures/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="pictures/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -253,14 +257,40 @@ p {
 </head>
 <body class="spring">
 
-<header role="banner">
-  <h1>🧁 Cupcakes on the Avenue</h1>
-  <p>Home of the exclusive Shortbread Delight & cosy bakes!</p>
-  <nav role="navigation" aria-label="Main navigation">
-    <a href="/" aria-label="Back to home">Home</a>
-    <a href="shop.html" aria-label="Browse our shop">Shop</a>
-    <a href="#market" aria-label="Visit us at market">Market</a>
-    <a href="reviews.html" aria-label="Read and write reviews">Reviews</a>
+<header class="site-header" role="banner">
+  <div class="hdr-top">
+    <a href="index.html" class="hdr-brand">
+      <span class="hdr-brand-icon">🧁</span>
+      <div class="hdr-brand-text">
+        <span class="hdr-brand-name">Cupcakes on the Avenue</span>
+        <span class="hdr-brand-tag">Home of the Shortbread Delight</span>
+      </div>
+    </a>
+    <div class="hdr-actions">
+      <div class="hdr-search">
+        <input type="text" id="hdrSearchInput" placeholder="Search bakes…" autocomplete="off" aria-label="Search">
+        <button class="hdr-search-btn" aria-label="Search">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <div id="hdrSearchDrop" class="hdr-search-drop"></div>
+      </div>
+      <a href="account.html" class="hdr-icon-btn" title="My Account">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="hdr-icon-lbl">Account</span>
+      </a>
+      <button class="hdr-icon-btn" id="hdrCartBtn" title="Cart" onclick="window.location='shop.html'">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="hdr-icon-lbl">Cart</span>
+        <span class="hdr-cart-badge hidden" id="hdrCartBadge">0</span>
+      </button>
+    </div>
+  </div>
+  <nav class="hdr-nav" role="navigation" aria-label="Main navigation">
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="index.html#market">Market</a>
+    <a href="reviews.html">Reviews</a>
+    <a href="account.html">Account</a>
   </nav>
 </header>
 
@@ -301,5 +331,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<script src="shared.js"></script>
 </body>
 </html>
