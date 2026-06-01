@@ -811,6 +811,7 @@ select:focus {
 </style>
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
+  if (location.hostname === 'cupcakesontheavenue.com' || location.hostname === 'www.cupcakesontheavenue.com') {
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
@@ -855,6 +856,7 @@ select:focus {
       },
     });
   });
+  } // end domain check
 </script>
 </head>
 <body class="spring">
