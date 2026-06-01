@@ -1,5 +1,5 @@
 // Service Worker for Cupcakes on the Avenue PWA
-const CACHE_NAME = 'cupcakes-v3';
+const CACHE_NAME = 'cupcakes-v4';
 const urlsToCache = [
   '/',
   '/index.html',
