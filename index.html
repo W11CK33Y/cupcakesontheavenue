@@ -4330,7 +4330,7 @@ async function handlePlaceOrder() {
       notes: notes || 'No special instructions'
     };
 
-    const response = await fetch(`${BACKEND_BASE}/api/checkout`, {
+    const response = await fetch(`${BACKEND_BASE}/create-checkout-session`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(orderData)
@@ -4342,28 +4342,22 @@ async function handlePlaceOrder() {
       const result = await response.json();
       console.log('✅ Backend processed successfully:', result);
 
+      if (!result.url) {
+        throw new Error(result.error || 'No checkout URL returned from server');
+      }
+
       // Clear cart
       cart = [];
       localStorage.setItem('cart', JSON.stringify(cart));
       updateCart();
       updateHdrBadge();
 
-      // Show success and redirect to Stripe
+      // Redirect to Stripe
       showToast('✅ Order sent! Redirecting to payment...');
       orderBtn.textContent = 'Redirecting to Stripe...';
-
-      if (result.stripeUrl) {
-        console.log('⌛ Redirecting to Stripe:', result.stripeUrl);
-        setTimeout(() => {
-          window.location.href = result.stripeUrl;
-        }, 1000);
-      } else {
-        const checkoutUrl = `${BACKEND_BASE}/api/checkout?total=${total.toFixed(2)}&reference=${orderReference}`;
-        console.log('⌛ Redirecting to checkout:', checkoutUrl);
-        setTimeout(() => {
-          window.location.href = checkoutUrl;
-        }, 1000);
-      }
+      setTimeout(() => {
+        window.location.href = result.url;
+      }, 1000);
 
     } else {
       const errorText = await response.text();
