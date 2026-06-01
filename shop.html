@@ -859,7 +859,18 @@ select:focus {
 </head>
 <body class="spring">
 
-<!-- Sticky Cart Bar - Collapsible Trolley -->
+<!-- Sticky Cart -->
+<div id="stickyCart" class="sticky-cart">
+  <button class="cart-toggle-btn" onclick="toggleCart()" aria-label="View cart">🛒</button>
+  <div class="cart-summary">
+    <div class="cart-info">
+      <div id="cartCount" class="cart-count">0 items</div>
+      <div id="cartTotal" class="cart-total">£0.00</div>
+    </div>
+    <button id="checkoutBtn" class="checkout-btn" disabled>Checkout</button>
+  </div>
+</div>
+
 <header class="site-header" role="banner">
   <div class="hdr-top">
     <a href="index.html" class="hdr-brand">
@@ -1589,12 +1600,7 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify(orderData)
         }).catch(() => {});
 
-        // Clear cart after successful checkout session
-        cart = [];
-        localStorage.setItem('cart', JSON.stringify(cart));
-        updateStickyCart();
-
-        // Redirect to Stripe checkout
+        // Redirect to Stripe checkout (cart is cleared on success.html once payment confirmed)
         window.location = data.url;
       })
       .catch(error => {

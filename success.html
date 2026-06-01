@@ -577,6 +577,8 @@ const sessionId = urlParams.get('session_id');
 
 if (sessionId) {
   console.log('Payment session completed:', sessionId);
+  // Clear cart now that payment is confirmed
+  localStorage.removeItem('cart');
   // Mark the matching order as paid in Nexus tracking
   const orderDetails = localStorage.getItem('lastOrderDetails');
   if (orderDetails) {
