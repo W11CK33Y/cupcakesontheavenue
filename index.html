@@ -3659,7 +3659,7 @@ let blockedDates = JSON.parse(localStorage.getItem('blockedDates') || '[]');
     updateCart();
     initializeEventListeners();
     applySeason();
-    updateStickyCart();
+    updateHdrBadge();
     loadRecentlyViewed();
   });
 
@@ -3789,9 +3789,16 @@ function addToCart(name, price) {
     cart.push({ name, price, quantity: 1 });
   }
   localStorage.setItem('cart', JSON.stringify(cart));
-  updateCart();
-  updateStickyCart();
+  updateHdrBadge();
   showToast(`✅ ${name} added to cart!`);
+}
+
+function updateHdrBadge() {
+  const badge = document.getElementById('hdrCartBadge');
+  if (!badge) return;
+  const count = cart.reduce((s, i) => s + (i.quantity || 1), 0);
+  badge.textContent = count;
+  badge.classList.toggle('hidden', count === 0);
 }
 
 function addMysteryBox(name) {
@@ -3841,7 +3848,7 @@ function changeQuantity(index, delta) {
     }
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCart();
-    updateStickyCart();
+    updateHdrBadge();
   }
 }
 
@@ -3849,7 +3856,7 @@ function removeFromCart(index) {
   cart.splice(index, 1);
   localStorage.setItem('cart', JSON.stringify(cart));
   updateCart();
-  updateStickyCart();
+  updateHdrBadge();
 }
 
 function updateStickyCart() {
@@ -4143,21 +4150,16 @@ function closeMarketBanner() {
 
 // Cart Toggle Functionality
 function toggleCart() {
-  const cartContainer = document.getElementById('stickyCart');
-  cartContainer.classList.toggle('open');
-  console.log('[Cart] Toggled to:', cartContainer.classList.contains('open') ? 'open' : 'closed');
-}
-
-// Close cart when clicking outside
-document.addEventListener('click', function(event) {
-  const cartContainer = document.getElementById('stickyCart');
-  const cartToggleBtn = document.getElementById('cartToggleBtn');
-  
-  // Close if clicking outside the cart
-  if (!cartContainer.contains(event.target) && cartContainer.classList.contains('expanded')) {
-    cartContainer.classList.remove('expanded');
+  const orderSection = document.getElementById('order');
+  if (!orderSection) return;
+  updateCart();
+  if (orderSection.style.display === 'none' || orderSection.style.display === '') {
+    orderSection.style.display = 'block';
+    orderSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    orderSection.style.display = 'none';
   }
-});
+}
 
 function showAnnouncement(announcement) {
   console.log('[Announcement] Showing:', announcement.message);
@@ -4362,7 +4364,7 @@ async function handlePlaceOrder() {
       cart = [];
       localStorage.setItem('cart', JSON.stringify(cart));
       updateCart();
-      updateStickyCart();
+      updateHdrBadge();
 
       // Show success and redirect to Stripe
       showToast('✅ Order sent! Redirecting to payment...');
