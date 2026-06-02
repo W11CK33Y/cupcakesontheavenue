@@ -759,6 +759,20 @@ select:focus {
     width: auto;
   }
 
+  /* Checkout modal: pin to screen edges so keyboard doesn't push it off */
+  #checkoutModal > div {
+    position: fixed !important;
+    top: 60px !important;
+    left: 4% !important;
+    right: 4% !important;
+    bottom: 8px !important;
+    transform: none !important;
+    max-height: none !important;
+    width: 92% !important;
+    border-radius: 16px !important;
+    overflow-y: auto !important;
+  }
+
   header h1 {
     font-size: 1.5rem;
   }
