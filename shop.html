@@ -806,6 +806,68 @@ select:focus {
     padding: 10px 20px;
   }
 }
+
+/* ── Warm palette override (matches index.html style) ──────────────────
+   Replaces the lime-green spring theme with cream/gold/brown tones       */
+:root {
+  --cream:      #FDFAF5;
+  --gold:       #B8854F;
+  --gold-light: #D4A86A;
+  --gold-dark:  #96693A;
+  --gold-pale:  #FDF0E0;
+  --brown:      #2C1810;
+  --brown-mid:  #5C3D2E;
+  --border:     rgba(184,133,79,0.2);
+  --shadow:     rgba(44,24,16,0.08);
+}
+
+body, body.spring, body.summer, body.autumn, body.winter {
+  background: var(--cream) !important;
+}
+
+section,
+body.spring section, body.summer section, body.autumn section, body.winter section {
+  background: #FFFFFF !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 4px 24px var(--shadow) !important;
+  backdrop-filter: none !important;
+  color: var(--brown) !important;
+}
+
+section::before,
+body.spring section::before, body.summer section::before,
+body.autumn section::before, body.winter section::before {
+  background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold)) !important;
+  background-size: 200% 100% !important;
+}
+
+.product-tile,
+body.spring .product-tile, body.summer .product-tile,
+body.autumn .product-tile, body.winter .product-tile {
+  background: #FFFFFF !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 4px 16px var(--shadow) !important;
+  border-radius: 18px !important;
+}
+
+body.spring .product-tile:hover, body.summer .product-tile:hover,
+body.autumn .product-tile:hover, body.winter .product-tile:hover,
+.product-tile:hover {
+  box-shadow: 0 22px 52px rgba(44,24,16,0.16) !important;
+  border-color: var(--gold-light) !important;
+}
+
+.product-title { color: var(--brown) !important; }
+.product-description { color: var(--brown-mid) !important; }
+.product-select { border-color: var(--gold) !important; }
+
+.add-btn, .checkout-btn {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%) !important;
+  box-shadow: 0 4px 14px rgba(184,133,79,0.38) !important;
+  color: #fff !important;
+}
+
+.hdr-search { background: #FDF8F3 !important; border-color: var(--border) !important; }
 </style>
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
