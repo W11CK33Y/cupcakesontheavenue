@@ -324,7 +324,7 @@
       fetch(BACKEND + '/health', { method: 'GET', cache: 'no-store' }).catch(function() {});
     }
     pingBackend();
-    setInterval(pingBackend, 14 * 60 * 1000);
+    setInterval(pingBackend, 3 * 60 * 1000);
   });
 
 })();
