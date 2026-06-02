@@ -3802,6 +3802,40 @@ let blockedDates = JSON.parse(localStorage.getItem('blockedDates') || '[]');
     });
   }
 
+  // Lock date field when Royal Mail Postage is selected
+  document.querySelectorAll('input[name="deliveryMethod"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      const dateField = document.getElementById('deliveryDate');
+      const dateInfo = document.getElementById('dateInfo');
+      if (this.value === 'postage') {
+        const nextFriday = nextPostageFriday();
+        dateField.value = nextFriday;
+        dateField.disabled = true;
+        if (dateInfo) dateInfo.textContent = 'Orders are dispatched every Friday by Royal Mail. Your order will be sent on ' + formatPostageDate(nextFriday) + ' (£6.00 postage charge applies).';
+      } else {
+        dateField.disabled = false;
+        dateField.value = '';
+        if (dateInfo) dateInfo.textContent = this.value === 'market'
+          ? 'Minimum 7 days notice required. Market collection Saturdays only 8 AM - 2 PM (FREE).'
+          : this.value === 'collect'
+            ? 'Minimum 7 days notice required. Personal collection any day by arrangement (FREE).'
+            : 'Minimum 7 days notice required. Home delivery any day within 10 miles (£5).';
+      }
+    });
+  });
+
+  function nextPostageFriday() {
+    var d = new Date();
+    d.setDate(d.getDate() + 7);
+    while (d.getDay() !== 5) d.setDate(d.getDate() + 1);
+    return d.toISOString().split('T')[0];
+  }
+
+  function formatPostageDate(iso) {
+    var d = new Date(iso + 'T12:00:00');
+    return d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
   // Place Order Button - THE MAIN FIX
   const placeOrderBtn = document.getElementById('placeOrderBtn');
   if (placeOrderBtn) {

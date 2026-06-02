@@ -1525,18 +1525,38 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (e.target.value === 'postage') {
         addressField.required = true;
         addressField.placeholder = 'Postal Address *';
-        dateInfo.textContent = 'Minimum 7 days notice required. Items posted via Royal Mail every Friday (£6.00 postage charge applies).';
+        const nextFriday = nextPostageFriday();
+        const dateField = document.getElementById('deliveryDate');
+        dateField.value = nextFriday;
+        dateField.disabled = true;
+        dateInfo.textContent = `Orders are dispatched every Friday by Royal Mail. Your order will be sent on ${formatDate(nextFriday)} (£6.00 postage charge applies).`;
       }
-      
+
+      // For non-postage methods, re-enable the date field and clear it
+      if (e.target.value !== 'postage') {
+        const dateField = document.getElementById('deliveryDate');
+        dateField.disabled = false;
+        dateField.value = '';
+      }
+
       // Update checkout total when delivery method changes
       if (document.getElementById('checkoutModal').style.display === 'block') {
         updateCheckoutTotal();
       }
-      
-      // Clear the date field to trigger re-validation
-      document.getElementById('deliveryDate').value = '';
     });
   });
+
+  function nextPostageFriday() {
+    const d = new Date();
+    d.setDate(d.getDate() + 7); // at least 7 days ahead
+    while (d.getDay() !== 5) d.setDate(d.getDate() + 1); // advance to Friday
+    return d.toISOString().split('T')[0];
+  }
+
+  function formatDate(iso) {
+    const d = new Date(iso + 'T12:00:00');
+    return d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }
 
   // Delivery date validation
   document.getElementById('deliveryDate').addEventListener('change', (e) => {
