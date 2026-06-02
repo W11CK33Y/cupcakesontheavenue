@@ -711,6 +711,43 @@ select:focus {
 
   .products-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* Product tile: stacked card layout so overlay is always visible on touch */
+  .product-tile {
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden;
+  }
+
+  .product-tile img {
+    height: 180px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+    flex-shrink: 0 !important;
+  }
+
+  .product-overlay {
+    position: static !important;
+    opacity: 1 !important;
+    transform: none !important;
+    flex: 1 !important;
+    padding: 16px !important;
+    background: #fff !important;
+  }
+
+  .product-tile:hover {
+    transform: none !important;
+  }
+
+  .product-title {
+    font-size: 1.2rem !important;
+  }
+
+  #checkoutModal > div {
+    padding: 20px !important;
   }
 
 }
@@ -751,7 +788,17 @@ select:focus {
   }
 
   .product-tile {
-    padding: 15px;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .product-tile img {
+    height: 160px !important;
+  }
+
+  .product-overlay {
+    padding: 12px !important;
   }
 
   .checkout-btn {

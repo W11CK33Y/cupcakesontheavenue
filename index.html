@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover"/>
 <title>Cupcakes on the Avenue - Premium Baked Goods & Custom Cakes | Highworth Market</title>
 <meta name="description" content="Artisan cupcakes, custom celebration cakes & exclusive Shortbread Delights. Visit us at Highworth Market every Saturday, or order online. Fresh baked goods made with love.">
 <meta name="keywords" content="cupcakes, cakes, bakery, Highworth, custom cakes, shortbread, celebration cakes, fresh baked goods, artisan bakery">
@@ -1585,12 +1585,32 @@ nav::before, nav::after { content: none; }
   /* Single column grid for mobile */
   .products-grid {
     grid-template-columns: 1fr;
-    gap: 15px;
+    gap: 16px;
   }
-  
+
+  /* Product tile: stacked card layout so overlay is always visible on touch */
   .product-tile {
-    height: 300px;
+    height: auto !important;
     border-radius: 18px;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden;
+  }
+
+  .product-tile img {
+    height: 180px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+    flex-shrink: 0 !important;
+  }
+
+  .product-overlay {
+    position: static !important;
+    opacity: 1 !important;
+    transform: none !important;
+    flex: 1 !important;
+    padding: 16px !important;
+    background: #fff !important;
   }
   
   /* Mobile hero */
@@ -1626,17 +1646,31 @@ nav::before, nav::after { content: none; }
   
   /* Hide mouse hover effects on touch devices */
   .product-tile:hover {
-    transform: none;
+    transform: none !important;
   }
-  
+
   /* Touch-friendly tap effects */
   .product-tile:active {
     transform: scale(0.98);
     transition: transform 0.1s ease;
   }
-  
+
   .add-btn:active, .order-btn:active {
     transform: scale(0.95);
+  }
+
+  /* Reduce section hover lift on mobile — jarring on touch */
+  section:hover {
+    transform: none !important;
+  }
+
+  section:active {
+    transform: translateY(-2px) !important;
+  }
+
+  /* Cart section padding */
+  .cart-section {
+    padding: 20px 16px !important;
   }
 }
 
@@ -2433,6 +2467,45 @@ body.winter .product-tile:hover {
 }
 
 .product-tile:hover .product-overlay { transform: translateY(0%) !important; }
+
+/* Mobile: override spring-theme overlay so it's always visible */
+@media (max-width: 768px) {
+  .product-overlay {
+    position: static !important;
+    transform: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+    flex: 1 !important;
+    padding: 16px !important;
+    background: #fff !important;
+  }
+
+  .product-tile,
+  body.spring .product-tile,
+  body.summer .product-tile,
+  body.autumn .product-tile,
+  body.winter .product-tile {
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden;
+  }
+
+  .product-tile img {
+    height: 180px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+    flex-shrink: 0 !important;
+  }
+
+  .product-tile:hover,
+  body.spring .product-tile:hover,
+  body.summer .product-tile:hover,
+  body.autumn .product-tile:hover,
+  body.winter .product-tile:hover {
+    transform: none !important;
+  }
+}
 
 .product-title {
   font-family: var(--font-head) !important;
