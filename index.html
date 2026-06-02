@@ -3206,7 +3206,7 @@ section[style*="text-align: center"][style*="800px"] {
         </label>
         <label style="display: flex; align-items: center; cursor: pointer; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; background: #f8f9fa;">
           <input type="radio" name="deliveryMethod" value="postage" required style="margin-right: 10px;">
-          <span><strong>📦 Royal Mail Postage</strong> - Sent by post <span style="color: #e67e22; font-weight: bold;">(£6.00)</span></span>
+          <span><strong>📦 Royal Mail Postage</strong> - Sent by post, shipped every Friday <span style="color: #e67e22; font-weight: bold;">(£6.00)</span></span>
         </label>
       </div>
     </div>
@@ -3781,7 +3781,6 @@ function updateCart() {
     contents.innerHTML = '<p style="text-align: center; color: #999; padding: 30px;">Your cart is empty</p>';
     orderEl.style.display = 'none';
   } else {
-    orderEl.style.display = 'block';
     contents.innerHTML = `<ul>${cart.map((item, idx) => `
       <li>
         <div>

@@ -1152,7 +1152,7 @@ select:focus {
           </label>
           <label style="display: flex; align-items: center; cursor: pointer; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; background: #f8f9fa;">
             <input type="radio" name="deliveryMethod" value="postage" required style="margin-right: 10px;">
-            <span><strong>📦 Royal Mail Postage</strong> - Sent by post <span style="color: #e67e22; font-weight: bold;">(£6.00)</span></span>
+            <span><strong>📦 Royal Mail Postage</strong> - Sent by post, shipped every Friday <span style="color: #e67e22; font-weight: bold;">(£6.00)</span></span>
           </label>
         </div>
       </div>
@@ -1399,7 +1399,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (e.target.value === 'postage') {
         addressField.required = true;
         addressField.placeholder = 'Postal Address *';
-        dateInfo.textContent = 'Minimum 7 days notice required. Items posted via Royal Mail (£6.00 postage charge applies).';
+        dateInfo.textContent = 'Minimum 7 days notice required. Items posted via Royal Mail every Friday (£6.00 postage charge applies).';
       }
       
       // Update checkout total when delivery method changes
