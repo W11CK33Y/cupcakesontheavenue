@@ -815,7 +815,8 @@ footer.site-footer p {
 }
 
 @media (max-width: 480px) {
-  .hdr-search input { width: 90px; }
+  .hdr-search       { display: none; }          /* hide search — gives room for cart & account */
   .hdr-brand-icon   { font-size: 1.5rem; }
+  .hdr-brand-name   { font-size: 0.95rem; }
   .hdr-nav a        { font-size: .67rem; padding: 8px 7px; letter-spacing: .3px; }
 }
