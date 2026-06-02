@@ -4539,11 +4539,15 @@ function showToast(message) {
   }
 }
 
-// Seasonal theme
-// Always use spring for the current update (override automatic detection)
+// Seasonal theme — sets body class based on current month
 function applySeason() {
-  // Force spring theme regardless of the date
-  document.body.className = 'spring';
+  const month = new Date().getMonth(); // 0=Jan … 11=Dec
+  let season;
+  if (month >= 2 && month <= 4)       season = 'spring';  // Mar–May
+  else if (month >= 5 && month <= 7)  season = 'summer';  // Jun–Aug
+  else if (month >= 8 && month <= 10) season = 'autumn';  // Sep–Nov
+  else                                season = 'winter';  // Dec–Feb
+  document.body.className = season;
 }
 
 // Christmas Light Switch-On Event Countdown Timer

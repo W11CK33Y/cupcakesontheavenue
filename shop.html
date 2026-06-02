@@ -933,7 +933,10 @@ body.autumn .product-tile:hover, body.winter .product-tile:hover,
   } // end domain check
 </script>
 </head>
-<body class="spring">
+<body>
+<script>
+  (function(){var m=new Date().getMonth();document.body.className=m>=2&&m<=4?'spring':m>=5&&m<=7?'summer':m>=8&&m<=10?'autumn':'winter';})();
+</script>
 
 <!-- Cart Panel (triggered by header cart button) -->
 <div id="stickyCart" class="sticky-cart">
