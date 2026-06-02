@@ -318,7 +318,7 @@
     window.closeQuiz = closeQuiz;
     window.quizPick  = quizPick;
 
-    /* keep Render backend warm — ping every 14 minutes so it never spins down */
+    /* keep Render backend warm — ping every 3 minutes so it never spins down */
     var BACKEND = 'https://stripe-backend-hxx2.onrender.com';
     function pingBackend() {
       fetch(BACKEND + '/health', { method: 'GET', cache: 'no-store' }).catch(function() {});
