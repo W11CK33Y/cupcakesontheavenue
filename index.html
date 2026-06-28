@@ -4021,18 +4021,23 @@ function scrollToCart() {
   }
 }
 
+const _sb = window.supabase.createClient(
+  'https://fobcbxtcrdkrcauqplts.supabase.co',
+  'sb_publishable_v4QZxC41TLpO8TBFeS3BIg_v3gdEXaY'
+);
+
 // Review display functions (load only, no form submission on main page)
-function loadReviews() {
-  fetch('https://sumup-backend.vercel.app/api/reviews')
-    .then(res => {
-      if (!res.ok) throw new Error('Failed to load reviews');
-      return res.json();
-    })
-    .then(data => {
-      const approvedReviews = (data.reviews || []).filter(r => r.approved === true);
-      displayReviews(approvedReviews);
-    })
-    .catch(() => showSampleReviews());
+async function loadReviews() {
+  try {
+    const { data, error } = await _sb
+      .from('reviews')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    displayReviews(data || []);
+  } catch {
+    showSampleReviews();
+  }
 }
 
 function showSampleReviews() {
@@ -4079,25 +4084,24 @@ function displayReviews(reviews) {
   
   container.innerHTML = reviews.map(review => {
     const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
-    const date = new Date(review.createdAt).toLocaleDateString('en-GB', { 
-      day: 'numeric', 
-      month: 'short', 
-      year: 'numeric' 
+    const date = new Date(review.created_at).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
     });
-    
+
     return `
       <div class="review-card">
         <div class="review-header">
           <div>
             <span class="reviewer-name">${escapeHtml(review.name)}</span>
-            ${review.verified ? '<span class="verified-badge">✓ Verified Purchase</span>' : ''}
           </div>
           <span class="review-date">${date}</span>
         </div>
         <div class="review-stars">${stars}</div>
         ${review.product ? `<div style="color: #667eea; font-size: 13px; margin: 5px 0; font-weight: 600;">${escapeHtml(review.product)}</div>` : ''}
         <div class="review-text">
-          "${escapeHtml(review.reviewText)}"
+          "${escapeHtml(review.review_text)}"
         </div>
       </div>
     `;
@@ -4768,6 +4772,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="shared.js"></script>
 
 </body>
