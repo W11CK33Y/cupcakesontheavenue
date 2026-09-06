@@ -11,50 +11,52 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({
-        appId: "38003574-2a43-4e93-b3e3-d44e2b2e0adf",
-        safari_web_id: "web.onesignal.auto.0d123f70-12e5-49b1-a758-f1abcc853120",
-        notifyButton: {
-          enable: true,
-          size: 'large',
-          position: 'bottom-left',
-          offset: { bottom: '20px', left: '20px' },
-          prenotify: true,
-          showCredit: false,
-          text: {
-            'tip.state.unsubscribed': 'Get updates from us!',
-            'tip.state.subscribed': 'Notifications on',
-            'tip.state.blocked': 'Notifications blocked',
-            'message.prenotify': 'Click to subscribe to bakery updates',
-            'dialog.main.title': 'Cupcakes on the Avenue',
-            'dialog.main.button.subscribe': 'YES PLEASE',
-            'dialog.main.button.unsubscribe': 'No thanks',
-            'dialog.blocked.title': 'Unblock Notifications',
-            'dialog.blocked.message': 'Enable notifications in your browser settings',
-          }
-        },
-        welcomeNotification: {
-          title: 'Cupcakes on the Avenue',
-          message: "Thanks for subscribing! We'll let you know about fresh bakes & market days.",
-        },
-        promptOptions: {
-          slidedown: {
-            prompts: [{
-              type: 'push',
-              autoPrompt: true,
-              text: {
-                actionMessage: 'Get notified about fresh bakes and market days!',
-                acceptButton: 'Allow',
-                cancelButton: 'Not now',
-              },
-              delay: { pageViews: 1, timeDelay: 5 },
-            }]
-          }
-        },
+    if (location.hostname === 'cupcakesontheavenue.com' || location.hostname === 'www.cupcakesontheavenue.com' || location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "38003574-2a43-4e93-b3e3-d44e2b2e0adf",
+          safari_web_id: "web.onesignal.auto.0d123f70-12e5-49b1-a758-f1abcc853120",
+          notifyButton: {
+            enable: true,
+            size: 'large',
+            position: 'bottom-left',
+            offset: { bottom: '20px', left: '20px' },
+            prenotify: true,
+            showCredit: false,
+            text: {
+              'tip.state.unsubscribed': 'Get updates from us!',
+              'tip.state.subscribed': 'Notifications on',
+              'tip.state.blocked': 'Notifications blocked',
+              'message.prenotify': 'Click to subscribe to bakery updates',
+              'dialog.main.title': 'Cupcakes on the Avenue',
+              'dialog.main.button.subscribe': 'YES PLEASE',
+              'dialog.main.button.unsubscribe': 'No thanks',
+              'dialog.blocked.title': 'Unblock Notifications',
+              'dialog.blocked.message': 'Enable notifications in your browser settings',
+            }
+          },
+          welcomeNotification: {
+            title: 'Cupcakes on the Avenue',
+            message: "Thanks for subscribing! We'll let you know about fresh bakes & market days.",
+          },
+          promptOptions: {
+            slidedown: {
+              prompts: [{
+                type: 'push',
+                autoPrompt: true,
+                text: {
+                  actionMessage: 'Get notified about fresh bakes and market days!',
+                  acceptButton: 'Allow',
+                  cancelButton: 'Not now',
+                },
+                delay: { pageViews: 1, timeDelay: 5 },
+              }]
+            }
+          },
+        });
       });
-    });
+    }
   </script>
   <style>
     body {
@@ -442,10 +444,27 @@
   </footer>
 
   <script>
-    const _supa = window.supabase.createClient(
-      'https://fobcbxtcrdkrcauqplts.supabase.co',
-      'sb_publishable_v4QZxC41TLpO8TBFeS3BIg_v3gdEXaY'
-    );
+    const REVIEW_STORAGE_KEY = 'ccona-local-reviews';
+    const SUPABASE_URL = 'https://fobcbxtcrdkrcauqplts.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_v4QZxC41TLpO8TBFeS3BIg_v3gdEXaY';
+
+    function getLocalReviews() {
+      try {
+        return JSON.parse(localStorage.getItem(REVIEW_STORAGE_KEY) || '[]');
+      } catch {
+        return [];
+      }
+    }
+
+    function saveLocalReview(entry) {
+      const items = getLocalReviews();
+      items.unshift(entry);
+      localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify(items));
+    }
+
+    const _supa = (window.supabase && typeof window.supabase.createClient === 'function')
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
 
     // Star rating
     const stars = document.querySelectorAll('.star');
@@ -515,18 +534,23 @@
           rating: parseInt(rating),
           product,
           review_text: reviewText,
-          approved: true
+          approved: true,
+          created_at: new Date().toISOString()
         };
 
-        let { error } = await _supa.from('reviews').insert(reviewPayload);
+        if (_supa) {
+          let { error } = await _supa.from('reviews').insert(reviewPayload);
 
-        if (error && /approved|column/i.test(error.message || '')) {
-          const fallbackPayload = { ...reviewPayload };
-          delete fallbackPayload.approved;
-          ({ error } = await _supa.from('reviews').insert(fallbackPayload));
+          if (error && /approved|column/i.test(error.message || '')) {
+            const fallbackPayload = { ...reviewPayload };
+            delete fallbackPayload.approved;
+            ({ error } = await _supa.from('reviews').insert(fallbackPayload));
+          }
+
+          if (error) throw error;
+        } else {
+          saveLocalReview(reviewPayload);
         }
-
-        if (error) throw error;
 
         document.getElementById('successMessage').classList.add('show');
         resetForm();

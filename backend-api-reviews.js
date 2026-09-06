@@ -127,8 +127,8 @@ router.post('/reviews', async (req, res) => {
       rating: parseInt(rating),
       product: product || null,
       reviewText: reviewText.trim(),
-      verified: false, // Set to true if you verify the purchase
-      approved: false, // Manual approval required
+      verified: true,
+      approved: true,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -140,7 +140,7 @@ router.post('/reviews', async (req, res) => {
     
     res.status(201).json({
       success: true,
-      message: 'Review submitted successfully! It will be published after verification.',
+      message: 'Review submitted successfully! It is now live.',
       reviewId: newReview.id
     });
     
