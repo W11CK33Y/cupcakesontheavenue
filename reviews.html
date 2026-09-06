@@ -466,9 +466,27 @@
       localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify(items));
     }
 
-    const _supa = (window.supabase && typeof window.supabase.createClient === 'function')
-      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-      : null;
+    // Defer creating a Supabase client until we know the host resolves.
+    // Many users reported the Supabase project is down; avoid trying to POST
+    // unless we can reach the host. Use localStorage as the primary fallback.
+    let _supa = null;
+
+    async function ensureSupa() {
+      if (_supa) return _supa;
+      if (!(window.supabase && typeof window.supabase.createClient === 'function')) return null;
+      try {
+        // Quick network probe: attempt a no-cors fetch to detect DNS/network errors.
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), 2000);
+        await fetch(SUPABASE_URL, { method: 'GET', mode: 'no-cors', cache: 'no-store', signal: controller.signal });
+        clearTimeout(id);
+        _supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        return _supa;
+      } catch (e) {
+        // Network probe failed (DNS/timeout). Leave _supa null and fall back to localStorage.
+        return null;
+      }
+    }
 
     // Star rating
     const stars = document.querySelectorAll('.star');
@@ -542,17 +560,20 @@
           created_at: new Date().toISOString()
         };
 
-        if (_supa) {
-          let { error } = await _supa.from('reviews').insert(reviewPayload);
+        // Try to use Supabase only if the host is reachable.
+        const supa = await ensureSupa();
+        if (supa) {
+          let { error } = await supa.from('reviews').insert(reviewPayload);
 
           if (error && /approved|column/i.test(error.message || '')) {
             const fallbackPayload = { ...reviewPayload };
             delete fallbackPayload.approved;
-            ({ error } = await _supa.from('reviews').insert(fallbackPayload));
+            ({ error } = await supa.from('reviews').insert(fallbackPayload));
           }
 
           if (error) throw error;
         } else {
+          // Supabase not reachable — save locally to avoid network errors.
           saveLocalReview(reviewPayload);
         }
 
