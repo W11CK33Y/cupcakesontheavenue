@@ -475,15 +475,16 @@
       if (_supa) return _supa;
       if (!(window.supabase && typeof window.supabase.createClient === 'function')) return null;
       try {
-        // Quick network probe: attempt a no-cors fetch to detect DNS/network errors.
+        // Probe the Supabase REST endpoint directly to catch DNS or REST failures
+        const probeUrl = SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/reviews';
         const controller = new AbortController();
         const id = setTimeout(() => controller.abort(), 2000);
-        await fetch(SUPABASE_URL, { method: 'GET', mode: 'no-cors', cache: 'no-store', signal: controller.signal });
+        await fetch(probeUrl, { method: 'GET', mode: 'no-cors', cache: 'no-store', signal: controller.signal });
         clearTimeout(id);
         _supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         return _supa;
       } catch (e) {
-        // Network probe failed (DNS/timeout). Leave _supa null and fall back to localStorage.
+        // Network probe failed (DNS/timeout) — do not attempt REST writes.
         return null;
       }
     }
@@ -583,8 +584,7 @@
         setTimeout(() => { window.location.href = 'index.html'; }, 3000);
 
       } catch (err) {
-        console.error('Review submit error:', err);
-        // Save locally so the user's review isn't lost when Supabase is unreachable
+        // Suppress verbose network error output — save locally instead.
         try { saveLocalReview({ name, email, rating: parseInt(rating), product, review_text: reviewText, approved: true, created_at: new Date().toISOString() }); } catch (e) { /* ignore */ }
         showError('Saved locally — review will be retried when online.');
         submitBtn.disabled = false;
