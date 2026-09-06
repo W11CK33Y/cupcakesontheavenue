@@ -4023,7 +4023,10 @@ function scrollToCart() {
 }
 
 const REVIEW_STORAGE_KEY = 'ccona-local-reviews';
-const _sb = (window.supabase && typeof window.supabase.createClient === 'function')
+const ALLOWED_HOSTNAMES = new Set(['cupcakesontheavenue.com', 'www.cupcakesontheavenue.com', 'localhost', '127.0.0.1']);
+// The previous Vercel live-status backend is dead and CORS-blocked. Keep integrations disabled until a valid backend is deployed.
+const ENABLE_LIVE_INTEGRATIONS = false;
+const _sb = (ALLOWED_HOSTNAMES.has(location.hostname) && window.supabase && typeof window.supabase.createClient === 'function')
   ? window.supabase.createClient(
       'https://fobcbxtcrdkrcauqplts.supabase.co',
       'sb_publishable_v4QZxC41TLpO8TBFeS3BIg_v3gdEXaY'
@@ -4155,6 +4158,7 @@ let pollData = null;
 let userVote = null;
 
 function startLiveUpdates() {
+  if (!ENABLE_LIVE_INTEGRATIONS) return;
   // Poll for live updates every 5 seconds
   setInterval(checkForLiveUpdates, 5000);
   
@@ -4163,6 +4167,8 @@ function startLiveUpdates() {
 }
 
 async function checkForLiveUpdates() {
+  if (!ENABLE_LIVE_INTEGRATIONS) return;
+  return;
   try {
     const response = await fetch('https://sumup-backend.vercel.app/api/live-status');
     
@@ -4345,8 +4351,11 @@ function showAnnouncement(announcement) {
   if (announcement.important) {
     console.log('[Announcement] Important - adding to banner');
     const banner = document.getElementById('marketStatusBanner');
-    banner.className = 'market-status-banner announcement show';
-    document.getElementById('marketStatusText').innerHTML = `📢 <strong>${escapeHtml(announcement.message)}</strong>`;
+    const text = document.getElementById('marketStatusText');
+    if (banner && text) {
+      banner.className = 'market-status-banner announcement show';
+      text.innerHTML = `📢 <strong>${escapeHtml(announcement.message)}</strong>`;
+    }
   }
 }
 
@@ -4392,7 +4401,8 @@ function updatePoll(poll) {
 }
 
 async function votePoll(option) {
-  if (!pollData) return;
+  if (!ENABLE_LIVE_INTEGRATIONS || !pollData) return;
+  return;
   
   // Don't allow voting twice
   if (userVote) {
@@ -4685,44 +4695,46 @@ function applySeason() {
 
 // Christmas Light Switch-On Event Countdown Timer
 function updateMarketCountdown() {
+  const countdownEl = document.getElementById('marketCountdown');
+  const daysEl = document.getElementById('days');
+  const hoursEl = document.getElementById('hours');
+  const minutesEl = document.getElementById('minutes');
+  const secondsEl = document.getElementById('seconds');
+
+  if (!countdownEl) return;
+
   const now = new Date();
-  
-  // Christmas Light Switch-On: Saturday, November 29, 2025 at 10:00 AM
   const eventDate = new Date('2025-11-29T10:00:00');
-  
   const timeUntil = eventDate - now;
-  
-  // Check if event is happening now (within the event window)
-  const eventEnd = new Date('2025-11-29T14:00:00'); // Assume event ends at 2pm
+  const eventEnd = new Date('2025-11-29T14:00:00');
+
   if (now >= eventDate && now <= eventEnd) {
-    // Event is happening NOW!
-    document.getElementById('marketCountdown').innerHTML = `
+    countdownEl.innerHTML = `
       <div style="font-size: 1.5rem; font-weight: bold; animation: pulse 1.5s infinite;">
         EVENT IS HAPPENING NOW!
       </div>
     `;
     return;
   }
-  
-  // Check if event has passed
+
   if (timeUntil < 0) {
-    document.getElementById('marketCountdown').innerHTML = `
+    countdownEl.innerHTML = `
       <div style="font-size: 1.3rem; font-weight: bold; color: rgba(255,255,255,0.9);">
         Event has ended - See you next time!
       </div>
     `;
     return;
   }
-  
+
   const days = Math.floor(timeUntil / (1000 * 60 * 60 * 24));
   const hours = Math.floor((timeUntil % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutes = Math.floor((timeUntil % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((timeUntil % (1000 * 60)) / 1000);
-  
-  document.getElementById('days').textContent = days.toString().padStart(2, '0');
-  document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-  document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-  document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+
+  if (daysEl) daysEl.textContent = days.toString().padStart(2, '0');
+  if (hoursEl) hoursEl.textContent = hours.toString().padStart(2, '0');
+  if (minutesEl) minutesEl.textContent = minutes.toString().padStart(2, '0');
+  if (secondsEl) secondsEl.textContent = seconds.toString().padStart(2, '0');
 }
 
 // Start countdown timer
