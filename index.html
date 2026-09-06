@@ -3172,37 +3172,6 @@ section[style*="text-align: center"][style*="800px"] {
     document.head.appendChild(s);
   }());
 </script>
-          'dialog.main.button.subscribe': 'YES PLEASE',
-          'dialog.main.button.unsubscribe': 'No thanks',
-          'dialog.blocked.title': 'Unblock Notifications',
-          'dialog.blocked.message': 'Enable notifications in your browser settings',
-        }
-      },
-      welcomeNotification: {
-        title: 'Cupcakes on the Avenue',
-        message: "Thanks for subscribing! We'll let you know about fresh bakes & market days.",
-      },
-      promptOptions: {
-        slidedown: {
-          prompts: [{
-            type: 'push',
-            autoPrompt: true,
-            text: {
-              actionMessage: 'Get notified about fresh bakes and market days!',
-              acceptButton: 'Allow',
-              cancelButton: 'Not now',
-            },
-            delay: { pageViews: 1, timeDelay: 5 },
-          }]
-        }
-      },
-      });
-    } catch (osErr) {
-      console.warn('OneSignal init failed:', osErr);
-    }
-  });
-  } // end domain check
-</script>
 </head>
 <body class="spring">
 
