@@ -4035,7 +4035,9 @@ async function loadReviews() {
       .select('*')
       .order('created_at', { ascending: false });
     if (error) throw error;
-    displayReviews(data || []);
+
+    const visibleReviews = (data || []).filter(review => review.approved !== false);
+    displayReviews(visibleReviews.length ? visibleReviews : (data || []));
   } catch {
     showSampleReviews();
   }

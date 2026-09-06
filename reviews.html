@@ -509,13 +509,22 @@
       submitBtn.textContent = 'Submitting…';
 
       try {
-        const { error } = await _supa.from('reviews').insert({
+        const reviewPayload = {
           name,
           email,
           rating: parseInt(rating),
           product,
-          review_text: reviewText
-        });
+          review_text: reviewText,
+          approved: true
+        };
+
+        let { error } = await _supa.from('reviews').insert(reviewPayload);
+
+        if (error && /approved|column/i.test(error.message || '')) {
+          const fallbackPayload = { ...reviewPayload };
+          delete fallbackPayload.approved;
+          ({ error } = await _supa.from('reviews').insert(fallbackPayload));
+        }
 
         if (error) throw error;
 

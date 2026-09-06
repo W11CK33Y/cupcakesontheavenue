@@ -1688,6 +1688,11 @@ document.addEventListener('DOMContentLoaded', () => {
         notes: notes || 'No special instructions' // Special instructions
       };
 
+      const savedOrderBackup = {
+        ...orderData,
+        createdAt: new Date().toISOString()
+      };
+
       // Store order details for success page (before sending to backend)
       const orderDetails = {
         date: deliveryDate,
@@ -1696,6 +1701,7 @@ document.addEventListener('DOMContentLoaded', () => {
         reference: orderReference
       };
       localStorage.setItem('lastOrderDetails', JSON.stringify(orderDetails));
+      localStorage.setItem('pendingOrderBackup', JSON.stringify(savedOrderBackup));
 
       // Fetch from Stripe backend
       fetch("https://stripe-backend-hxx2.onrender.com/create-checkout-session", {

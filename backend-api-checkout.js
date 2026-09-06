@@ -59,6 +59,39 @@ function formatOrderHtml(order) {
 // In-memory store for orders that haven't been paid yet
 const pendingOrders = new Map();
 
+async function sendOrderEmails(order, paid = false) {
+  if (!order || !order.email) {
+    console.warn('Skipping email send because order email is missing', order);
+    return;
+  }
+
+  const subjectText = paid ? `Order ${order.reference} confirmed` : `Order placed (${order.reference})`;
+  const customerMail = {
+    from: process.env.SHOP_EMAIL || 'orders@cupcakesontheavenue.co.uk',
+    to: order.email,
+    subject: subjectText,
+    html: `<p>Hi ${order.name || 'Customer'},</p>
+           <p>${paid ? 'Your payment has been received! Here’s a full copy of your order details:' : 'Thanks for your order! Below is a full summary including your reference number.'}</p>
+           ${formatOrderHtml(order)}
+           <p>We will contact you when the order is ready.</p>`
+  };
+
+  const shopMail = {
+    from: process.env.SHOP_EMAIL || 'orders@cupcakesontheavenue.co.uk',
+    to: process.env.SHOP_EMAIL || 'cupcakesontheavenue@gmail.com',
+    subject: paid ? `🧁 Paid order #${order.reference} from ${order.name || order.email}` : `🧁 New order #${order.reference} from ${order.name || order.email}`,
+    html: `<h1>${paid ? 'Order paid' : 'New order received'}</h1>${formatOrderHtml(order)}`
+  };
+
+  try {
+    await Promise.all([mailer.sendMail(customerMail), mailer.sendMail(shopMail)]);
+    console.log('Emails sent for order', order.reference, 'paid=', paid);
+  } catch (mailErr) {
+    console.error('Failed to send emails for order', order.reference, mailErr);
+    throw mailErr;
+  }
+}
+
 // POST /api/checkout
 router.post('/checkout', async (req, res) => {
   try {
@@ -166,31 +199,35 @@ router.post('/checkout-webhook', express.raw({ type: 'application/json' }), asyn
       const orderRef = session.metadata?.order_reference;
       if (orderRef && pendingOrders.has(orderRef)) {
         const order = pendingOrders.get(orderRef);
-        // send emails now that payment has succeeded
-        const customerMail = {
-          from: process.env.SHOP_EMAIL || 'orders@cupcakesontheavenue.co.uk',
-          to: order.email,
-          subject: `Order ${order.reference} confirmed`,
-          html: `<p>Hi ${order.name || 'Customer'},</p>
-               <p>Your payment has been received! Here’s a full copy of your order details:</p>
-               ${formatOrderHtml(order)}
-               <p>We will contact you when the order is ready.</p>`
-        };
-        const shopMail = {
-          from: process.env.SHOP_EMAIL || 'orders@cupcakesontheavenue.co.uk',
-          to: process.env.SHOP_EMAIL || 'cupcakesontheavenue@gmail.com',
-          subject: `🧁 Paid order #${order.reference} from ${order.name || order.email}`,
-          html: `<h1>Order paid</h1>${formatOrderHtml(order)}`
-        };
         try {
-          await Promise.all([mailer.sendMail(customerMail), mailer.sendMail(shopMail)]);
+          await sendOrderEmails(order, true);
           pendingOrders.delete(orderRef);
-          console.log('Emails sent for order', orderRef);
         } catch (mailErr) {
           console.error('Failed to send emails after payment:', mailErr);
         }
       } else {
-        console.warn('Order reference not found for webhook:', orderRef);
+        const fallbackOrder = {
+          reference: orderRef || `STRIPE-${Date.now()}`,
+          name: session.customer_details?.name || 'Customer',
+          email: session.customer_details?.email || session.customer_email || '',
+          phone: '',
+          delivery: 'Online Payment',
+          date: new Date().toISOString(),
+          address: session.metadata?.address || '',
+          items: (session.line_items?.data || []).map(item => `${item.description || 'Item'} x${item.quantity || 1}`).join(', ') || 'Online payment',
+          total: ((session.amount_total || 0) / 100).toFixed(2),
+          notes: 'Stripe checkout completed'
+        };
+
+        if (fallbackOrder.email) {
+          try {
+            await sendOrderEmails(fallbackOrder, true);
+          } catch (mailErr) {
+            console.error('Failed to send fallback emails after payment:', mailErr);
+          }
+        } else {
+          console.warn('Order reference not found for webhook and no customer email available:', orderRef);
+        }
       }
       break;
     }
