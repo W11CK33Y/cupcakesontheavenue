@@ -462,9 +462,48 @@
 
     function saveLocalReview(entry) {
       const items = getLocalReviews();
+      // attach a small client id for idempotency
+      if (!entry._cid) entry._cid = 'c_' + Date.now() + '_' + Math.floor(Math.random()*100000);
       items.unshift(entry);
       localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify(items));
     }
+
+    function removeLocalReviewByCid(cid) {
+      try {
+        const items = getLocalReviews().filter(r => r._cid !== cid);
+        localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify(items));
+      } catch {}
+    }
+
+    // Background retry: attempt to resend locally saved reviews when Supabase becomes available
+    async function retryLocalReviews() {
+      try {
+        const supa = await ensureSupa();
+        if (!supa) return;
+        const items = getLocalReviews();
+        if (!items.length) return;
+        for (var i = items.length - 1; i >= 0; i--) {
+          const rev = items[i];
+          try {
+            // remove client id before sending
+            const payload = Object.assign({}, rev);
+            delete payload._cid;
+            const { error } = await supa.from('reviews').insert(payload);
+            if (!error) {
+              removeLocalReviewByCid(rev._cid);
+            }
+          } catch (e) {
+            // stop processing on first error to avoid rapid retries
+            return;
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    // Start retry loop: tries every 10s in background
+    setInterval(retryLocalReviews, 10000);
 
     // Defer creating a Supabase client until we know the host resolves.
     // Many users reported the Supabase project is down; avoid trying to POST

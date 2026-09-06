@@ -200,6 +200,25 @@
     document.body.appendChild(a);
   }
 
+  /* ── Update product review counts from local cache ───────── */
+  function updateProductReviewCounts() {
+    try {
+      var raw = localStorage.getItem('ccona-local-reviews') || '[]';
+      var reviews = JSON.parse(raw);
+      var counts = {};
+      reviews.forEach(function(r) {
+        if (!r.product) return;
+        var key = r.product.trim();
+        counts[key] = (counts[key] || 0) + 1;
+      });
+      document.querySelectorAll('.review-count[data-product]').forEach(function(el) {
+        var prod = el.getAttribute('data-product') || '';
+        var n = counts[prod] || 0;
+        el.textContent = '(' + n + ' review' + (n === 1 ? '' : 's') + ')';
+      });
+    } catch (e) { /* ignore */ }
+  }
+
   /* ── Flavour quiz ────────────────────────────────────────── */
   var _quizAnswers = {};
 
@@ -325,6 +344,11 @@
     }
     pingBackend();
     setInterval(pingBackend, 3 * 60 * 1000);
+    // Update product review counts on load and when localStorage changes
+    updateProductReviewCounts();
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'ccona-local-reviews') updateProductReviewCounts();
+    });
   });
 
 })();

@@ -3347,12 +3347,19 @@ section[style*="text-align: center"][style*="800px"] {
 </section>
 
 <!-- Reviews Modal -->
-<div id="reviewsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+  <div id="reviewsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
   <div style="max-width:900px; width:94%; margin:40px auto; background:white; border-radius:10px; padding:18px; max-height:80vh; overflow:auto; position:relative;">
     <button onclick="closeReviewsModal()" style="position:absolute; right:12px; top:12px; background:transparent; border:none; font-size:20px; cursor:pointer;">✖</button>
     <h3 style="margin-top:0;">All Customer Reviews</h3>
     <div id="reviewsModalList" style="display:flex; flex-direction:column; gap:12px; padding-top:8px;"></div>
-    <div style="text-align:right; margin-top:12px;"><a href="reviews.html" style="color:#667eea; text-decoration:underline;">Manage reviews / Write a review</a></div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+      <div>
+        <button id="reviewsPrevBtn" style="padding:8px 12px; margin-right:8px;">◀ Prev</button>
+        <button id="reviewsNextBtn" style="padding:8px 12px;">Next ▶</button>
+        <span id="reviewsPageInfo" style="margin-left:12px; color:#666;"></span>
+      </div>
+      <div style="text-align:right;"><a href="reviews.html" style="color:#667eea; text-decoration:underline;">Manage reviews / Write a review</a></div>
+    </div>
   </div>
 </div>
 
@@ -4206,15 +4213,49 @@ function openReviewsModal() {
 function closeReviewsModal() {
   document.getElementById('reviewsModal').style.display = 'none';
 }
+  list.innerHTML = 'Loading...';
+  modal.style.display = 'block';
+  // Use the cached full reviews if available
+  const all = (window.__allLoadedReviews || []).slice();
+  if (!all.length) {
+    list.innerHTML = '<p style="color:#666; padding:20px;">No reviews available.</p>';
+    return;
+  }
+  // Pagination state
+  var pageSize = 8;
+  var currentPage = 1;
+  var totalPages = Math.max(1, Math.ceil(all.length / pageSize));
 
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
+  function renderPage(page) {
+    currentPage = Math.max(1, Math.min(totalPages, page));
+    var start = (currentPage - 1) * pageSize;
+    var chunk = all.slice(start, start + pageSize);
+    list.innerHTML = chunk.map(function(review) {
+      const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+      const date = new Date(review.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      return `
+      <div class="review-card modal-review">
+        <div class="review-header">
+          <div><span class="reviewer-name">${escapeHtml(review.name)}</span></div>
+          <span class="review-date">${date}</span>
+        </div>
+        <div class="review-stars">${stars}</div>
+        ${review.product ? `<div style="color: #667eea; font-size: 13px; margin: 5px 0; font-weight: 600;">${escapeHtml(review.product)}</div>` : ''}
+        <div class="review-text">"${escapeHtml(review.review_text)}"</div>
+      </div>
+    `;
+    }).join('');
+    document.getElementById('reviewsPageInfo').textContent = 'Page ' + currentPage + ' of ' + totalPages;
+    document.getElementById('reviewsPrevBtn').disabled = currentPage === 1;
+    document.getElementById('reviewsNextBtn').disabled = currentPage === totalPages;
+  }
 
-// Load reviews when page loads
-document.addEventListener('DOMContentLoaded', () => {
+  // Wire buttons
+  document.getElementById('reviewsPrevBtn').onclick = function() { renderPage(currentPage - 1); };
+  document.getElementById('reviewsNextBtn').onclick = function() { renderPage(currentPage + 1); };
+
+  // Initial render
+  renderPage(1);
   loadReviews();
   startLiveUpdates();
   const viewBtn = document.getElementById('viewAllReviewsBtn');
