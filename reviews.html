@@ -451,6 +451,8 @@
     const REVIEW_STORAGE_KEY = 'ccona-local-reviews';
     const SUPABASE_URL = 'https://fobcbxtcrdkrcauqplts.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_v4QZxC41TLpO8TBFeS3BIg_v3gdEXaY';
+    // Secondary backend API (used when Supabase is unreachable)
+    const BACKEND_REVIEWS_URL = 'https://sumup-backend.vercel.app/api/reviews';
 
     function getLocalReviews() {
       try {
@@ -478,24 +480,46 @@
     // Background retry: attempt to resend locally saved reviews when Supabase becomes available
     async function retryLocalReviews() {
       try {
-        const supa = await ensureSupa();
-        if (!supa) return;
         const items = getLocalReviews();
         if (!items.length) return;
+
+        // Try Supabase first, then backend for each item
+        const supa = await ensureSupa();
         for (var i = items.length - 1; i >= 0; i--) {
           const rev = items[i];
+          const payload = Object.assign({}, rev);
+          delete payload._cid;
+          let sent = false;
           try {
-            // remove client id before sending
-            const payload = Object.assign({}, rev);
-            delete payload._cid;
-            const { error } = await supa.from('reviews').insert(payload);
-            if (!error) {
-              removeLocalReviewByCid(rev._cid);
+            if (supa) {
+              const { error } = await supa.from('reviews').insert(payload);
+              if (!error) sent = true;
             }
           } catch (e) {
-            // stop processing on first error to avoid rapid retries
-            return;
+            // ignore and try backend
           }
+
+          if (!sent) {
+            try {
+              const bp = {
+                name: payload.name,
+                email: payload.email,
+                rating: payload.rating,
+                product: payload.product,
+                reviewText: payload.review_text || payload.reviewText || ''
+              };
+              const resp = await fetch(BACKEND_REVIEWS_URL, { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(bp), cache: 'no-store' });
+              if (resp.ok) {
+                const json = await resp.json().catch(() => ({}));
+                if (json && json.success) sent = true;
+              }
+            } catch (e) {
+              // still failed
+            }
+          }
+
+          if (sent) removeLocalReviewByCid(rev._cid);
+          else return; // stop processing if we hit a failure
         }
       } catch (e) {
         // ignore
@@ -600,7 +624,16 @@
           created_at: new Date().toISOString()
         };
 
-        // Try to use Supabase only if the host is reachable.
+        // Prepare backend payload shape (backend expects reviewText key)
+        const backendPayload = {
+          name: name,
+          email: email,
+          rating: parseInt(rating),
+          product: product,
+          reviewText: reviewText
+        };
+
+        // Try to use Supabase first. If unavailable, try the backend API. If both fail, save locally.
         const supa = await ensureSupa();
         if (supa) {
           let { error } = await supa.from('reviews').insert(reviewPayload);
@@ -613,8 +646,26 @@
 
           if (error) throw error;
         } else {
-          // Supabase not reachable — save locally to avoid network errors.
-          saveLocalReview(reviewPayload);
+          // Try backend POST
+          try {
+            const resp = await fetch(BACKEND_REVIEWS_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(backendPayload),
+              cache: 'no-store'
+            });
+            if (!resp.ok) throw new Error('Backend response ' + resp.status);
+            const json = await resp.json().catch(() => ({}));
+            if (json && json.success) {
+              // success - do nothing (review is live)
+            } else if (resp.ok && !json.success) {
+              // backend returned an error object
+              throw new Error(json.error || 'Backend rejected review');
+            }
+          } catch (be) {
+            // Both Supabase and Backend failed — save locally for retry
+            saveLocalReview(reviewPayload);
+          }
         }
 
         document.getElementById('successMessage').classList.add('show');
