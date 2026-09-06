@@ -3146,27 +3146,32 @@ section[style*="text-align: center"][style*="800px"] {
   color: #5c3d2e;
 }
 </style>
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
-  if (location.hostname === 'cupcakesontheavenue.com' || location.hostname === 'www.cupcakesontheavenue.com' || location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "38003574-2a43-4e93-b3e3-d44e2b2e0adf",
-      safari_web_id: "web.onesignal.auto.0d123f70-12e5-49b1-a758-f1abcc853120",
-      notifyButton: {
-        enable: true,
-        size: 'large',
-        position: 'bottom-left',
-        offset: { bottom: '20px', left: '20px' },
-        prenotify: true,
-        showCredit: false,
-        text: {
-          'tip.state.unsubscribed': 'Get updates from us!',
-          'tip.state.subscribed': 'Notifications on',
-          'tip.state.blocked': 'Notifications blocked',
-          'message.prenotify': 'Click to subscribe to bakery updates',
-          'dialog.main.title': 'Cupcakes on the Avenue',
+  (function(){
+    const ALLOWED = ['cupcakesontheavenue.com','www.cupcakesontheavenue.com','localhost','127.0.0.1'];
+    if (!ALLOWED.includes(location.hostname)) return;
+    const s = document.createElement('script');
+    s.src = 'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';
+    s.defer = true;
+    s.onload = function(){
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        try {
+          await OneSignal.init({
+            appId: "38003574-2a43-4e93-b3e3-d44e2b2e0adf",
+            safari_web_id: "web.onesignal.auto.0d123f70-12e5-49b1-a758-f1abcc853120",
+            notifyButton: { enable:true, size:'large', position:'bottom-left', offset:{ bottom:'20px', left:'20px'}, prenotify:true, showCredit:false },
+            welcomeNotification: { title: 'Cupcakes on the Avenue', message: "Thanks for subscribing! We'll let you know about fresh bakes & market days." },
+            promptOptions: { slidedown: { prompts:[{ type:'push', autoPrompt:true, text:{ actionMessage:'Get notified about fresh bakes and market days!', acceptButton:'Allow', cancelButton:'Not now' }, delay:{ pageViews:1, timeDelay:5 } }] } }
+          });
+        } catch (osErr) {
+          console.warn('OneSignal init failed:', osErr);
+        }
+      });
+    };
+    document.head.appendChild(s);
+  }());
+</script>
           'dialog.main.button.subscribe': 'YES PLEASE',
           'dialog.main.button.unsubscribe': 'No thanks',
           'dialog.blocked.title': 'Unblock Notifications',
@@ -3191,7 +3196,10 @@ section[style*="text-align: center"][style*="800px"] {
           }]
         }
       },
-    });
+      });
+    } catch (osErr) {
+      console.warn('OneSignal init failed:', osErr);
+    }
   });
   } // end domain check
 </script>
@@ -4027,12 +4035,24 @@ const REVIEW_STORAGE_KEY = 'ccona-local-reviews';
 const ALLOWED_HOSTNAMES = new Set(['cupcakesontheavenue.com', 'www.cupcakesontheavenue.com', 'localhost', '127.0.0.1']);
 // The previous Vercel live-status backend is dead and CORS-blocked. Keep integrations disabled until a valid backend is deployed.
 const ENABLE_LIVE_INTEGRATIONS = false;
-const _sb = (ALLOWED_HOSTNAMES.has(location.hostname) && window.supabase && typeof window.supabase.createClient === 'function')
-  ? window.supabase.createClient(
-      'https://fobcbxtcrdkrcauqplts.supabase.co',
-      'sb_publishable_v4QZxC41TLpO8TBFeS3BIg_v3gdEXaY'
-    )
-  : null;
+// Defer Supabase client creation and probe the REST endpoint before using it.
+let _sb = null;
+async function ensureSupaIndex() {
+  if (_sb) return _sb;
+  if (!(window.supabase && typeof window.supabase.createClient === 'function')) return null;
+  const SUPABASE_URL = 'https://fobcbxtcrdkrcauqplts.supabase.co';
+  try {
+    const probeUrl = SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/reviews';
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), 2000);
+    await fetch(probeUrl, { method: 'GET', mode: 'no-cors', cache: 'no-store', signal: controller.signal });
+    clearTimeout(id);
+    _sb = window.supabase.createClient(SUPABASE_URL, 'sb_publishable_v4QZxC41TLpO8TBFeS3BIg_v3gdEXaY');
+    return _sb;
+  } catch (e) {
+    return null;
+  }
+}
 
 function getLocalReviewEntries() {
   try {
