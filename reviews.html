@@ -453,6 +453,10 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_v4QZxC41TLpO8TBFeS3BIg_v3gdEXaY';
     // Secondary backend API (used when Supabase is unreachable)
     const BACKEND_REVIEWS_URL = 'https://sumup-backend.vercel.app/api/reviews';
+    // Optional: Google Sheets / Apps Script endpoint URL (very easy to set up)
+    // If you deploy an Apps Script web app that accepts POST and writes to a Sheet,
+    // set the URL here (e.g. 'https://script.google.com/macros/s/XXXX/exec')
+    const SHEETS_REVIEWS_URL = '';
 
     function getLocalReviews() {
       try {
@@ -500,21 +504,31 @@
           }
 
           if (!sent) {
-            try {
-              const bp = {
-                name: payload.name,
-                email: payload.email,
-                rating: payload.rating,
-                product: payload.product,
-                reviewText: payload.review_text || payload.reviewText || ''
-              };
-              const resp = await fetch(BACKEND_REVIEWS_URL, { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(bp), cache: 'no-store' });
-              if (resp.ok) {
-                const json = await resp.json().catch(() => ({}));
-                if (json && json.success) sent = true;
+            // Try Sheets endpoint first if configured
+            if (SHEETS_REVIEWS_URL) {
+              try {
+                const sresp = await fetch(SHEETS_REVIEWS_URL, { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ name: payload.name, email: payload.email, rating: payload.rating, product: payload.product, reviewText: payload.review_text || payload.reviewText || '' }), cache: 'no-store' });
+                if (sresp.ok) sent = true;
+              } catch (e) { /* ignore */ }
+            }
+
+            if (!sent) {
+              try {
+                const bp = {
+                  name: payload.name,
+                  email: payload.email,
+                  rating: payload.rating,
+                  product: payload.product,
+                  reviewText: payload.review_text || payload.reviewText || ''
+                };
+                const resp = await fetch(BACKEND_REVIEWS_URL, { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(bp), cache: 'no-store' });
+                if (resp.ok) {
+                  const json = await resp.json().catch(() => ({}));
+                  if (json && json.success) sent = true;
+                }
+              } catch (e) {
+                // still failed
               }
-            } catch (e) {
-              // still failed
             }
           }
 
@@ -646,25 +660,40 @@
 
           if (error) throw error;
         } else {
-          // Try backend POST
-          try {
-            const resp = await fetch(BACKEND_REVIEWS_URL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(backendPayload),
-              cache: 'no-store'
-            });
-            if (!resp.ok) throw new Error('Backend response ' + resp.status);
-            const json = await resp.json().catch(() => ({}));
-            if (json && json.success) {
-              // success - do nothing (review is live)
-            } else if (resp.ok && !json.success) {
-              // backend returned an error object
-              throw new Error(json.error || 'Backend rejected review');
+          // Try Google Sheets Apps Script endpoint if configured (easiest no-backend option)
+          let posted = false;
+          if (SHEETS_REVIEWS_URL) {
+            try {
+              const resp = await fetch(SHEETS_REVIEWS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(backendPayload),
+                cache: 'no-store'
+              });
+              if (resp.ok) posted = true;
+            } catch (se) { /* ignore and fall through */ }
+          }
+
+          if (!posted) {
+            // Try backend POST
+            try {
+              const resp = await fetch(BACKEND_REVIEWS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(backendPayload),
+                cache: 'no-store'
+              });
+              if (!resp.ok) throw new Error('Backend response ' + resp.status);
+              const json = await resp.json().catch(() => ({}));
+              if (json && json.success) {
+                posted = true;
+              } else if (resp.ok && !json.success) {
+                throw new Error(json.error || 'Backend rejected review');
+              }
+            } catch (be) {
+              // Both Supabase and Backend (and Sheets) failed — save locally for retry
+              saveLocalReview(reviewPayload);
             }
-          } catch (be) {
-            // Both Supabase and Backend failed — save locally for retry
-            saveLocalReview(reviewPayload);
           }
         }
 
