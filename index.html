@@ -4026,6 +4026,14 @@ const ALLOWED_HOSTNAMES = new Set(['cupcakesontheavenue.com', 'www.cupcakesonthe
 const ENABLE_LIVE_INTEGRATIONS = false;
 // Defer Supabase client creation and probe the REST endpoint before using it.
 let _sb = null;
+// Optional Apps Script GET endpoint to fetch published reviews (returns JSON { success:true, reviews: [...] })
+const SHEETS_REVIEWS_URL = 'https://script.google.com/macros/s/AKfycbwIsPvvGtYOtm0iDx8l1rh_t5FTr2XOBpMYF4-gcPDgLI3buCjNDjvcLUzGmmw74fsrMg/exec';
+
+function fetchWithTimeout(url, opts = {}, timeout = 3000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  return fetch(url, Object.assign({}, opts, { signal: controller.signal })).finally(() => clearTimeout(id));
+}
 async function ensureSupaIndex() {
   if (_sb) return _sb;
   if (!(window.supabase && typeof window.supabase.createClient === 'function')) return null;
@@ -4054,28 +4062,59 @@ function getLocalReviewEntries() {
 // Review display functions (load only, no form submission on main page)
 async function loadReviews() {
   try {
-    if (!_sb) {
-      const localReviews = getLocalReviewEntries();
-      // show preview on homepage and cache full set
-      window.__allLoadedReviews = localReviews;
-      displayReviewsPreview(localReviews, 3);
-      return;
+    const localReviews = getLocalReviewEntries();
+
+    // 1) Try Sheets endpoint (fast, public) if configured
+    if (typeof SHEETS_REVIEWS_URL === 'string' && SHEETS_REVIEWS_URL) {
+      try {
+        const resp = await fetchWithTimeout(SHEETS_REVIEWS_URL, { method: 'GET', cache: 'no-store' }, 3000);
+        if (resp && resp.ok) {
+          const json = await resp.json().catch(() => null);
+          if (json && Array.isArray(json.reviews)) {
+            const sheetReviews = (json.reviews || []).map(r => ({
+              name: r.name || r[1] || '',
+              email: r.email || r[2] || '',
+              rating: Number(r.rating || r[3] || 0),
+              product: r.product || r[4] || '',
+              review_text: r.reviewText || r[5] || r.review_text || '',
+              created_at: r.createdAt || r[0] || new Date().toISOString(),
+              approved: true
+            }));
+            const merged = [...sheetReviews, ...localReviews];
+            window.__allLoadedReviews = merged;
+            displayReviewsPreview(merged, 3);
+            return;
+          }
+        }
+      } catch (e) {
+        /* sheet fetch failed, continue to supabase/backend */
+      }
     }
 
-    const { data, error } = await _sb
-      .from('reviews')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (error) throw error;
+    // 2) Try Supabase if available
+    if (_sb) {
+      const { data, error } = await _sb
+        .from('reviews')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (!error && Array.isArray(data)) {
+        const allReviews = [...data, ...localReviews];
+        const visibleReviews = allReviews.filter(review => review.approved !== false);
+        const toUse = visibleReviews.length ? visibleReviews : allReviews;
+        window.__allLoadedReviews = toUse;
+        displayReviewsPreview(toUse, 3);
+        return;
+      }
+    }
 
-    const localReviews = getLocalReviewEntries();
-    const allReviews = [...(data || []), ...localReviews];
-    const visibleReviews = allReviews.filter(review => review.approved !== false);
-    const toUse = visibleReviews.length ? visibleReviews : allReviews;
-    // cache full reviews and show a 3-item preview on homepage
-    window.__allLoadedReviews = toUse;
-    displayReviewsPreview(toUse, 3);
-  } catch {
+    // 3) Fallback to local reviews or sample
+    if (localReviews.length) {
+      window.__allLoadedReviews = localReviews;
+      displayReviewsPreview(localReviews, 3);
+    } else {
+      showSampleReviews();
+    }
+  } catch (err) {
     const localReviews = getLocalReviewEntries();
     if (localReviews.length) {
       window.__allLoadedReviews = localReviews;
